@@ -28,6 +28,9 @@ dependencies:
   geocoding: '^1.0.5'
   geocoding_platform_interface: ^1.0.1
   postgres: 2.2.0
+  image_picker:
+  path_provider:
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -51,6 +54,8 @@ flutter:
   assets:
     - assets/images/footprint.jpeg
     - assets/images/dogFace.png
+    - assets/images/Error.png
+
 
 
 
