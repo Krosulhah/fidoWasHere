@@ -1,20 +1,25 @@
 
 import 'package:flutter/material.dart';
 import 'package:postgres/postgres.dart';
-
+import 'checker.dart';
 import 'home.dart';
-import 'Statistics.dart';
+
+
+//todo connection
+/*
+* pagina per la registrazione di un'account
+* azioni possibili:
+*
+*   -> indietro -> torna alla pagina di mail login
+*   -> register -> user inserisce mail + psw  + rpsw -> formato mail controllato daq checker +controllo psw e rpsw uguali+ aggiunta sul db (//todo)
+*               -> home page
+* * */
 
 class MailReg extends StatelessWidget {
   @override
+  //guarda mailLogin
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'FidoWasHere',
-      theme: new ThemeData(
-          primarySwatch: Colors.blue
-      ),
-      home: new RegPage(),
-    );
+    return   RegPage();
   }
 }
 
@@ -35,7 +40,7 @@ class _RegPageState extends State<RegPage> {
   String _email = "";
   String _password = "";
   String _repeatPassword = "";
-
+  Checker checker = new Checker();
 
   _RegPageState() {
     _emailFilter.addListener(_emailListen);
@@ -88,8 +93,18 @@ class _RegPageState extends State<RegPage> {
 
   Widget _buildBar(BuildContext context) {
     return new AppBar(
-      title: new Text("FidoWasHere"),
+      title: new Text("REGISTRATION"),
       centerTitle: true,
+      leading: Builder(
+        builder: (BuildContext context) {
+          return IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          );},
+      ),
+
     );
   }
 
@@ -153,6 +168,11 @@ class _RegPageState extends State<RegPage> {
       showDialog(context: context,
           child: new AlertDialog(
             title: new Text('please fill all the required fields'),
+          ));
+    }else if(checker.emailValidity(_email)==false){
+      showDialog(context: context,
+          child: new AlertDialog(
+            title: new Text('WRONG MAIL FORMAT'),
           ));
     }
     else if(_repeatPassword!=_password){

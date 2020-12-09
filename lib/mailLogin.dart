@@ -7,6 +7,15 @@ import 'checker.dart';
 import 'error.dart';
 
 //todo connection
+/*
+* pagina di accesso all'account
+* azioni possibili:
+*
+*   -> indietro -> torna alla pagina di accesso dell'applicazione
+*   -> login -> user inserisce mail + psw  -> formato mail controllato daq checker + controllo sul db (//todo)
+*            -> home page
+*   -> register with email -> carica la pagina per la registrazione
+* * */
 class MailLogIn extends StatelessWidget {
   // This widget is the root of your application.
   /***
