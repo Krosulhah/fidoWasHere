@@ -17,6 +17,7 @@ class Checker {
     for (int i = 0; i < numbers.length; i++)
       alphanumericalValue.add(numbers[i]);
 
+
     allowedSymbols.add('-');
     allowedSymbols.add('.');
 
@@ -42,6 +43,7 @@ class Checker {
     String domain = mail.substring(indexOfAt + 1, mail.length);
 
     //username syntax: username cannot start or finish with a symbol
+
     if (allowedSymbols.contains(username[username.length - 1]) ||
         allowedSymbols.contains(username[0]))
       return false;
@@ -81,7 +83,8 @@ class Checker {
     if (lastPoint == 0 || lastPoint >= domain.length)
       return false;
 
-    String domainExtension = domain.substring(lastPoint, domain.length);
+    String domainExtension = domain.substring(lastPoint+1, domain.length);
+    print(domainExtension);
     if (domainExtension.length != 2 && domainExtension.length != 3)
       return false;
 
