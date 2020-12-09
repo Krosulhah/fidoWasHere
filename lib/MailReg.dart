@@ -1,7 +1,8 @@
-import 'package:dimaWork/LoginReg.dart';
+
 import 'package:flutter/material.dart';
 import 'package:postgres/postgres.dart';
 
+import 'Home.dart';
 import 'Statistics.dart';
 
 class MailReg extends StatelessWidget {
@@ -147,7 +148,7 @@ class _RegPageState extends State<RegPage> {
 
   Future<void> _registerPressed () async {
    print('The user wants to create an accoutn with $_email and $_password');
-    if(_email.isEmpty||_password.isEmpty||_repeatPassword.isEmpty){
+    if(_email.isEmpty||_password.isEmpty||_repeatPassword.isEmpty){  //todo check su formattazione mail
 
       showDialog(context: context,
           child: new AlertDialog(
@@ -164,13 +165,17 @@ class _RegPageState extends State<RegPage> {
     else{
       var connection = PostgreSQLConnection("ec2-52-31-233-101.eu-west-1.compute.amazonaws.com", 5432, "d546e3qrqkclh8", username: "talusgwyiskbzs", password: "12b36d512f0f4a6f25f266b6d30bc19851f00e50c76d03f3d1fc5f1d3f1d0530",timeoutInSeconds: 30,queryTimeoutInSeconds: 30,timeZone: 'UTC',useSSL: true);
       await connection.open();
-
+    //todo connection etc ...
 
       //await connection.query("insert into user (idUser,mail,psw,fbAccount) values (@id, @email, @psw, @fb)", substitutionValues: {"id" : 1, "mail" : _email, "psw": _password, "fb" : ""});
 
       await connection.query("select * from user");
       connection.close();
-      runApp(Statistics());
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Home()),
+        );
+
     }
 
 

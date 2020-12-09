@@ -1,6 +1,7 @@
+import 'package:dimaWork/MailLogin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'LoginReg.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -70,12 +71,11 @@ class _MyHomePageState extends State<MyHomePage> {
           //Navigator.pop(context);
           SystemNavigator.pop();
           },
-        tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
       );},
         ),
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+
       ),
         body:
         Container(
@@ -106,9 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-
-
-
   RaisedButton mailButton (BuildContext context){
     return RaisedButton(
       textColor: Colors.white,
@@ -116,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LoginReg()),
+          MaterialPageRoute(builder: (context) => MailLogIn()),
         );
       },
       child: Text('Access with mail'),
