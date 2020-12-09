@@ -57,8 +57,6 @@ RaisedButton mailButton (){
 
 
 RaisedButton fbButton () {
-
-
     return RaisedButton(
       textColor: Colors.white,
       color: Color(0xFF6200EE),

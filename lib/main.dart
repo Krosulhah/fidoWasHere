@@ -1,8 +1,6 @@
-import 'package:dimaWork/reportPet.dart';
 import 'package:flutter/material.dart';
-import 'error.dart';
-import 'lookForFido.dart';
-import 'reportSearch.dart';
+import 'package:flutter/services.dart';
+import 'LoginReg.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,7 +28,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Fido Was Here'),
     );
   }
 }
@@ -64,77 +62,78 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
+        leading: Builder(
+        builder: (BuildContext context) {
+      return IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          //Navigator.pop(context);
+          SystemNavigator.pop();
+          },
+        tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+      );},
+        ),
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Home',
-            ),
+        body:
+        Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: new AssetImage('assets/images/footprint.jpeg'), fit: BoxFit.cover)),
+          child:
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.
+            spaceEvenly,
+            children: <Widget>[
+              Text('FidoWasHere',),  //todo aggiungi widget con nome app
 
-            IconButton(
-              onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => new Error(
-                        //replace by New Contact Screen
-                        ),
-                  )),
-              tooltip: 'Error',
-              icon: Icon(Icons.error),
-            ),
-            IconButton(
-              onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => new ReportSearch(
-                        //replace by New Contact Screen
-                        ),
-                  )),
-              tooltip: 'Error',
-              icon: Icon(Icons.message),
-            )
-            // This trailing comma makes auto-formatting nicer for build methods.
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => new LookForFido(
-                  //replace by New Contact Screen
-                  ),
-            )),
-        tooltip: 'Mail Log In',
-        child: Icon(Icons.message),
-      ),
 
-      /* floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.*/
+              Row( //buttons row
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+                children: [mailButton(context),fbButton(context)],
+
+
+              ),
+            ],
+          ),
+        )
     );
   }
 }
+
+
+
+
+  RaisedButton mailButton (BuildContext context){
+    return RaisedButton(
+      textColor: Colors.white,
+      color: Color(0xFF6200EE),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginReg()),
+        );
+      },
+      child: Text('Access with mail'),
+
+
+    );
+  }
+
+  RaisedButton fbButton (BuildContext context) {
+    return RaisedButton(
+      textColor: Colors.white,
+      color: Color(0xFF6200EE),
+      onPressed: () {
+     //   runApp(ReportSearch()); //TODO login with FB
+      },
+      child: Text('Access with FB'),
+    );
+
+  }
+
