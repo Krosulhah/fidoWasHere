@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dimaWork/Home.dart';
+import 'package:dimaWork/home.dart';
 
 class Error extends StatelessWidget {
   // This widget is the root of your application.

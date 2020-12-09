@@ -1,8 +1,9 @@
-import 'package:dimaWork/Home.dart';
-import 'package:dimaWork/MailReg.dart';
+import 'package:dimaWork/home.dart';
+import 'package:dimaWork/mailReg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:postgres/postgres.dart';
+import 'checker.dart';
 import 'error.dart';
 
 class MailLogIn extends StatelessWidget {
@@ -27,7 +28,7 @@ class MailLogIn extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MailLogInPage(title: 'Fido Was Here'),
+      home: MailLogInPage(title: 'LOGIN'),
     );
   }
 }
@@ -51,6 +52,7 @@ class MailLogInPage extends StatefulWidget {
 }
 
 class _MailLogInPageState extends State<MailLogInPage> {
+  Checker checker = new Checker();
   final TextEditingController _emailFilter = new TextEditingController();
   final TextEditingController _passwordFilter = new TextEditingController();
   String _email = "";
@@ -87,8 +89,7 @@ class _MailLogInPageState extends State<MailLogInPage> {
             return IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
-                //Navigator.pop(context);
-                SystemNavigator.pop();
+                Navigator.pop(context);
               },
             );},
         ),
@@ -125,7 +126,7 @@ class _MailLogInPageState extends State<MailLogInPage> {
               'Password',
             ), */
             _buildTextFields(),
-            mailLogButton(),
+            mailLogButton(context),
             registerButton(context),
           ],
         ),
@@ -156,18 +157,18 @@ class _MailLogInPageState extends State<MailLogInPage> {
     );
   }
 
-  RaisedButton mailLogButton() {
+  RaisedButton mailLogButton(BuildContext context) {
     return RaisedButton(
       textColor: Colors.white,
       color: Color(0xFF6200EE),
       onPressed: () {
-        _logInPressed(); // runApp (MailReg());
+        _logInPressed(context); // runApp (MailReg());
       },
       child: Text('Log In'),
     );
   }
 
-  Future<void> _logInPressed() async {
+  Future<void> _logInPressed(BuildContext context) async {
     print(
         'The user wants enter to his existing account with $_email and $_password');
     if (_email.isEmpty || _password.isEmpty) {
@@ -176,7 +177,14 @@ class _MailLogInPageState extends State<MailLogInPage> {
           child: new AlertDialog(
             title: new Text('please fill all the required fields'),
           ));
-    } else { //todo check su formato mail
+    }else if(checker.emailValidity(_email)==false){
+      showDialog(
+          context: context,
+          child: new AlertDialog(
+            title: new Text('wrong mail format'),
+          ));
+    }
+    else { //todo check su formato mail
       var connection =
           PostgreSQLConnection(
               "ec2-52-31-233-101.eu-west-1.compute.amazonaws.com",

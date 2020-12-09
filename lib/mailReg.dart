@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:postgres/postgres.dart';
 
-import 'Home.dart';
+import 'home.dart';
 import 'Statistics.dart';
 
 class MailReg extends StatelessWidget {

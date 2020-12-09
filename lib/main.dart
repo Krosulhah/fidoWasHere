@@ -1,7 +1,14 @@
-import 'package:dimaWork/MailLogin.dart';
+import 'package:dimaWork/mailLogin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+/*
+* pagina di accesso all'applicazione
+* azioni possibili:
+*
+*   -> chiudere app -> press sulla freccia nell'appbar
+*   -> accesso con mail -> porta alla pagina di login tramite mail
+*   -> accesso con facebook -> richiede login tramite credenziali FB
+* */
 
 void main() {
   runApp(MyApp());
@@ -12,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'FIDO WAS HERE',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -29,30 +36,12 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Fido Was Here'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -127,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
       textColor: Colors.white,
       color: Color(0xFF6200EE),
       onPressed: () {
-     //   runApp(ReportSearch()); //TODO login with FB
+      //TODO login with FB
       },
       child: Text('Access with FB'),
     );
