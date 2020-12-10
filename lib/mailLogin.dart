@@ -1,3 +1,4 @@
+import 'package:dimaWork/connectionHandler.dart';
 import 'package:dimaWork/home.dart';
 import 'package:dimaWork/mailReg.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,9 @@ class MailLogIn extends StatelessWidget {
   /***
    * ATTENZIONE non ritornare material app da nessuna parte (oltre che nel main) -> crea un nuovo navigator!
    * scaffold sempre top !
+   *
+   *
+   * per ora login solo con luke@gmail.com luke
    ***/
   @override
   Widget build(BuildContext context) {
@@ -48,6 +52,7 @@ class MailLogInPage extends StatefulWidget {
 
 class _MailLogInPageState extends State<MailLogInPage> {
   Checker checker = new Checker();
+  ConnectionHandler connectionHandler= new ConnectionHandler();
   final TextEditingController _emailFilter = new TextEditingController();
   final TextEditingController _passwordFilter = new TextEditingController();
   String _email = "";
@@ -180,36 +185,18 @@ class _MailLogInPageState extends State<MailLogInPage> {
           ));
     }
     else { //todo connection
-      var connection =
-          PostgreSQLConnection(
-              "ec2-52-31-233-101.eu-west-1.compute.amazonaws.com",
-              5432,
-              "d546e3qrqkclh8",
-              username: "talusgwyiskbzs",
-              password:
-                  "12b36d512f0f4a6f25f266b6d30bc19851f00e50c76d03f3d1fc5f1d3f1d0530",
-              timeoutInSeconds: 30,
-              queryTimeoutInSeconds: 30,
-              timeZone: 'UTC',
-              useSSL: true);
+      var connection = connectionHandler.createConnection();
       await connection.open();
-
-      //await connection.query("insert into user (idUser,mail,psw,fbAccount) values (@id, @email, @psw, @fb)", substitutionValues: {"id" : 1, "mail" : _email, "psw": _password, "fb" : ""});
-
-      /* List<List<dynamic>> results = await connection.query(
-          "select * from user where mail = $_email AND psw = $_password"); */
-      List<List<dynamic>> results =
-          await connection.query("select * from user");
+      List<List<dynamic>> results = await connection.query("SELECT * FROM public.\"User\" WHERE  mail= @amail AND psw=@apsw", substitutionValues: {
+        "amail" : _email,"apsw" :_password
+      });
       connection.close();
-      print(" Home ${results.length}");
+
+
+
       if (results.length == 0) {
         runApp(Error());
       } else {
-        for (final row in results) {
-          print(row);
-          /* var a = row[0];
-          var b = row[1]; */
-        }
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Home()),
