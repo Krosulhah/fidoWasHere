@@ -2,6 +2,7 @@ import 'package:dimaWork/connectionHandler.dart';
 import 'package:dimaWork/home.dart';
 import 'package:dimaWork/mailReg.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
 
 import 'checker.dart';
 import 'error.dart';
@@ -196,6 +197,8 @@ class _MailLogInPageState extends State<MailLogInPage> {
       if (results.length == 0) {
         runApp(Error());
       } else {
+        var session = FlutterSession();
+        await session.set("user", _email);
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Home()),
