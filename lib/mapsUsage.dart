@@ -1,5 +1,9 @@
 import 'dart:async';
-
+/** modifica : ho dovuto modificare la parte in cui ritorni il dato
+ *
+ * non devi fare push ma pop in quanto dobbiamo tornare indietro alla precedente schermata senza aggiungere al path
+ * altrimenti facendo pop in report torniamo alla mappa e non alla home
+ * **/
 import 'package:dimaWork/reportPet.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
@@ -58,11 +62,19 @@ class _MapsUsageState extends State<MapsUsage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return  Scaffold(
         appBar: AppBar(
           title: Text('FidoWasHere'),
           backgroundColor: Colors.green[700],
+          leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              );},
+          ),
         ),
         body: Stack(
           children: <Widget>[
@@ -127,8 +139,7 @@ class _MapsUsageState extends State<MapsUsage> {
                     color: Colors.blue))
           ],
         ),
-      ),
-    );
+      );
   }
 
   _retreiveLocation() async {

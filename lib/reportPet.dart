@@ -6,6 +6,13 @@ import 'package:path_provider/path_provider.dart';
 import 'home.dart';
 import 'mapsUsage.dart';
 
+/**modifica
+ *
+ * quando fai push per prendere le coordinate dalla mappa hai bisogno di settare lo stato della schermata per
+ * visualizzare l'indirizzo inserito
+ *
+ * **/
+
 class ReportPet extends StatelessWidget {
   // This widget is the root of your application.
   String address;
