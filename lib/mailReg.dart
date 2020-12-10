@@ -17,7 +17,7 @@ import 'home.dart';
 
 class MailReg extends StatelessWidget {
   @override
-  //guarda mailLogin
+  /**guarda mailLogin**/
   Widget build(BuildContext context) {
     return   RegPage();
   }

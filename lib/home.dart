@@ -1,10 +1,27 @@
+import 'package:flutter/services.dart';
+
 import 'Statistics.dart';
 import 'package:flutter/material.dart';
 import 'reportPet.dart';
 import 'lookForFido.dart';
 
 class Home extends StatelessWidget {
+  /*
+* pagina per l'accesso alle funzionalita' dell'app
+* azioni possibili:
+*
+*   -> indietro -> esce dall'applicazione
+*   -> register -> user inserisce mail + psw  + rpsw -> formato mail controllato daq checker +controllo psw e rpsw uguali+ aggiunta sul db (//todo)
+*               -> home page
+* * */
   // This widget is the root of your application.
+
+  /** ora uso di nuovo material app in quanto voglio creare un nuovo navigator
+   * dalla home non torniamo alla schermata di login/reg per questi motivi:
+   *
+   * -> l'utente difficilmente avra' piu' di un profilo registrato in quanto non porta vantaggi
+   * -> mailLogin/mailReg sono statefull -> se torniamo indietro le credenziali sono in chiaro
+   * **/
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -107,6 +124,15 @@ class _HomePageState extends State<HomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                SystemNavigator.pop();
+              },
+            );},
+        ),
       ),
       body: Row(
         children: <Widget>[

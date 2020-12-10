@@ -31,7 +31,7 @@ class _MapsUsageState extends State<MapsUsage> {
   }
 
   Map<MarkerId, Marker> markers =
-      <MarkerId, Marker>{}; // CLASS MEMBER, MAP OF MARKS
+  <MarkerId, Marker>{}; // CLASS MEMBER, MAP OF MARKS
 
   MarkerId _addPosition(var latitude, var longitude) {
     var markerIdVal = '#FIDOWASHERE';
@@ -138,17 +138,11 @@ class _MapsUsageState extends State<MapsUsage> {
     print(latitude);
 
     List<Placemark> placemarks =
-        await placemarkFromCoordinates(latitude, longitude);
+    await placemarkFromCoordinates(latitude, longitude);
     String address =
         "${placemarks[0].street} ${placemarks[0].name} ${placemarks[0].locality} ${placemarks[0].country}";
     print(address);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => new ReportPet(
-              //replace by New Contact Screen
-              address: address),
-        ));
+    Navigator.pop(context, address);
   }
 
   _fetchUserLocation() async {

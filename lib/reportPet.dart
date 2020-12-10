@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'home.dart';
 import 'mapsUsage.dart';
 
 class ReportPet extends StatelessWidget {
@@ -13,26 +14,7 @@ class ReportPet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Report A Pet',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: ReportPetPage(title: 'Report A Pet', address: address),
-    );
+    return ReportPetPage();
   }
 }
 
@@ -118,7 +100,16 @@ class _ReportPetPageState extends State<ReportPetPage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text("Report a Fido"),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            );},
+        ),
       ),
       body: new Container(
         padding: EdgeInsets.all(16.0),
@@ -145,6 +136,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
             _buildNameTextFields(),
             _buildLocation(),
             _buildAddPhotoPet(),
+            _buildSendButton(),
 
             // This trailing comma makes auto-formatting nicer for build methods.
           ],
@@ -158,6 +150,19 @@ class _ReportPetPageState extends State<ReportPetPage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.*/
     );
   }
+  Widget _buildSendButton(){
+    return Column(children:[
+      RaisedButton(
+          child: Text("send"),
+          textColor: Colors.white,
+          color: Color(0xFF6200EE),
+          onPressed: () => Navigator.push(context,
+            MaterialPageRoute(builder: (context) => Home()),
+          )
+      ),
+    ]);
+  }
+
 
   Widget _buildTypeOfPetDropDown(List<String> items) {
     return DropdownButton<String>(
@@ -310,13 +315,22 @@ class _ReportPetPageState extends State<ReportPetPage> {
           ),
           IconButton(
             icon: Icon(Icons.map),
-            onPressed: () => Navigator.push(
+
+            onPressed: () async {
+
+            final result= await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => new MapsUsage(
-                      //replace by New Contact Screen
-                      ),
-                )),
+                  builder: (context) =>  MapsUsage(
+                    //replace by New Contact Screen
+                  ),
+                ));
+            setState(() {
+              foundOn.text=result;
+            });
+            },
+
+
           )
         ],
       ),
@@ -344,8 +358,8 @@ class _ReportPetPageState extends State<ReportPetPage> {
                 context,
                 MaterialPageRoute(
                   builder: (_) => new MapsUsage(
-                      //replace by New Contact Screen
-                      ),
+                    //replace by New Contact Screen
+                  ),
                 )),
           )
         ],
