@@ -28,6 +28,7 @@ dependencies:
   geocoding: '^1.0.5'
   geocoding_platform_interface: ^1.0.1
   postgres: 2.2.0
+  flutter_session: ^0.0.7
   image_picker:
   path_provider:
 

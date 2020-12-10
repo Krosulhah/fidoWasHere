@@ -2,18 +2,17 @@ import 'package:dimaWork/connectionHandler.dart';
 import 'package:dimaWork/home.dart';
 import 'package:dimaWork/mailReg.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:postgres/postgres.dart';
+
 import 'checker.dart';
 import 'error.dart';
 
-//todo connection
+
 /*
 * pagina di accesso all'account
 * azioni possibili:
 *
 *   -> indietro -> torna alla pagina di accesso dell'applicazione
-*   -> login -> user inserisce mail + psw  -> formato mail controllato daq checker + controllo sul db (//todo)
+*   -> login -> user inserisce mail + psw  -> formato mail controllato daq checker + controllo sul db
 *            -> home page
 *   -> register with email -> carica la pagina per la registrazione
 * * */
