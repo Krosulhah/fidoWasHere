@@ -199,10 +199,11 @@ class _MailLogInPageState extends State<MailLogInPage> {
       } else {
         var session = FlutterSession();
         await session.set("user", _email);
+        
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Home()),
-        );
+        ); 
       }
     }
   }
