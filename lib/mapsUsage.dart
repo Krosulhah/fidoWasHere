@@ -4,11 +4,11 @@ import 'dart:async';
  * non devi fare push ma pop in quanto dobbiamo tornare indietro alla precedente schermata senza aggiungere al path
  * altrimenti facendo pop in report torniamo alla mappa e non alla home
  * **/
-import 'package:dimaWork/reportPet.dart';
+
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'reportPet.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -35,7 +35,7 @@ class _MapsUsageState extends State<MapsUsage> {
   }
 
   Map<MarkerId, Marker> markers =
-  <MarkerId, Marker>{}; // CLASS MEMBER, MAP OF MARKS
+      <MarkerId, Marker>{}; // CLASS MEMBER, MAP OF MARKS
 
   MarkerId _addPosition(var latitude, var longitude) {
     var markerIdVal = '#FIDOWASHERE';
@@ -62,98 +62,110 @@ class _MapsUsageState extends State<MapsUsage> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        appBar: AppBar(
-          title: Text('FidoWasHere'),
-          backgroundColor: Colors.green[700],
-          leading: Builder(
-            builder: (BuildContext context) {
-              return IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              );},
-          ),
-        ),
-        body: Stack(
-          children: <Widget>[
-            GoogleMap(
-              onTap: (LatLng latLng) {
-                // you have latitude and longitude here
-                var latitude = latLng.latitude;
-                var longitude = latLng.longitude;
-                firstMarkerId = _addPosition(latitude, longitude);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('FidoWasHere'),
+        backgroundColor: Colors.green[700],
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
               },
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 11.0,
-              ),
-              myLocationEnabled: true,
-              myLocationButtonEnabled: false,
-              markers: Set<Marker>.of(markers.values), // YOUR MARKS IN MAP
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              // add your floating action button
-              child: FloatingActionButton(
-                onPressed: () => _fetchUserLocation(),
-                child: Icon(Icons.my_location),
-              ),
-            ),
-            Positioned(
-              top: 30.0,
-              right: 15.0,
-              left: 15.0,
-              child: Container(
-                height: 50.0,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    color: Colors.white),
-                child: TextField(
-                  decoration: InputDecoration(
-                      hintText: 'Enter Address',
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
-                      suffixIcon: IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: () => _fetchLocation(address),
-                          iconSize: 30.0)),
-                  onChanged: (val) {
-                    setState(() {
-                      address = val;
-                    });
-                  },
-                ),
-              ),
-            ),
-            Align(
-                alignment: Alignment.bottomCenter,
-                // add your floating action button
-                child: IconButton(
-                    onPressed: () => _retreiveLocation(),
-                    icon: Icon(Icons.done, color: Colors.blue, size: 30),
-                    padding: EdgeInsets.all(8.0),
-                    color: Colors.blue))
-          ],
+            );
+          },
         ),
-      );
+      ),
+      body: Stack(
+        children: <Widget>[
+          GoogleMap(
+            onTap: (LatLng latLng) {
+              // you have latitude and longitude here
+              var latitude = latLng.latitude;
+              var longitude = latLng.longitude;
+              firstMarkerId = _addPosition(latitude, longitude);
+            },
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: _center,
+              zoom: 11.0,
+            ),
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
+            markers: Set<Marker>.of(markers.values), // YOUR MARKS IN MAP
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            // add your floating action button
+            child: FloatingActionButton(
+              onPressed: () => _fetchUserLocation(),
+              child: Icon(Icons.my_location),
+            ),
+          ),
+          Positioned(
+            top: 30.0,
+            right: 15.0,
+            left: 15.0,
+            child: Container(
+              height: 50.0,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.white),
+              child: TextField(
+                decoration: InputDecoration(
+                    hintText: 'Enter Address',
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
+                    suffixIcon: IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () => _fetchLocation(address),
+                        iconSize: 30.0)),
+                onChanged: (val) {
+                  setState(() {
+                    address = val;
+                  });
+                },
+              ),
+            ),
+          ),
+          Align(
+              alignment: Alignment.bottomCenter,
+              // add your floating action button
+              child: IconButton(
+                  onPressed: () => _retreiveLocation(),
+                  icon: Icon(Icons.done, color: Colors.blue, size: 30),
+                  padding: EdgeInsets.all(8.0),
+                  color: Colors.blue))
+        ],
+      ),
+    );
   }
 
   _retreiveLocation() async {
-    var longitude = markers[firstMarkerId].position.longitude;
-    var latitude = markers[firstMarkerId].position.latitude;
-    print(longitude);
-    print(latitude);
+    if (markers[firstMarkerId] == null) {
+      Fluttertoast.showToast(
+          msg: "Tap on the map in the location of the found Fido",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 3,
+          fontSize: 16.0,
+          textColor: Colors.red,
+          backgroundColor: Colors.white);
+    } else {
+      var longitude = markers[firstMarkerId].position.longitude;
+      var latitude = markers[firstMarkerId].position.latitude;
+      print(longitude);
+      print(latitude);
 
-    List<Placemark> placemarks =
-    await placemarkFromCoordinates(latitude, longitude);
-    String address =
-        "${placemarks[0].street} ${placemarks[0].name} ${placemarks[0].locality} ${placemarks[0].country}";
-    print(address);
-    Navigator.pop(context, address);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      String address =
+          "${placemarks[0].street} ${placemarks[0].name} ${placemarks[0].locality} ${placemarks[0].country}";
+      print(address);
+      Navigator.pop(context, address);
+    }
   }
 
   _fetchUserLocation() async {
