@@ -4,7 +4,9 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'home.dart';
+import 'myDataStructure.dart';
 import 'mapsUsage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 /**modifica
  *
@@ -45,14 +47,26 @@ class ReportPetPage extends StatefulWidget {
 }
 
 class _ReportPetPageState extends State<ReportPetPage> {
+  MyDataStructure myData;
   List<String> listOfPets = ["Cat", "Dog"];
   List<String> dogBreed = ["Pitbull", "Bulldog"];
   List<String> catBreed = ["American Shorthair", "Bombay"];
-  String typeOfPet = "Dog";
-  String breedOfPet = "Pitbull";
+  List<String> coatColour = ["White", "Black"];
+  List<String> sexPet = ["f", "m", "u"];
+  String typeOfPet;
+  String breedOfPet;
+  String colorOfCoat;
+  String sexOfPet;
+  TextEditingController controllerName;
+
   var _image;
+  String fileName;
   TextEditingController foundOn;
   TextEditingController broughtTo;
+  TextEditingController controllerContact;
+  bool isBroughtTo = false;
+  bool checkedValueYes = true;
+  bool checkedValueNo = false;
 
   void _updateBreedDropDown(String type, String firstBreed) {
     setState(() {
@@ -77,6 +91,11 @@ class _ReportPetPageState extends State<ReportPetPage> {
         source: ImageSource.gallery,
       );
     }
+    if (_image != null) {
+      setState(() {
+        fileName = 'fido.jpeg';
+      });
+    }
     // open the writer
     var writers = file.openWrite(
       mode: FileMode.write,
@@ -91,8 +110,21 @@ class _ReportPetPageState extends State<ReportPetPage> {
   @override
   void initState() {
     super.initState();
-    foundOn = new TextEditingController(text: widget.address);
-    print(widget.address);
+
+    myData = new MyDataStructure();
+    typeOfPet = "Dog";
+    breedOfPet = "Pitbull";
+    colorOfCoat = "White";
+    sexOfPet = "f";
+    controllerContact = new TextEditingController();
+    controllerName = new TextEditingController();
+    foundOn = new TextEditingController();
+    broughtTo = new TextEditingController();
+    myData.setBreedOfPet(breedOfPet);
+    myData.setTypeOfPet(typeOfPet);
+    myData.setColorOfCoat(colorOfCoat);
+    myData.setSex(sexOfPet);
+    fileName = ' ';
   }
 
   @override
@@ -115,7 +147,8 @@ class _ReportPetPageState extends State<ReportPetPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-            );},
+            );
+          },
         ),
       ),
       body: new Container(
@@ -137,11 +170,14 @@ class _ReportPetPageState extends State<ReportPetPage> {
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             _buildSelectionPart(),
             _buildNameTextFields(),
-            _buildLocation(),
+            _buildFoundOn(),
+            _buildRadioBox(),
+            if (isBroughtTo == true) _buildBroughtTo(),
+
             _buildAddPhotoPet(),
             _buildSendButton(),
 
@@ -157,19 +193,51 @@ class _ReportPetPageState extends State<ReportPetPage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.*/
     );
   }
-  Widget _buildSendButton(){
-    return Column(children:[
+
+  Widget _buildSendButton() {
+    return Column(children: [
       RaisedButton(
           child: Text("send"),
           textColor: Colors.white,
           color: Color(0xFF6200EE),
-          onPressed: () => Navigator.push(context,
-            MaterialPageRoute(builder: (context) => Home()),
-          )
-      ),
+          /* onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              ) */
+
+          onPressed: () {
+            myData.setName(controllerName.text);
+            myData.setBroughtLocation(broughtTo.text);
+            myData.setContactInfo(controllerContact.text);
+            if (foundOn.text == "") {
+              Fluttertoast.showToast(
+                  msg: "Found On field is obligatory",
+                  toastLength: Toast.LENGTH_LONG,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 3,
+                  fontSize: 16.0,
+                  textColor: Colors.red,
+                  backgroundColor: Colors.white);
+            } else if (_image == null) {
+              Fluttertoast.showToast(
+                  msg: "A photo of the FIDO is obligatory",
+                  toastLength: Toast.LENGTH_LONG,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 3,
+                  fontSize: 16.0,
+                  textColor: Colors.red,
+                  backgroundColor: Colors.white);
+            } else {
+              myData.setFoundLocation(foundOn.text);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              );
+              //TODO to implement the sending of
+            }
+          }),
     ]);
   }
-
 
   Widget _buildTypeOfPetDropDown(List<String> items) {
     return DropdownButton<String>(
@@ -227,18 +295,79 @@ class _ReportPetPageState extends State<ReportPetPage> {
 
   Widget _buildSelectionPart() {
     return Column(children: [
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Row(children: [
         Text("Type of Pet   "),
         _buildTypeOfPetDropDown(listOfPets),
       ]),
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Row(children: [
         Text("Pet Breed   "),
         if (typeOfPet == "Dog")
           _buildBreedDropDown(dogBreed)
         else
           _buildBreedDropDown(catBreed)
-      ])
+      ]),
+      Row(children: [
+        Text("Type of Pet   "),
+        _buildCoatDropDown(coatColour),
+      ]),
+      Row(children: [
+        Text("Type of Pet   "),
+        _buildSexDropDown(sexPet),
+      ]),
     ]);
+  }
+
+  Widget _buildCoatDropDown(List<String> items) {
+    return DropdownButton<String>(
+      value: colorOfCoat,
+      icon: Icon(Icons.arrow_downward),
+      iconSize: 24,
+      elevation: 16,
+      style: TextStyle(color: Colors.deepPurple),
+      underline: Container(
+        height: 2,
+        color: Colors.deepPurpleAccent,
+      ),
+      onChanged: (String newValue) {
+        setState(() {
+          colorOfCoat = newValue;
+          myData.setColorOfCoat(colorOfCoat);
+        });
+      },
+      items: items.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildSexDropDown(List<String> items) {
+    return DropdownButton<String>(
+      value: sexOfPet,
+      icon: Icon(Icons.arrow_downward),
+      iconSize: 24,
+      elevation: 16,
+      style: TextStyle(color: Colors.deepPurple),
+      underline: Container(
+        height: 2,
+        color: Colors.deepPurpleAccent,
+      ),
+      onChanged: (String newValue) {
+        setState(() {
+          sexOfPet = newValue;
+          //myData.setSex(sexOfPet);
+          myData.setSex(sexOfPet);
+        });
+      },
+      items: items.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
   }
 
   Widget _buildNameTextFields() {
@@ -247,16 +376,11 @@ class _ReportPetPageState extends State<ReportPetPage> {
         children: <Widget>[
           Text("Name        "),
           new Container(
-            height: MediaQuery.of(context).size.height * 0.08,
+            height: MediaQuery.of(context).size.height * 0.06,
             width: MediaQuery.of(context).size.width * 0.5,
             child: new TextField(
+              controller: controllerName,
               decoration: new InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.blueAccent,
-                  ),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
                 hintText: "Pet's name",
               ),
             ),
@@ -266,111 +390,174 @@ class _ReportPetPageState extends State<ReportPetPage> {
     );
   }
 
-  Widget _buildAddPhotoPet() {
-    return FloatingActionButton(
-      onPressed: () {
-        showDialog<void>(
-          context: context,
-          builder: (BuildContext context) {
-            return SimpleDialog(
-              title: Text("choose the source"),
-              children: <Widget>[
-                SimpleDialogOption(
-                  onPressed: () {
-                    getImage(true);
-                    Navigator.pop(context);
+  Widget _buildRadioBox() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text('Have you changed the position of the Fido?'),
+          ],
+        ),
+        Row(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: ListTile(
+                title: Text('No'),
+                leading: Radio(
+                  value: checkedValueNo,
+                  groupValue: isBroughtTo,
+                  onChanged: (value) {
+                    setState(() {
+                      isBroughtTo = value;
+                    });
                   },
-                  child: Icon(Icons.camera),
                 ),
-                SimpleDialogOption(
-                  child: Icon(Icons.storage),
-                  onPressed: () {
-                    getImage(false);
-                    Navigator.pop(context);
+              ),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: ListTile(
+                title: Text('Yes'),
+                leading: Radio(
+                  value: checkedValueYes,
+                  groupValue: isBroughtTo,
+                  onChanged: (value) {
+                    setState(() {
+                      isBroughtTo = value;
+                    });
                   },
-                )
-              ],
-            );
-          },
-        );
-      },
-      tooltip: 'Pick Image',
-      child: Icon(Icons.add_a_photo),
+                ),
+              ),
+            ),
+          ],
+        )
+      ],
     );
   }
 
-  Widget _buildLocation() {
+  Widget _buildAddPhotoPet() {
+    return Row(
+      children: [
+        Text(fileName),
+        FloatingActionButton(
+          onPressed: () {
+            showDialog<void>(
+              context: context,
+              builder: (BuildContext context) {
+                return SimpleDialog(
+                  title: Text("choose the source"),
+                  children: <Widget>[
+                    SimpleDialogOption(
+                      onPressed: () {
+                        getImage(true);
+                        Navigator.pop(context);
+                      },
+                      child: Icon(Icons.camera),
+                    ),
+                    SimpleDialogOption(
+                      child: Icon(Icons.storage),
+                      onPressed: () {
+                        getImage(false);
+                        Navigator.pop(context);
+                      },
+                    )
+                  ],
+                );
+              },
+            );
+          },
+          tooltip: 'Pick Image',
+          child: Icon(Icons.add_a_photo),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFoundOn() {
     return Column(children: [
       Row(
         children: [
           Text("Found on  "),
           Container(
-            height: MediaQuery.of(context).size.height * 0.08,
+            height: MediaQuery.of(context).size.height * 0.06,
             width: MediaQuery.of(context).size.width * 0.5,
             child: TextField(
               controller: foundOn,
               decoration: new InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.blueAccent,
-                  ),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
                 hintText: "Found Location ",
               ),
             ),
           ),
           IconButton(
             icon: Icon(Icons.map),
-
             onPressed: () async {
-
-            final result= await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>  MapsUsage(
-                    //replace by New Contact Screen
-                  ),
-                ));
-            setState(() {
-              foundOn.text=result;
-            });
+              final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MapsUsage(
+                        //replace by New Contact Screen
+                        ),
+                  ));
+              setState(() {
+                foundOn.text = result;
+                myData.setFoundLocation(result);
+              });
             },
-
-
           )
         ],
       ),
+    ]);
+  }
+
+  Widget _buildBroughtTo() {
+    return Column(children: [
       Row(
         children: [
           Text("Brough to  "),
           Container(
-            height: MediaQuery.of(context).size.height * 0.08,
+            height: MediaQuery.of(context).size.height * 0.06,
             width: MediaQuery.of(context).size.width * 0.5,
             child: TextField(
+              controller: broughtTo,
               decoration: new InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.blueAccent,
-                  ),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
                 hintText: "Brought to Location",
               ),
             ),
           ),
           IconButton(
             icon: Icon(Icons.map),
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => new MapsUsage(
-                    //replace by New Contact Screen
-                  ),
-                )),
+            onPressed: () async {
+              final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MapsUsage(
+                        //replace by New Contact Screen
+                        ),
+                  ));
+              setState(() {
+                broughtTo.text = result;
+                myData.setBroughtLocation(result);
+              });
+            },
           )
         ],
-      )
+      ),
+      Row(children: <Widget>[
+        Text("Contact     "),
+        new Container(
+          height: MediaQuery.of(context).size.height * 0.06,
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: new TextField(
+            controller: controllerContact,
+            decoration: new InputDecoration(
+              hintText: "Contact Information",
+            ),
+          ),
+        ),
+      ])
     ]);
   }
 }
