@@ -1,66 +1,39 @@
-import 'package:dimaWork/connectionHandler.dart';
-import 'package:dimaWork/home.dart';
-import 'package:dimaWork/mailReg.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_session/flutter_session.dart';
+import 'package:postgres/postgres.dart';
 
-import 'checker.dart';
-import 'error.dart';
+import 'Statistics.dart';
 
-
-/*
-* pagina di accesso all'account
-* azioni possibili:
-*
-*   -> indietro -> torna alla pagina di accesso dell'applicazione
-*   -> login -> user inserisce mail + psw  -> formato mail controllato daq checker + controllo sul db
-*            -> home page
-*   -> register with email -> carica la pagina per la registrazione
-* * */
-class MailLogIn extends StatelessWidget {
-  // This widget is the root of your application.
-  /***
-   * ATTENZIONE non ritornare material app da nessuna parte (oltre che nel main) -> crea un nuovo navigator!
-   * scaffold sempre top !
-   *
-   *
-   * per ora login solo con luke@gmail.com luke
-   ***/
+class MailReg extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MailLogInPage(title: 'LOGIN');
+    return new MaterialApp(
+      title: 'FidoWasHere',
+      theme: new ThemeData(primarySwatch: Colors.blue),
+      home: new RegPage(),
+    );
   }
 }
 
-class MailLogInPage extends StatefulWidget {
-  MailLogInPage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
+class RegPage extends StatefulWidget {
   @override
-  _MailLogInPageState createState() => _MailLogInPageState();
+  State<StatefulWidget> createState() => new _RegPageState();
 }
 
-class _MailLogInPageState extends State<MailLogInPage> {
-  Checker checker = new Checker();
-  ConnectionHandler connectionHandler= new ConnectionHandler();
+// Used for controlling whether the user is loggin or creating an account
+
+class _RegPageState extends State<RegPage> {
   final TextEditingController _emailFilter = new TextEditingController();
   final TextEditingController _passwordFilter = new TextEditingController();
+  final TextEditingController _repeatPasswordFilter =
+      new TextEditingController();
   String _email = "";
   String _password = "";
+  String _repeatPassword = "";
 
-  _MailLogInPageState() {
+  _RegPageState() {
     _emailFilter.addListener(_emailListen);
     _passwordFilter.addListener(_passwordListen);
+    _repeatPasswordFilter.addListener(_repeatPasswordListen);
   }
 
   void _emailListen() {
@@ -79,59 +52,36 @@ class _MailLogInPageState extends State<MailLogInPage> {
     }
   }
 
+  void _repeatPasswordListen() {
+    if (_repeatPasswordFilter.text.isEmpty) {
+      _repeatPassword = "";
+    } else {
+      _repeatPassword = _repeatPasswordFilter.text;
+    }
+  }
+
+  // Swap in between our two forms, registering and logging in
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('LOGIN'),
-
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            );},
-        ),
-        
-      ),
+    return new Scaffold(
+      appBar: _buildBar(context),
       body: new Container(
         padding: EdgeInsets.all(16.0),
-
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: new Column(
           children: <Widget>[
-            /* Text(
-              'Email:',
-            ),
-            
-            Text(
-              'Password',
-            ), */
             _buildTextFields(),
-            mailLogButton(context),
-            registerButton(context),
+            _buildButtons(),
           ],
         ),
       ),
-      // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Widget _buildBar(BuildContext context) {
+    return new AppBar(
+      title: new Text("FidoWasHere"),
+      centerTitle: true,
     );
   }
 
@@ -152,75 +102,70 @@ class _MailLogInPageState extends State<MailLogInPage> {
               obscureText: true,
             ),
           ),
+          new Container(
+            child: new TextField(
+              controller: _repeatPasswordFilter,
+              decoration: new InputDecoration(labelText: 'Repeat Password'),
+              obscureText: true,
+            ),
+          )
         ],
       ),
     );
   }
 
-  RaisedButton mailLogButton(BuildContext context) {
-    return RaisedButton(
-      textColor: Colors.white,
-      color: Color(0xFF6200EE),
-      onPressed: () {
-        _logInPressed(context);
-      },
-      child: Text('Log In'),
+  Widget _buildButtons() {
+    return new Container(
+      child: new Column(
+        children: <Widget>[
+          new RaisedButton(
+            child: new Text('Register'),
+            onPressed: _registerPressed,
+          ),
+        ],
+      ),
     );
   }
 
-  Future<void> _logInPressed(BuildContext context) async {
-    print(
-        'The user wants enter to his existing account with $_email and $_password');
-    if (_email.isEmpty || _password.isEmpty) {
+  Future<void> _registerPressed() async {
+    print('The user wants to create an account with $_email and $_password');
+    if (_email.isEmpty || _password.isEmpty || _repeatPassword.isEmpty) {
       showDialog(
           context: context,
           child: new AlertDialog(
             title: new Text('please fill all the required fields'),
           ));
-    }else if(checker.emailValidity(_email)==false){
+    } else if (_repeatPassword != _password) {
       showDialog(
           context: context,
           child: new AlertDialog(
-            title: new Text('wrong mail format'),
+            title: new Text(
+                'the fields repeat password and password must be equal'),
           ));
-    }
-    else { //todo connection
-      var connection = connectionHandler.createConnection();
+    } else {
+      var connection =
+          PostgreSQLConnection(
+              "ec2-52-31-233-101.eu-west-1.compute.amazonaws.com",
+              5432,
+              "d546e3qrqkclh8",
+              username: "talusgwyiskbzs",
+              password:
+                  "12b36d512f0f4a6f25f266b6d30bc19851f00e50c76d03f3d1fc5f1d3f1d0530",
+              timeoutInSeconds: 30,
+              queryTimeoutInSeconds: 30,
+              timeZone: 'UTC',
+              useSSL: true);
       await connection.open();
-      List<List<dynamic>> results = await connection.query("SELECT * FROM public.\"User\" WHERE  mail= @amail AND psw=@apsw", substitutionValues: {
-        "amail" : _email,"apsw" :_password
-      });
+
+      //await connection.query("insert into user (idUser,mail,psw,fbAccount) values (@id, @email, @psw, @fb)", substitutionValues: {"id" : 1, "mail" : _email, "psw": _password, "fb" : ""});
+
+      await connection.query("select * from user");
       connection.close();
-
-
-
-      if (results.length == 0) {
-        runApp(Error());
-      } else {
-        var session = FlutterSession();
-        await session.set("user", _email);
-        
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Home()),
-        ); 
-      }
+      runApp(Statistics());
     }
-  }
-
-  RaisedButton registerButton (BuildContext context){
-    return RaisedButton(
-      textColor: Colors.white,
-      color: Color(0xFF6200EE),
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MailReg()),
-        );
-      },
-      child: Text('Register with mail'),
-
-
-    );
   }
 }
+
+// These functions can self contain any user auth logic required, they all have access to _email and _password
+
+//https://pub.dev/packages/postgres per info connessione
