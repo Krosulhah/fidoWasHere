@@ -58,7 +58,7 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
   List<String> dogBreed = ["Pitbull", "Bulldog"];
   List<String> catBreed = ["American Shorthair", "Bombay"];
   List<String> coatColour = ["White", "Black"];
-  List<String> sexPet = ["f", "m"];
+  List<String> sexPet = ["f", "m", "u"];
   String typeOfPet = "Dog";
   String breedOfPet = "Pitbull";
   String coatColorPet = "White";
@@ -240,22 +240,22 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
 
   Widget _buildSelectionPart() {
     return Column(children: [
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Row(children: [
         Text("Type of Pet "),
         _buildTypeOfPetDropDown(listOfPets),
       ]),
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Row(children: [
         Text("Pet Breed   "),
         if (typeOfPet == "Dog")
           _buildBreedDropDown(dogBreed)
         else
           _buildBreedDropDown(catBreed)
       ]),
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Row(children: [
         Text("Colour Coat "),
         _buildCoatDropDown(coatColour),
       ]),
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Row(children: [
         Text("Sex         "),
         _buildSexDropDown(sexPet),
       ])
@@ -272,12 +272,6 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
             width: MediaQuery.of(context).size.width * 0.5,
             child: new TextField(
               decoration: new InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.blueAccent,
-                  ),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
                 hintText: "Pet's name",
               ),
             ),
