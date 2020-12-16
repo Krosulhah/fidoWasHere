@@ -31,6 +31,8 @@ dependencies:
   flutter_session: ^0.0.7
   image_picker:
   path_provider:
+  font_awesome_flutter:
+ 
 
 
 
