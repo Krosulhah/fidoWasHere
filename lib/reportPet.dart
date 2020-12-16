@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'home.dart';
-import 'myDataStructure.dart';
+import 'Model/reportPetData.dart';
 import 'mapsUsage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -47,7 +47,7 @@ class ReportPetPage extends StatefulWidget {
 }
 
 class _ReportPetPageState extends State<ReportPetPage> {
-  MyDataStructure myData;
+  ReportPetData myData;
   List<String> listOfPets = ["Cat", "Dog"];
   List<String> dogBreed = ["Pitbull", "Bulldog"];
   List<String> catBreed = ["American Shorthair", "Bombay"];
@@ -111,7 +111,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
   void initState() {
     super.initState();
 
-    myData = new MyDataStructure();
+    myData = new ReportPetData();
     typeOfPet = "Dog";
     breedOfPet = "Pitbull";
     colorOfCoat = "White";
