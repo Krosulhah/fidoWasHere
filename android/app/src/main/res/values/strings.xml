@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">fidowashere</string>
-    <string name="facebook_app_id">847724605985231</string>
-    <string name="fb_login_protocol_scheme">fb847724605985231</string>
-
+<string name = "app_name"> dimaWork </string>
+<string name="facebook_app_id">836932703824977</string>
+<string name="fb_login_protocol_scheme">fb836932703824977</string>
 </resources>
