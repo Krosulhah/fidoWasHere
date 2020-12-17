@@ -32,6 +32,7 @@ dependencies:
   image_picker:
   path_provider:
   font_awesome_flutter:
+  flutter_facebook_login:
  
 
 
