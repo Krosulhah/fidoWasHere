@@ -1,8 +1,10 @@
+import 'package:dimaWork/Model/breed.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'Controllers/ReportController.dart';
 import 'home.dart';
 import 'Model/reportPetData.dart';
 import 'mapsUsage.dart';
@@ -48,6 +50,12 @@ class ReportPetPage extends StatefulWidget {
 }
 
 class _ReportPetPageState extends State<ReportPetPage> {
+  ReportController reportController=new ReportController();
+
+
+
+
+
   ReportPetData myData;
   List<String> listOfPets = ["Cat", "Dog"];
   List<String> dogBreed = ["Pitbull", "Bulldog"];
@@ -126,10 +134,13 @@ class _ReportPetPageState extends State<ReportPetPage> {
     myData.setColorOfCoat(colorOfCoat);
     myData.setSex(sexOfPet);
     fileName = ' ';
+
   }
 
   @override
   Widget build(BuildContext context) {
+
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -207,6 +218,8 @@ class _ReportPetPageState extends State<ReportPetPage> {
               ) */
 
           onPressed: () async {
+            List<Breed> dogsBreed= await reportController.retrievePossibleBreed('dog');//todo rimuovi è solo per una prova
+            for(Breed b in dogsBreed){print(b.breedName);}
             myData.setName(controllerName.text);
             myData.setBroughtLocation(broughtTo.text);
             myData.setContactInfo(controllerContact.text);

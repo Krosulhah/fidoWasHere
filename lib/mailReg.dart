@@ -1,10 +1,5 @@
-import 'package:dimaWork/connectionHandler.dart';
+import 'package:dimaWork/Controllers/MailRegLoginController.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_session/flutter_session.dart';
-import 'checker.dart';
-import 'home.dart';
-
-
 
 /*
 * pagina per la registrazione di un'account
@@ -40,8 +35,9 @@ class _RegPageState extends State<RegPage> {
   String _email = "";
   String _password = "";
   String _repeatPassword = "";
-  Checker checker = new Checker();
-  ConnectionHandler connectionHandler= new ConnectionHandler();
+
+  MailLoginController regController = new MailLoginController();
+
   _RegPageState() {
     _emailFilter.addListener(_emailListen);
     _passwordFilter.addListener(_passwordListen);
@@ -150,7 +146,18 @@ class _RegPageState extends State<RegPage> {
           children: <Widget>[
             new RaisedButton(
               child: new Text('Register'),
-              onPressed: _registerPressed,
+              onPressed:
+                  () async {
+                String result=await regController.registerPressed(_email,_password,_repeatPassword,context); // runApp (MailReg());
+                if (result!=null&&result.isNotEmpty)
+                {
+                  showDialog(
+                      context: context,
+                      child: new AlertDialog(
+                        title: new Text(result),
+                      ));
+                }
+              },
             ),
 
           ],
@@ -159,65 +166,6 @@ class _RegPageState extends State<RegPage> {
     }
 
 
-
-
-  Future<void> _registerPressed () async {
-   print('The user wants to create an accoutn with $_email and $_password');
-    if(_email.isEmpty||_password.isEmpty||_repeatPassword.isEmpty){
-
-      showDialog(context: context,
-          child: new AlertDialog(
-            title: new Text('please fill all the required fields'),
-          ));
-    }else if(checker.emailValidity(_email)==false){
-      showDialog(context: context,
-          child: new AlertDialog(
-            title: new Text('WRONG MAIL FORMAT'),
-          ));
-    }
-    else if(_repeatPassword!=_password){
-      showDialog(context: context,
-          child: new AlertDialog(
-            title: new Text('the fields repeat password and password must be equal'),
-          ));
-
-    }
-    else{
-      var connection = connectionHandler.createConnection();
-      await connection.open();
-
-      //await connection.query("insert into user (idUser,mail,psw,fbAccount) values (@id, @email, @psw, @fb)", substitutionValues: {"id" : 1, "mail" : _email, "psw": _password, "fb" : ""});
-
-      List<List<dynamic>> results = await connection.query("SELECT * FROM public.\"User\" WHERE  mail= @amail ", substitutionValues: {
-        "amail" : _email
-      });
-      if(results.isEmpty)
-        {
-          await connection.query("INSERT INTO public.\"User\" (mail,psw) VALUES (@amail,@apsw)", substitutionValues: {
-            "amail" : _email,"apsw":_password
-          });
-
-          var session = FlutterSession();
-          await session.set("user", _email);
-
-        }
-      else{
-      connection.close();
- showDialog(context: context,
-          child: new AlertDialog(
-            title: new Text('mail is already used'),
-          ));}
-      connection.close();
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Home()),
-      );
-
-    }
-
-
-
-  }
   }
 
   // These functions can self contain any user auth logic required, they all have access to _email and _password

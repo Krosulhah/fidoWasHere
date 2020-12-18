@@ -1,10 +1,10 @@
-import 'package:dimaWork/connectionHandler.dart';
+
 import 'package:dimaWork/mailReg.dart';
 import 'package:flutter/material.dart';
-import 'Controllers/MailLoginController.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'Controllers/MailRegLoginController.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'checker.dart';
+
 
 /*
 * pagina di accesso all'account

@@ -1,3 +1,4 @@
+import 'package:dimaWork/checkers/loginValidityChecker.dart';
 import 'package:flutter/services.dart';
 
 import 'Statistics.dart';
@@ -48,7 +49,9 @@ class Home extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
+
   HomePage({Key key, this.title}) : super(key: key);
+
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -66,6 +69,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+
+
   RaisedButton lookForFidoButton() {
     return RaisedButton(
       textColor: Colors.white,
@@ -113,6 +119,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    /*** controllo che l'utente abbia fatto il login altrimenti schermata di errore*/
+    LoginValidityChecker loginChecker=new LoginValidityChecker();
+    loginChecker.isLoggedIn(context);
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //

@@ -23,9 +23,7 @@ class FBcontroller{
 
           userProfile = profile;
           var session = FlutterSession();
-          await session.set("user",userProfile['mail']);
-          print(userProfile['mail']);
-
+          await session.set("user",userProfile['email']);
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => Home()),
