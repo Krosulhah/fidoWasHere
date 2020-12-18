@@ -1,7 +1,8 @@
-import 'package:dimaWork/home.dart';
+import 'package:dimaWork/Controllers/FBcontroller.dart';
 import 'package:dimaWork/mailLogin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 /*
 * pagina di accesso all'applicazione
 * azioni possibili:
@@ -17,87 +18,111 @@ void main() {
   runApp(MyHomePage());
 }
 
+
+
+
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+
     return MaterialApp(
         title: 'FidoWasHere',
 
-        // This method is rerun every time setState is called, for instance as done
-        // by the _incrementCounter method above.
-        //
-        // The Flutter framework has been optimized to make rerunning build methods
-        // fast, so that you can just rebuild anything that needs updating rather
-        // than having to individually change instances of widgets.
-        home: new HomePage());
-  }
-}
+    // This method is rerun every time setState is called, for instance as done
+    // by the _incrementCounter method above.
+    //
+    // The Flutter framework has been optimized to make rerunning build methods
+    // fast, so that you can just rebuild anything that needs updating rather
+    // than having to individually change instances of widgets.
+    home: new HomePage());}}
 
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: AppBar(
-          title: Text('FIDO WAS HERE'),
-          leading: Builder(
-            builder: (BuildContext context) {
-              return IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  //Navigator.pop(context);
-                  SystemNavigator.pop();
-                },
-              );
-            },
-          ),
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
+    class HomePage extends StatelessWidget{
+      @override
+      Widget build(BuildContext context) {
+  return new Scaffold(
+      appBar: AppBar(
+        title: Text( 'FIDO WAS HERE'),
+        leading: Builder(
+        builder: (BuildContext context) {
+      return IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          //Navigator.pop(context);
+          SystemNavigator.pop();
+          },
+      );},
         ),
-        body: Container(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+
+      ),
+
+        body:
+        Container(
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: new AssetImage('assets/images/footprint.jpeg'),
-                  fit: BoxFit.cover)),
-          child: Column(
+                  image: new AssetImage('assets/images/footprint.jpeg'), fit: BoxFit.cover)),
+          child:
+          Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.
+            spaceEvenly,
             children: <Widget>[
-              Text(
-                'FidoWasHere',
-              ), //todo aggiungi widget con nome app
+              Text('FidoWasHere',),  //todo aggiungi widget con nome app
 
-              Row(
-                //buttons row
+
+              Row( //buttons row
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
 
-                children: [mailButton(context), fbButton(context)],
+                children: [mailButton(context),fbButton(context)],
+
+
               ),
             ],
           ),
-        ));
+        )
+    );
+
   }
 }
 
-RaisedButton mailButton(BuildContext context) {
-  return RaisedButton(
-    textColor: Colors.white,
-    color: Color(0xFF6200EE),
-    onPressed: () {
-      Navigator.of(context).push(new MaterialPageRoute(
-          builder: (BuildContext context) => new MailLogIn()));
-    },
-    child: Text('Access with mail'),
-  );
-}
+  RaisedButton mailButton (BuildContext context){
+    return RaisedButton(
+      textColor: Colors.white,
+      color: Color(0xFF6200EE),
+        onPressed: () {
+          Navigator.of(context).push(new MaterialPageRoute(builder:
+              (BuildContext context) => new MailLogIn()));
 
-RaisedButton fbButton(BuildContext context) {
-  return RaisedButton(
-    textColor: Colors.white,
-    color: Color(0xFF6200EE),
-    onPressed: () {
-      //TODO login with FB
-    },
-    child: Text('Access with FB'),
-  );
-}
+        },
+      child: Text('Access with mail'),
+
+
+    );
+  }
+
+  RaisedButton fbButton (BuildContext context) {
+    FBcontroller fbcontroller = new FBcontroller();
+    return RaisedButton(
+      textColor: Colors.white,
+      color: Color(0xFF6200EE),
+      onPressed: () async {
+        String result = await fbcontroller.fbLogIn(context);
+        if(result!=null&&result.isNotEmpty)
+          {
+            showDialog(
+                context: context,
+                child: new AlertDialog(
+                  title: new Text(result),
+                ));
+          }
+      },
+      child: Text('Access with FB'),
+    );
+
+
+
+  }
+

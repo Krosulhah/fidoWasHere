@@ -1,15 +1,9 @@
 import 'package:dimaWork/connectionHandler.dart';
-import 'package:dimaWork/Home.dart';
 import 'package:dimaWork/mailReg.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_session/flutter_session.dart';
-import 'package:postgres/postgres.dart';
-import 'error.dart';
+import 'Controllers/MailLoginController.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'checker.dart';
 
 /*
@@ -55,17 +49,16 @@ class MailLogInPage extends StatefulWidget {
 }
 
 class _MailLogInPageState extends State<MailLogInPage> {
-  Checker checker = new Checker();
-  ConnectionHandler connectionHandler = new ConnectionHandler();
+  MailLoginController loginController = new MailLoginController();
   bool isLoggedIn = false;
-  Map userProfile;
+
   String username;
   final TextEditingController _emailFilter = new TextEditingController();
   final TextEditingController _passwordFilter = new TextEditingController();
   String _email = "";
   String _password = "";
 
-  final facebookLogin = FacebookLogin();
+
 
   _MailLogInPageState() {
     _emailFilter.addListener(_emailListen);
@@ -136,7 +129,6 @@ class _MailLogInPageState extends State<MailLogInPage> {
             ), */
             _buildTextFields(),
             _mailLogButton(context),
-            _buildFbButton(),
             registerButton(context),
           ],
         ),
@@ -171,8 +163,16 @@ class _MailLogInPageState extends State<MailLogInPage> {
     return RaisedButton(
         textColor: Colors.white,
         color: Colors.redAccent,
-        onPressed: () {
-          _logInPressed(context); // runApp (MailReg());
+        onPressed: () async {
+          String result=await loginController.logInPressed(context,_email,_password); // runApp (MailReg());
+          if (result!=null&&result.isNotEmpty)
+            {
+              showDialog(
+                  context: context,
+                  child: new AlertDialog(
+                    title: new Text(result),
+                  ));
+            }
         },
         child: Container(
             height: MediaQuery.of(context).size.height * 0.05,
@@ -186,93 +186,6 @@ class _MailLogInPageState extends State<MailLogInPage> {
             )));
   }
 
-  Widget _buildFbButton() {
-    return RaisedButton(
-        textColor: Colors.white,
-        color: Colors.blue,
-        onPressed: () {
-          _fbLogIn(); // runApp (MailReg());
-        },
-        child: Container(
-            height: MediaQuery.of(context).size.height * 0.05,
-            width: MediaQuery.of(context).size.width * 0.5,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                FaIcon(FontAwesomeIcons.facebook),
-                Text('Log in with Facebook'),
-              ],
-            )));
-  }
-
-  _fbLogIn() async {
-    final result = await facebookLogin.logIn(['email']);
-    switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-        final token = result.accessToken.token;
-        final graphResponse = await http.get(
-            "https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=$token");
-        final profile = jsonDecode(graphResponse.body);
-        print(profile);
-        setState(() {
-          userProfile = profile;
-          username = userProfile['name'];
-          print(username);
-          isLoggedIn = true;
-        });
-        break;
-
-      case FacebookLoginStatus.cancelledByUser:
-        setState(() {
-          isLoggedIn = false;
-        });
-        break;
-
-      case FacebookLoginStatus.error:
-        setState(() {
-          isLoggedIn = false;
-        });
-        break;
-    }
-  }
-
-  Future<void> _logInPressed(BuildContext context) async {
-    print(
-        'The user wants enter to his existing account with $_email and $_password');
-    if (_email.isEmpty || _password.isEmpty) {
-      showDialog(
-          context: context,
-          child: new AlertDialog(
-            title: new Text('please fill all the required fields'),
-          ));
-    } else if (checker.emailValidity(_email) == false) {
-      showDialog(
-          context: context,
-          child: new AlertDialog(
-            title: new Text('wrong mail format'),
-          ));
-    } else {
-      //todo connection
-      var connection = connectionHandler.createConnection();
-      await connection.open();
-      List<List<dynamic>> results = await connection.query(
-          "SELECT * FROM public.\"User\" WHERE  mail= @amail AND psw=@apsw",
-          substitutionValues: {"amail": _email, "apsw": _password});
-      connection.close();
-
-      if (results.length == 0) {
-        runApp(Error());
-      } else {
-        var session = FlutterSession();
-        await session.set("user", _email);
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Home()),
-        );
-      }
-    }
-  }
 
   RaisedButton registerButton(BuildContext context) {
     return RaisedButton(
