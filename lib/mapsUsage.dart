@@ -13,6 +13,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapsUsage extends StatefulWidget {
+  String userAddress;
+
+  MapsUsage({this.userAddress});
+
   @override
   _MapsUsageState createState() => _MapsUsageState();
 }
@@ -31,6 +35,7 @@ class _MapsUsageState extends State<MapsUsage> {
     });
 
     _fetchUserLocation();
+    _fetchMarkerUserAddress();
     // _add();
   }
 
@@ -165,6 +170,40 @@ class _MapsUsageState extends State<MapsUsage> {
           "${placemarks[0].street} ${placemarks[0].name} ${placemarks[0].locality} ${placemarks[0].country}";
       print(address);
       Navigator.pop(context, address);
+    }
+  }
+
+  _fetchMarkerUserAddress() async {
+    var latitude;
+    var longitude;
+    String address = widget.userAddress;
+    if (address != "") {
+      try {
+        List<Location> locations = await locationFromAddress(address);
+        latitude = locations[0].latitude;
+        longitude = locations[0].longitude;
+      } catch (e) {
+        print(e);
+        Fluttertoast.showToast(
+            msg: "This address does not exit. Try putting another!",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 3,
+            fontSize: 16.0,
+            textColor: Colors.red,
+            backgroundColor: Colors.white);
+      }
+
+      firstMarkerId = _addPosition(latitude, longitude);
+    } else if (address == "") {
+      Fluttertoast.showToast(
+          msg: "Tap on the map to choose the location!",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 3,
+          fontSize: 16.0,
+          textColor: Colors.green,
+          backgroundColor: Colors.white);
     }
   }
 

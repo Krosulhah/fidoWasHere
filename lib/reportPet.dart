@@ -7,6 +7,7 @@ import 'home.dart';
 import 'Model/reportPetData.dart';
 import 'mapsUsage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocoding/geocoding.dart';
 
 /**modifica
  *
@@ -205,19 +206,13 @@ class _ReportPetPageState extends State<ReportPetPage> {
                 MaterialPageRoute(builder: (context) => Home()),
               ) */
 
-          onPressed: () {
+          onPressed: () async {
             myData.setName(controllerName.text);
             myData.setBroughtLocation(broughtTo.text);
             myData.setContactInfo(controllerContact.text);
-            if (foundOn.text == "") {
-              Fluttertoast.showToast(
-                  msg: "Found On field is obligatory",
-                  toastLength: Toast.LENGTH_LONG,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 3,
-                  fontSize: 16.0,
-                  textColor: Colors.red,
-                  backgroundColor: Colors.white);
+            bool checkUserAddress = await _checkUserAddress(foundOn.text);
+            if (checkUserAddress == false) {
+              return;
             } else if (_image == null) {
               Fluttertoast.showToast(
                   msg: "A photo of the FIDO is obligatory",
@@ -476,6 +471,43 @@ class _ReportPetPageState extends State<ReportPetPage> {
     );
   }
 
+  Future<bool> _checkUserAddress(String address) async {
+    var latitude;
+    var longitude;
+    if (address != "") {
+      try {
+        List<Location> locations = await locationFromAddress(address);
+        latitude = locations[0].latitude;
+        longitude = locations[0].longitude;
+      } catch (e) {
+        print(e);
+        Fluttertoast.showToast(
+            msg: "This address does not exit. Try putting another!",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 3,
+            fontSize: 16.0,
+            textColor: Colors.red,
+            backgroundColor: Colors.white);
+        return false;
+      }
+
+      return true;
+    } else if (address == "") {
+      Fluttertoast.showToast(
+          msg:
+              "Tap on the map icon to choose the location, or write a regular address!",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 3,
+          fontSize: 16.0,
+          textColor: Colors.green,
+          backgroundColor: Colors.white);
+      return false;
+    }
+    return false;
+  }
+
   Widget _buildFoundOn() {
     return Column(children: [
       Row(
@@ -487,7 +519,8 @@ class _ReportPetPageState extends State<ReportPetPage> {
             child: TextField(
               controller: foundOn,
               decoration: new InputDecoration(
-                hintText: "Found Location ",
+                hintText:
+                    "Example: Via street name, number, city, province, state",
               ),
             ),
           ),
@@ -498,8 +531,9 @@ class _ReportPetPageState extends State<ReportPetPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MapsUsage(
-                        //replace by New Contact Screen
-                        ),
+                      userAddress: foundOn.text,
+                      //replace by New Contact Screen
+                    ),
                   ));
               setState(() {
                 foundOn.text = result;
@@ -523,7 +557,8 @@ class _ReportPetPageState extends State<ReportPetPage> {
             child: TextField(
               controller: broughtTo,
               decoration: new InputDecoration(
-                hintText: "Brought to Location",
+                hintText:
+                    "Example: Via street name, number, city, province, state",
               ),
             ),
           ),
@@ -534,8 +569,9 @@ class _ReportPetPageState extends State<ReportPetPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MapsUsage(
-                        //replace by New Contact Screen
-                        ),
+                      userAddress: broughtTo.text,
+                      //replace by New Contact Screen
+                    ),
                   ));
               setState(() {
                 broughtTo.text = result;
