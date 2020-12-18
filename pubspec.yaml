@@ -33,7 +33,7 @@ dependencies:
   path_provider:
   font_awesome_flutter:
   flutter_facebook_login:
- 
+  fluttertoast:
 
 
 
