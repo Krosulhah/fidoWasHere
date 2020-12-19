@@ -1,4 +1,3 @@
-
 import 'package:dimaWork/checkers/loginValidityChecker.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -47,9 +46,10 @@ class _ReportPetPageState extends State<ReportPetPage> {
 
   ReportController reportController=new ReportController();
   List<String> availableBreeds=new List<String>();
-  List<String> coatColour = ["White", "Black"];
+  List<String> coatColour=  ["White", "Black", "Orange", "Red", "Cream", "Mixed"];
   List<String> sexPet = ["f", "m", "u"];
   List<Color> _color ;
+  List<Color> _colorSex ;
 
   String typeOfPet;
   String breedOfPet;
@@ -63,8 +63,8 @@ class _ReportPetPageState extends State<ReportPetPage> {
   TextEditingController broughtTo;
   TextEditingController controllerContact;
   bool isBroughtTo = false;
-  bool checkedValueYes = true;
-  bool checkedValueNo = false;
+  bool checkedValueNo = true;
+  bool checkedValueYes = false;
 
   void _updateBreedDropDown(String type, String firstBreed) {
     setState(() {
@@ -77,12 +77,11 @@ class _ReportPetPageState extends State<ReportPetPage> {
   @override
   void initState() {
     super.initState();
-
-    availableBreeds=[" "];
-    typeOfPet = "";
-    breedOfPet = " ";
-    colorOfCoat = "";
-    sexOfPet = "u";
+    availableBreeds=["UNKNOWN"];
+    typeOfPet = " ";
+    breedOfPet = "UNKNOWN";
+    colorOfCoat = "Mixed";
+    sexOfPet = " ";
     controllerContact = new TextEditingController();
     controllerName = new TextEditingController();
     foundOn = new TextEditingController();
@@ -90,6 +89,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
 
     fileName = ' ';
     _color=[Colors.black, Colors.black];
+    _colorSex=[Colors.black, Colors.black,Colors.black];
     print(availableBreeds);
 
 
@@ -122,7 +122,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
           },
         ),
       ),
-      body: new Container(
+      body:SingleChildScrollView( child: Container(
         padding: EdgeInsets.all(16.0),
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
@@ -130,19 +130,21 @@ class _ReportPetPageState extends State<ReportPetPage> {
 
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+            Row( mainAxisAlignment: MainAxisAlignment.center,
+            children:[Text("Select Fido's type"),]),
 
             _buildTypeOfPetDropDown(),
             _buildBreedDropDown(availableBreeds),
+            _buildSexDropDown(sexPet),
 
+            _buildCoatDropDown(coatColour),
+            _buildNameTextFields(),
+            _buildFoundOn(),
+            _buildRadioBox(),
+            if (isBroughtTo == true) _buildBroughtTo(),
 
-
-            //_buildNameTextFields(),
-            //_buildFoundOn(),
-            //_buildRadioBox(),
-            //if (isBroughtTo == true) _buildBroughtTo(),
-
-            //_buildAddPhotoPet(),
-            //_buildSendButton(),
+            _buildAddPhotoPet(),
+            _buildSendButton(),
 
             // This trailing comma makes auto-formatting nicer for build methods.
           ],
@@ -154,7 +156,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.*/
-    );
+    ));
   }
 
   Widget _buildTypeOfPetDropDown()  {
@@ -180,54 +182,54 @@ class _ReportPetPageState extends State<ReportPetPage> {
 
 
   Widget _buildSelectType(String img,String type,int element){
-  return Material(
+    return Material(
 
 
-      child: InkWell(
-          onTap:  () {
+        child: InkWell(
+            onTap:  () {
               setState(()  {
                 updateBreedList(type,element);
 
               });
 
 
-          },
+            },
 
-          child:Container(
-            height: MediaQuery.of(context).size.height * 0.2,
-            width: MediaQuery.of(context).size.width * 0.3,
-            padding: EdgeInsets.all(20),
-            margin: EdgeInsets.all(20),
+            child:Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              width: MediaQuery.of(context).size.width * 0.3,
+              padding: EdgeInsets.all(20),
+              margin: EdgeInsets.all(20),
 
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              border: Border.all(
-                color: _color[element],
-                width: 10,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(
+                  color: _color[element],
+                  width: 10,
+                ),
               ),
-            ),
-            child: FittedBox(child:Image(image:AssetImage(img),
-              fit: BoxFit.fill,
-            )),
+              child: FittedBox(child:Image(image:AssetImage(img),
+                fit: BoxFit.fill,
+              )),
 
-          ) )
+            ) )
 
-  );
-}
+    );
+  }
 
   updateBreedList(String type,int element)  async {
-     reportController.updateBreeds(type).then((rows) {
+    reportController.updateBreeds(type).then((rows) {
 
-     setState(() {
-       availableBreeds = rows;
-       _color.setAll(0,[Colors.black,Colors.black]);
-       _color[element]=Colors.green;
-       typeOfPet=type;
-       _updateBreedDropDown(type, availableBreeds.elementAt(0));
+      setState(() {
+        availableBreeds = rows;
+        _color.setAll(0,[Colors.black,Colors.black]);
+        _color[element]=Colors.green;
+        typeOfPet=type;
+        _updateBreedDropDown(type, availableBreeds.elementAt(0));
 
 
-     });
-   });}
+      });
+    });}
 
   Widget _buildBreedDropDown(List<String> items) {
     print(availableBreeds);
@@ -284,7 +286,65 @@ class _ReportPetPageState extends State<ReportPetPage> {
     );
   }
 
+
+  Widget buildSex(String type, int element,String img){
+    return Material(
+
+
+        child: InkWell(
+            onTap:  () {
+              setState(()  {
+
+                sexOfPet=type;
+                _colorSex.setAll(0,[Colors.black,Colors.black,Colors.black]);
+                _colorSex[element]=Colors.green;
+
+              });
+
+
+            },
+
+            child:Container(
+              height: MediaQuery.of(context).size.height * 0.1,
+              width: MediaQuery.of(context).size.width * 0.18,
+              padding: EdgeInsets.all(20),
+              margin: EdgeInsets.all(20),
+
+
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(
+                  color: _colorSex[element],
+                  width: 5,
+                ),
+              ),
+
+              child: FittedBox(child:Image(image:AssetImage(img),
+                fit: BoxFit.fill,
+              )),
+
+            ) )
+
+    );
+  }
+
+
+
+
+
   Widget _buildSexDropDown(List<String> items) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        buildSex(items[0],0,'assets/images/f.png'),
+        buildSex(items[1],1,'assets/images/m.png'),
+        buildSex(items[2],2,'assets/images/u.png'),
+        ],
+
+    );
+
+
+    /*
     return DropdownButton<String>(
       value: sexOfPet,
       icon: Icon(Icons.arrow_downward),
@@ -308,7 +368,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
           child: Text(value),
         );
       }).toList(),
-    );
+    );*/
   }
 
   Widget _buildNameTextFields() {
@@ -333,10 +393,13 @@ class _ReportPetPageState extends State<ReportPetPage> {
 
   Widget _buildRadioBox() {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Row(
+
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Have you changed the position of the Fido?'),
+            Text('Do you take it home?'),
           ],
         ),
         Row(
@@ -345,9 +408,9 @@ class _ReportPetPageState extends State<ReportPetPage> {
               height: MediaQuery.of(context).size.height * 0.05,
               width: MediaQuery.of(context).size.width * 0.4,
               child: ListTile(
-                title: Text('No'),
+                title: Text('Yes'),
                 leading: Radio(
-                  value: checkedValueNo,
+                  value: checkedValueYes,
                   groupValue: isBroughtTo,
                   onChanged: (value) {
                     setState(() {
@@ -361,9 +424,9 @@ class _ReportPetPageState extends State<ReportPetPage> {
               height: MediaQuery.of(context).size.height * 0.05,
               width: MediaQuery.of(context).size.width * 0.4,
               child: ListTile(
-                title: Text('Yes'),
+                title: Text('No'),
                 leading: Radio(
-                  value: checkedValueYes,
+                  value: checkedValueNo,
                   groupValue: isBroughtTo,
                   onChanged: (value) {
                     setState(() {
@@ -381,6 +444,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
 
   Widget _buildAddPhotoPet() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(fileName),
         FloatingActionButton(
@@ -442,7 +506,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
     } else if (address == "") {
       Fluttertoast.showToast(
           msg:
-              "Tap on the map icon to choose the location, or write a regular address!",
+          "Tap on the map icon to choose the location, or write a regular address!",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 3,
@@ -466,7 +530,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
               controller: foundOn,
               decoration: new InputDecoration(
                 hintText:
-                    "Example: Via street name, number, city, province, state",
+                "Example: Via street name, number, city, province, state",
               ),
             ),
           ),
@@ -504,7 +568,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
               controller: broughtTo,
               decoration: new InputDecoration(
                 hintText:
-                    "Example: Via street name, number, city, province, state",
+                "Example: Via street name, number, city, province, state",
               ),
             ),
           ),
@@ -527,19 +591,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
           )
         ],
       ),
-      Row(children: <Widget>[
-        Text("Contact     "),
-        new Container(
-          height: MediaQuery.of(context).size.height * 0.06,
-          width: MediaQuery.of(context).size.width * 0.5,
-          child: new TextField(
-            controller: controllerContact,
-            decoration: new InputDecoration(
-              hintText: "Contact Information",
-            ),
-          ),
-        ),
-      ])
+
     ]);
   }
 
@@ -558,9 +610,9 @@ class _ReportPetPageState extends State<ReportPetPage> {
           onPressed: () async {
 
 
-           // myData.setName(controllerName.text);
-           // myData.setBroughtLocation(broughtTo.text);
-           // myData.setContactInfo(controllerContact.text);
+            // myData.setName(controllerName.text);
+            // myData.setBroughtLocation(broughtTo.text);
+            // myData.setContactInfo(controllerContact.text);
             bool checkUserAddress = await _checkUserAddress(foundOn.text);
             if (checkUserAddress == false) {
               return;
@@ -574,7 +626,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
                   textColor: Colors.red,
                   backgroundColor: Colors.white);
             } else {
-             // myData.setFoundLocation(foundOn.text);
+              // myData.setFoundLocation(foundOn.text);
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Home()),

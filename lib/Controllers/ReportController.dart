@@ -1,4 +1,5 @@
 import 'package:dimaWork/Model/breed.dart';
+import 'package:dimaWork/Model/colour.dart';
 
 import '../connectionHandler.dart';
 
@@ -10,7 +11,7 @@ class ReportController{
     var connection = connectionHandler.createConnection();
     await connection.open();
     List<List<dynamic>> results = await connection.query(
-        "SELECT * FROM public.\"Breed\" WHERE typepet= @t OR  typepet= @b ",
+        "SELECT * FROM public.\"Breed\" WHERE (typepet= @t OR  typepet= @b) ",
         substitutionValues: {"t": type, "b":'cad'});
     connection.close();
     for(final row in results){

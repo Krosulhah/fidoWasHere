@@ -60,6 +60,9 @@ flutter:
     - assets/images/dogFace.png
     - assets/images/Error.png
     - assets/images/catFigure.png
+    - assets/images/u.png
+    - assets/images/f.png
+    - assets/images/m.png
 
 
 
