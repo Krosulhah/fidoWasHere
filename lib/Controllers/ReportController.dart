@@ -22,4 +22,20 @@ class ReportController{
     return breeds;
   }
 
+  List<String> returnAllBreedsName(List<Breed>breeds){
+    List<String> breedsName=new List<String>();
+    for(Breed b in breeds){
+      breedsName.add(b.getBreedName());
+    }
+
+    return breedsName;
+  }
+
+  Future<List<String>> updateBreeds(String typeOfPet) async {
+    return returnAllBreedsName(await retrievePossibleBreed(typeOfPet));
+
+  }
+
+
+
 }
