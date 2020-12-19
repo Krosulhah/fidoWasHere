@@ -1,5 +1,15 @@
+import 'dart:convert';
+
+
+
 import 'package:dimaWork/Model/breed.dart';
 import 'package:dimaWork/Model/colour.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:postgres/postgres.dart';
 
 import '../connectionHandler.dart';
 
@@ -36,6 +46,108 @@ class ReportController{
     return returnAllBreedsName(await retrievePossibleBreed(typeOfPet));
 
   }
+
+  Future<bool> _checkUserAddress(String address) async {
+    var latitude;
+    var longitude;
+    if (address != "") {
+      try {
+        List<Location> locations = await locationFromAddress(address);
+        latitude = locations[0].latitude;
+        longitude = locations[0].longitude;
+      } catch (e) {
+        print(e);
+        Fluttertoast.showToast(
+            msg: "This address does not exit. Try putting another!",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 3,
+            fontSize: 16.0,
+            textColor: Colors.red,
+            backgroundColor: Colors.white);
+        return false;
+      }
+
+      return true;
+    } else if (address == "") {
+      Fluttertoast.showToast(
+          msg:
+          "Tap on the map icon to choose the location, or write a regular address!",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 3,
+          fontSize: 16.0,
+          textColor: Colors.green,
+          backgroundColor: Colors.white);
+      return false;
+    }
+    return false;
+  }
+
+  toast(String msg){
+    return  Fluttertoast.showToast(
+        msg: msg,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        fontSize: 16.0,
+        textColor: Colors.red,
+        backgroundColor: Colors.white);
+  }
+
+
+
+  checkAndSend(String name, String broughtTo, String foundOn,List<int> image,bool moved, String sexOfPet, String breedOfPet, String typeOfPet, String colorOfCoat) async {
+    bool checkUserAddress ;
+    if(name==null||name.isEmpty)
+      name=" ";
+    if(foundOn==null||foundOn.isEmpty)
+      return toast("Please add where you've found the Fido");
+    if(moved&&(broughtTo==null||broughtTo.isEmpty))
+      return toast("Please add the last know position of the Fido");
+    checkUserAddress= await _checkUserAddress(foundOn);
+    if (checkUserAddress == false)
+      return toast("please add a valid location");
+    if(broughtTo!=null&&broughtTo.isNotEmpty)
+      {
+       checkUserAddress= await _checkUserAddress(broughtTo);
+        if (checkUserAddress == false)
+          return toast("please add a valid location");}
+    if(image==null)
+      return toast("please add a Picture of the Fido");
+    if(sexOfPet==null||sexOfPet.isEmpty)
+      return toast("please select a sex value");
+    if(breedOfPet==null||breedOfPet.isEmpty)
+      return toast("please select a breed value");
+    if(typeOfPet==null||typeOfPet.isEmpty)
+      return toast("please select Fido's type");
+    if(colorOfCoat==null||colorOfCoat.isEmpty)
+      return toast("please select Fido's coat color");
+
+    var session = FlutterSession();
+
+    var connection = connectionHandler.createConnection();
+    await connection.open();
+    String user= await session.get("user");
+
+    //image=FileImage(image(image.path));
+
+
+    await connection.query(
+         "INSERT INTO public.\"Fido\" "
+             "(name,sex,breed,colour,type,isclosed,foundhere,broughthere,broughthome,photo,date,reporter) "
+             "VALUES (@n,@s,@b,@c,@t,@closed,@fh,@bh,@bhm,@p,@d,@r)",
+         substitutionValues: {
+           "n": name, "s": sexOfPet.toUpperCase(),"b":breedOfPet,"c":colorOfCoat,"t":typeOfPet,"closed":false,"fh":foundOn,
+           "bh":broughtTo,"bhm":!moved,"p":base64Encode(image),"d":DateTime.now().toString(),"r":user
+         });
+
+    connection.close();
+
+
+
+  }
+
 
 
 

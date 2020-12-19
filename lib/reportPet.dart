@@ -481,42 +481,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
     );
   }
 
-  Future<bool> _checkUserAddress(String address) async {
-    var latitude;
-    var longitude;
-    if (address != "") {
-      try {
-        List<Location> locations = await locationFromAddress(address);
-        latitude = locations[0].latitude;
-        longitude = locations[0].longitude;
-      } catch (e) {
-        print(e);
-        Fluttertoast.showToast(
-            msg: "This address does not exit. Try putting another!",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 3,
-            fontSize: 16.0,
-            textColor: Colors.red,
-            backgroundColor: Colors.white);
-        return false;
-      }
 
-      return true;
-    } else if (address == "") {
-      Fluttertoast.showToast(
-          msg:
-          "Tap on the map icon to choose the location, or write a regular address!",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 3,
-          fontSize: 16.0,
-          textColor: Colors.green,
-          backgroundColor: Colors.white);
-      return false;
-    }
-    return false;
-  }
 
   Widget _buildFoundOn() {
     return Column(children: [
@@ -602,43 +567,26 @@ class _ReportPetPageState extends State<ReportPetPage> {
           child: Text("send"),
           textColor: Colors.white,
           color: Color(0xFF6200EE),
-          /* onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Home()),
-              ) */
+          onPressed: () =>{
 
-          onPressed: () async {
+            reportController.checkAndSend(controllerName.text,broughtTo.text,foundOn.text,_image,checkedValueYes,sexOfPet,breedOfPet,typeOfPet,colorOfCoat),
 
 
-            // myData.setName(controllerName.text);
-            // myData.setBroughtLocation(broughtTo.text);
-            // myData.setContactInfo(controllerContact.text);
-            bool checkUserAddress = await _checkUserAddress(foundOn.text);
-            if (checkUserAddress == false) {
-              return;
-            } else if (_image == null) {
-              Fluttertoast.showToast(
-                  msg: "A photo of the FIDO is obligatory",
-                  toastLength: Toast.LENGTH_LONG,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 3,
-                  fontSize: 16.0,
-                  textColor: Colors.red,
-                  backgroundColor: Colors.white);
-            } else {
-              // myData.setFoundLocation(foundOn.text);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Home()),
-              );
-              //TODO to implement the sending of
-            }
-          }),
+
+
+    Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => Home()),
+    )
+    }
+
+    ),
     ]);
   }
 
   Future getImage(bool iscamera) async {
     // get the application directory
+    List<int> bytes;
     ImagePicker petImage = new ImagePicker();
     var directory = await getApplicationDocumentsDirectory();
     var path = directory.path;
@@ -648,10 +596,12 @@ class _ReportPetPageState extends State<ReportPetPage> {
       _image = await petImage.getImage(
         source: ImageSource.camera,
       );
+      _image=await _image.readAsBytes();
     } else {
       _image = await petImage.getImage(
         source: ImageSource.gallery,
       );
+      _image=await _image.readAsBytes();
     }
     if (_image != null) {
       setState(() {
@@ -667,5 +617,8 @@ class _ReportPetPageState extends State<ReportPetPage> {
     writers.write(_image);
     // close the writer
     writers.close();
+    //_image= File(_image.path);
+
+
   }
 }
