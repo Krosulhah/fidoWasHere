@@ -197,9 +197,9 @@ class ReportController{
       r.setFoundHere(d[7]);
       r.setBrouthto(d[8]);
       r.setBroughtHome(d[9].toString());
-      r.setPhoto(d[10]);
-      r.setDate(d[11]);
-      r.setReporter(d[12]);
+      r.setPhoto(d[12]);
+      r.setDate(d[10]);
+      r.setReporter(d[11]);
       availableReports.add(r);
     }
 
