@@ -2,10 +2,14 @@ import 'package:dimaWork/reportInfo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'Model/fido.dart';
+
 
 
 class ReportSearch extends StatelessWidget {
   // This widget is the root of your application.
+  final List<Fido>result;
+  ReportSearch({Key key,this.result}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,13 +25,13 @@ class ReportSearch extends StatelessWidget {
                   physics: BouncingScrollPhysics(),
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  itemCount: 30,
+                  itemCount: this.result.length,
                   itemBuilder: (BuildContext context, int index) {  //todo link con db
 
                   return ListTile(
                     trailing: Icon(Icons.keyboard_arrow_right),
-                    title: Text('$index + date', textAlign: TextAlign.center,),
-                    onTap: ()=>runApp(ReportInfo()),
+                    title: Text(this.result[index].getId().toString() +" - "+this.result[index].getDate().toString(), textAlign: TextAlign.center,),
+                    onTap: ()=>runApp(ReportInfo(result:result[index])),
                   );
 
                 }, separatorBuilder: (BuildContext context, int index) {

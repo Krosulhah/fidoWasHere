@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'Model/fido.dart';
+
 
 
 class ReportInfo extends StatelessWidget {
 
+  final Fido result;
+  ReportInfo({Key key,this.result}) : super(key: key);
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -13,15 +17,15 @@ class ReportInfo extends StatelessWidget {
         title: 'FidoWasHere',
         home: Scaffold(
             appBar: AppBar(
-              title:Text('Report # id',textAlign: TextAlign.center,),
+              title:Text('Report # '+result.getId().toString(),textAlign: TextAlign.center,),
             ),
             body:Column(
               children: <Widget>[
                 Container(
-                    child:Body()
+                    child:Body(result: result)
                 ),
-                Text('REPORTER INFO'),
-                 ReportData()
+                Text('REPORTER :'+result.getReporter()),
+                 ReportData(result: result)
 
               ],
             )
@@ -31,6 +35,8 @@ class ReportInfo extends StatelessWidget {
   }
 }
 class Body extends StatelessWidget {
+  final Fido result;
+  Body({Key key,this.result}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -39,7 +45,8 @@ class Body extends StatelessWidget {
                 child: Dialog(
                     child: InteractiveViewer(
                         panEnabled: false,
-                        child: Image(image:AssetImage('assets/images/footprint.jpeg')))
+                        child:  Image.memory(result.getPhoto())
+                    )
                 )),
             child:Container(
 
@@ -54,8 +61,7 @@ class Body extends StatelessWidget {
                   width: 10,
                 ),
               ),
-              child: Image(image:AssetImage('assets/images/footprint.jpeg')
-              ),
+              child:Image.memory(result.getPhoto()),
 
             ) ));
 
@@ -67,34 +73,40 @@ class Body extends StatelessWidget {
 
 }
 class ReportData extends StatelessWidget{
+
+  final Fido result;
+  ReportData({Key key,this.result}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return  Expanded(child:ListView.separated(
-                physics: BouncingScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: 10,
-                itemBuilder: (BuildContext context, int index) {  //todo link con db
 
-                  return ListTile(
-                    title: Text('$index + DATA INFO PH', textAlign: TextAlign.center,),
-                    onTap: ()=>print('ReportInfo()'),
-                  );
+    return  SingleChildScrollView(child:Column(
+                children: [
+                  if(result.getName()!=null&&result.getName().isNotEmpty)
+                    Row(children: [ Text('Name:  '+result.getName(), textAlign: TextAlign.center,),],),
+                  Row(children: [ Text('Breed:  '+result.getBreed(), textAlign: TextAlign.center,),],),
+                  Row(children: [ Text('Coat color:  '+result.getColour(), textAlign: TextAlign.center,),],),
+                  Row(children: [ Text('Sex:  '+result.getSex(), textAlign: TextAlign.center,),],),
+                  Row(children: [ Text('Found on:  '+result.getDate().toString(), textAlign: TextAlign.center,),],),
+                  Row(children: [ Text('Found here:  '+result.getFoundHere(), textAlign: TextAlign.center,),],),
 
-                }, separatorBuilder: (BuildContext context, int index) {
+                  actualAddress(result)
+
+                ],
 
 
-                return SizedBox(
-                  height: 10,
-                );
-
-              },
 
 
 
               )
     );
 
+  }
+
+  actualAddress(Fido result){
+    if(result.broughtHome){
+     return Row(children: [ Text('The reporter has brought the Fido\'s at their home', textAlign: TextAlign.center,),],);
+    }
+    return Row(children: [ Text('Brought To:  '+result.getBroughtTo(), textAlign: TextAlign.center,),],);
   }
 }
 

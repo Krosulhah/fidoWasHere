@@ -106,57 +106,57 @@ class _ReportPetPageState extends State<ReportPetPage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      resizeToAvoidBottomInset:false,
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text("Report a Fido"),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            );
-          },
+        resizeToAvoidBottomInset:false,
+        appBar: AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text("Report a Fido"),
+          leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              );
+            },
+          ),
         ),
-      ),
-      body:SingleChildScrollView( child: Container(
-        padding: EdgeInsets.all(16.0),
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
+        body:SingleChildScrollView( child: Container(
+          padding: EdgeInsets.all(16.0),
+          // Center is a layout widget. It takes a single child and positions it
+          // in the middle of the parent.
+          child: Column(
 
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row( mainAxisAlignment: MainAxisAlignment.center,
-            children:[Text("Select Fido's type"),]),
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row( mainAxisAlignment: MainAxisAlignment.center,
+                  children:[Text("Select Fido's type"),]),
 
-            _buildTypeOfPetDropDown(),
-            _buildBreedDropDown(availableBreeds),
-            _buildSexDropDown(sexPet),
+              _buildTypeOfPetDropDown(),
+              _buildBreedDropDown(availableBreeds),
+              _buildSexDropDown(sexPet),
 
-            _buildCoatDropDown(coatColour),
-            _buildNameTextFields(),
-            _buildFoundOn(),
-            _buildRadioBox(),
-            if (isBroughtTo == true) _buildBroughtTo(),
+              _buildCoatDropDown(coatColour),
+              _buildNameTextFields(),
+              _buildFoundOn(),
+              _buildRadioBox(),
+              if (isBroughtTo == true) _buildBroughtTo(),
 
-            _buildAddPhotoPet(),
-            _buildSendButton(),
+              _buildAddPhotoPet(),
+              _buildSendButton(),
 
-            // This trailing comma makes auto-formatting nicer for build methods.
-          ],
+              // This trailing comma makes auto-formatting nicer for build methods.
+            ],
+          ),
         ),
-      ),
 
-      /* floatingActionButton: FloatingActionButton(
+          /* floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.*/
-    ));
+        ));
   }
 
   Widget _buildTypeOfPetDropDown()  {
@@ -339,7 +339,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
         buildSex(items[0],0,'assets/images/f.png'),
         buildSex(items[1],1,'assets/images/m.png'),
         buildSex(items[2],2,'assets/images/u.png'),
-        ],
+      ],
 
     );
 
@@ -574,13 +574,13 @@ class _ReportPetPageState extends State<ReportPetPage> {
 
 
 
-    Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => Home()),
-    )
-    }
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Home()),
+            )
+          }
 
-    ),
+      ),
     ]);
   }
 

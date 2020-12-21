@@ -1,17 +1,25 @@
-import 'dart:html';
+
+
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 
 class Fido{
 
   int id;
   String sex;
   String breed;
+  String name;
+  String reporter;
   String colour;
   String type;
   bool isClosed;
   bool broughtHome;
   String broughtTo;
   String foundHere;
-  File photo; //? File image = await ImagePicker.pickImage(source: imageSource);
+  Uint8List photo; //? File image = await ImagePicker.pickImage(source: imageSource);
   DateTime date;
 
   Fido();
@@ -22,6 +30,22 @@ class Fido{
 
   int getId(){
     return this.id;
+  }
+
+  void setName(String name){
+    this.name=name;
+  }
+
+  String getName(){
+    return this.name;
+  }
+
+  void setReporter(String name){
+    this.reporter=name;
+  }
+
+  String getReporter(){
+    return this.reporter;
   }
 
   void setSex(String sex){
@@ -64,8 +88,12 @@ class Fido{
     return this.isClosed;
   }
 
-  void setBroughtHome(bool broughtHome){
-    this.broughtHome=broughtHome;
+  void setBroughtHome(String broughtHome){
+    bool boolean=false;
+    if(broughtHome.contains("true"))
+      boolean=true;
+
+    this.broughtHome=boolean;
   }
 
   bool getBroughtHome(){
@@ -80,11 +108,22 @@ class Fido{
     return this.foundHere;
   }
 
-  void setPhoto(File photo){
+
+  void setBrouthto(String foundHere){
+    this.broughtTo=foundHere;
+  }
+
+  String getBroughtTo(){
+    return this.broughtTo;
+  }
+
+
+  void setPhoto(Uint8List photo){
+
     this.photo=photo;
   }
 
-  File getPhoto(){
+  Uint8List getPhoto(){
     return this.photo;
   }
 

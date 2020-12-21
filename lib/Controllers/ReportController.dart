@@ -1,14 +1,20 @@
 import 'dart:convert';
+import 'dart:ui';
 
 
 
 import 'package:dimaWork/Model/breed.dart';
 import 'package:dimaWork/Model/colour.dart';
+import 'package:dimaWork/Model/fido.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:postgres/postgres.dart';
+import 'package:postgres/postgres.dart';
+import 'package:postgres/postgres.dart';
 import 'package:postgres/postgres.dart';
 
 import '../connectionHandler.dart';
@@ -96,7 +102,6 @@ class ReportController{
   }
 
 
-
   checkAndSend(String name, String broughtTo, String foundOn,List<int> image,bool moved, String sexOfPet, String breedOfPet, String typeOfPet, String colorOfCoat) async {
     bool checkUserAddress ;
     if(name==null||name.isEmpty)
@@ -109,10 +114,10 @@ class ReportController{
     if (checkUserAddress == false)
       return toast("please add a valid location");
     if(broughtTo!=null&&broughtTo.isNotEmpty)
-      {
-       checkUserAddress= await _checkUserAddress(broughtTo);
-        if (checkUserAddress == false)
-          return toast("please add a valid location");}
+    {
+      checkUserAddress= await _checkUserAddress(broughtTo);
+      if (checkUserAddress == false)
+        return toast("please add a valid location");}
     if(image==null)
       return toast("please add a Picture of the Fido");
     if(sexOfPet==null||sexOfPet.isEmpty)
@@ -134,18 +139,71 @@ class ReportController{
 
 
     await connection.query(
-         "INSERT INTO public.\"Fido\" "
-             "(name,sex,breed,colour,type,isclosed,foundhere,broughthere,broughthome,photo,date,reporter) "
-             "VALUES (@n,@s,@b,@c,@t,@closed,@fh,@bh,@bhm,@p,@d,@r)",
-         substitutionValues: {
-           "n": name, "s": sexOfPet.toUpperCase(),"b":breedOfPet,"c":colorOfCoat,"t":typeOfPet,"closed":false,"fh":foundOn,
-           "bh":broughtTo,"bhm":!moved,"p":base64Encode(image),"d":DateTime.now().toString(),"r":user
-         });
+        "INSERT INTO public.\"Fido\" "
+            "(name,sex,breed,colour,type,isclosed,foundhere,broughthere,broughthome,photo,date,reporter) "
+            "VALUES (@n,@s,@b,@c,@t,@closed,@fh,@bh,@bhm,@p,@d,@r)",
+        substitutionValues: {
+          "n": name, "s": sexOfPet.toUpperCase(),"b":breedOfPet,"c":colorOfCoat,"t":typeOfPet,"closed":false,"fh":foundOn,
+          "bh":broughtTo,"bhm":!moved,"p":base64Encode(image),"d":DateTime.now().toString(),"r":user
+        });
 
     connection.close();
 
 
 
+  }
+
+  retrieveReports(String name,DateTime date,String sexOfPet, String breedOfPet, String typeOfPet, String colorOfCoat) async {
+    if(name==null||name.isEmpty)
+      return toast("please insert Fido's name");
+    if(sexOfPet==null||sexOfPet.isEmpty)
+      return toast("please select a sex value");
+    if(breedOfPet==null||breedOfPet.isEmpty)
+      return toast("please select a breed value");
+    if(typeOfPet==null||typeOfPet.isEmpty)
+      return toast("please select Fido's type");
+    if(colorOfCoat==null||colorOfCoat.isEmpty)
+      return toast("please select Fido's coat color");
+    if(date.isAfter(DateTime.now()))
+      return toast("please select a valid date");
+
+    var connection = connectionHandler.createConnection();
+
+    await connection.open();
+    List<List<dynamic>> results= await connection.query(
+        "SELECT * FROM public.\"Fido\" WHERE (name=@n OR name=@e) AND (sex= @s OR sex= @sex) AND (breed=@b or breed=@breed) AND colour=@c AND type=@t AND isclosed=@closed AND (date>=@d) ORDER BY date DESC",
+        substitutionValues: {
+          "n": name,"e": " ","s": sexOfPet.toUpperCase(),"sex":"U","b":breedOfPet,"breed":"UNKNOWN" ,"c":colorOfCoat,"t":typeOfPet,"closed":false ,
+          "d":date.toString()
+        });
+
+    List<Fido> availableReports= new List<Fido>();
+
+    connection.close();
+    if(results==null||results.isEmpty)
+      return toast ("no Fidos found");
+    var directory = await getApplicationDocumentsDirectory();
+    var path = directory.path;
+    // open a new file in the application directory
+
+
+    for(List<dynamic> d in results){
+      Fido r=new Fido();
+      r.setId(d[0]);
+      r.setName(d[1]);
+      r.setSex(d[2]);
+      r.setBreed(d[3]);
+      r.setColour(d[4]);
+      r.setFoundHere(d[7]);
+      r.setBrouthto(d[8]);
+      r.setBroughtHome(d[9].toString());
+      r.setPhoto(d[10]);
+      r.setDate(d[11]);
+      r.setReporter(d[12]);
+      availableReports.add(r);
+    }
+
+    return availableReports;
   }
 
 

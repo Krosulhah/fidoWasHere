@@ -1,10 +1,14 @@
 import 'package:dimaWork/reportInfo.dart';
+import 'package:dimaWork/reportSearch.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'Controllers/ReportController.dart';
+import 'Model/fido.dart';
 import 'Statistics.dart';
+import 'checkers/loginValidityChecker.dart';
 import 'datepicker.dart';
 import 'reportInfo.dart';
 
@@ -12,6 +16,8 @@ class LookForFido extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    LoginValidityChecker loginValidityChecker=new LoginValidityChecker();
+    loginValidityChecker.isLoggedIn(context);
     return MaterialApp(
       title: 'Look For Fido',
       theme: ThemeData(
@@ -54,16 +60,46 @@ class LookForFidoPage extends StatefulWidget {
 }
 
 class _LookForFidoPageState extends State<LookForFidoPage> {
-  List<String> listOfPets = ["Cat", "Dog"];
-  List<String> dogBreed = ["Pitbull", "Bulldog"];
-  List<String> catBreed = ["American Shorthair", "Bombay"];
-  List<String> coatColour = ["White", "Black"];
-  List<String> sexPet = ["f", "m", "u"];
-  String typeOfPet = "Dog";
-  String breedOfPet = "Pitbull";
-  String coatColorPet = "White";
-  String sexOfPet = "f";
-  DateTime _date = DateTime.now();
+
+  ReportController reportController=new ReportController();
+  List<String> availableBreeds=new List<String>();
+  List<String> coatColour=  ["White", "Black", "Orange", "Red", "Cream", "Mixed"];
+  List<String> sexPet = ["f", "m"];
+  List<Color> _color ;
+  List<Color> _colorSex ;
+
+  String typeOfPet;
+  String breedOfPet;
+  String colorOfCoat;
+  String sexOfPet;
+  TextEditingController controllerName;
+
+
+  String fileName;
+  DateTime _date;
+
+  @override
+  void initState() {
+    super.initState();
+    availableBreeds=["UNSELECETED"];
+    typeOfPet = " ";
+    breedOfPet = "UNSELECETED";
+    colorOfCoat = "Mixed";
+    sexOfPet = " ";
+
+    controllerName = new TextEditingController();
+    _date = new DateTime.now();
+
+
+    _color=[Colors.black, Colors.black];
+    _colorSex=[Colors.black, Colors.black,Colors.black];
+    print(availableBreeds);
+
+
+  }
+
+
+
 
   void _updateBreedDropDown(String type, String firstBreed) {
     setState(() {
@@ -86,7 +122,7 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: new Container(
+      body: SingleChildScrollView(child: new Container(
         padding: EdgeInsets.all(16.0),
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
@@ -112,13 +148,15 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
             _buildDate(),
             IconButton(
               icon: Icon(Icons.search),
-              onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => new ReportInfo(
-                        //replace by New Contact Screen
+              onPressed: () async {
+                var res = await reportController.retrieveReports(controllerName.text,_date,sexOfPet,breedOfPet, typeOfPet, colorOfCoat);
+                if(res!=null&&res is List<Fido> &&res.isNotEmpty)
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                      builder: (_) => new ReportSearch(result:res  //replace by New Contact Screen
                         ),
-                  )),
+                  ));}
             )
 
             // This trailing comma makes auto-formatting nicer for build methods.
@@ -131,12 +169,84 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.*/
+    ));
+  }
+
+  Widget _buildTypeOfPetDropDown()  {
+
+    return new Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+
+        _buildSelectType('assets/images/dogFace.png','dog',0),
+
+        _buildSelectType('assets/images/catFigure.png','cat',1)
+
+      ],
+
+
+    );
+
+
+
+
+
+  }
+
+  updateBreedList(String type,int element)  async {
+    reportController.updateBreeds(type).then((rows) {
+
+      setState(() {
+        availableBreeds = rows;
+        _color.setAll(0,[Colors.black,Colors.black]);
+        _color[element]=Colors.green;
+        typeOfPet=type;
+        _updateBreedDropDown(type, availableBreeds.elementAt(0));
+
+
+      });
+    });}
+
+
+  Widget _buildSelectType(String img,String type,int element){
+    return Material(
+
+
+        child: InkWell(
+            onTap:  () {
+              setState(()  {
+                updateBreedList(type,element);
+
+              });
+
+
+            },
+
+            child:Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              width: MediaQuery.of(context).size.width * 0.3,
+              padding: EdgeInsets.all(20),
+              margin: EdgeInsets.all(20),
+
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(
+                  color: _color[element],
+                  width: 10,
+                ),
+              ),
+              child: FittedBox(child:Image(image:AssetImage(img),
+                fit: BoxFit.fill,
+              )),
+
+            ) )
+
     );
   }
 
-  Widget _buildTypeOfPetDropDown(List<String> items) {
+  Widget _buildCoatDropDown(List<String> items) {
     return DropdownButton<String>(
-      value: typeOfPet,
+      value: colorOfCoat,
       icon: Icon(Icons.arrow_downward),
       iconSize: 24,
       elevation: 16,
@@ -147,11 +257,8 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
       ),
       onChanged: (String newValue) {
         setState(() {
-          typeOfPet = newValue;
-          if (newValue == "Dog") {
-            _updateBreedDropDown(newValue, "Pitbull");
-          } else if (newValue == "Cat")
-            _updateBreedDropDown(newValue, "American Shorthair");
+          colorOfCoat = newValue;
+          //myData.setColorOfCoat(colorOfCoat);
         });
       },
       items: items.map<DropdownMenuItem<String>>((String value) {
@@ -163,7 +270,67 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
     );
   }
 
+
+  Widget buildSex(String type, int element,String img){
+    return Material(
+
+
+        child: InkWell(
+            onTap:  () {
+              setState(()  {
+
+                sexOfPet=type;
+                _colorSex.setAll(0,[Colors.black,Colors.black,Colors.black]);
+                _colorSex[element]=Colors.green;
+
+              });
+
+
+            },
+
+            child:Container(
+              height: MediaQuery.of(context).size.height * 0.1,
+              width: MediaQuery.of(context).size.width * 0.18,
+              padding: EdgeInsets.all(20),
+              margin: EdgeInsets.all(20),
+
+
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(
+                  color: _colorSex[element],
+                  width: 5,
+                ),
+              ),
+
+              child: FittedBox(child:Image(image:AssetImage(img),
+                fit: BoxFit.fill,
+              )),
+
+            ) )
+
+    );
+  }
+
+
+
+
+
+  Widget _buildSexDropDown(List<String> items) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        buildSex(items[0],0,'assets/images/f.png'),
+        buildSex(items[1],1,'assets/images/m.png'),
+      ],
+
+    );
+
+
+
+  }
   Widget _buildBreedDropDown(List<String> items) {
+    print(availableBreeds);
     return DropdownButton<String>(
       value: breedOfPet,
       icon: Icon(Icons.arrow_downward),
@@ -188,68 +355,17 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
     );
   }
 
-  Widget _buildCoatDropDown(List<String> items) {
-    return DropdownButton<String>(
-      value: coatColorPet,
-      icon: Icon(Icons.arrow_downward),
-      iconSize: 24,
-      elevation: 16,
-      style: TextStyle(color: Colors.deepPurple),
-      underline: Container(
-        height: 2,
-        color: Colors.deepPurpleAccent,
-      ),
-      onChanged: (String newValue) {
-        setState(() {
-          coatColorPet = newValue;
-        });
-      },
-      items: items.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildSexDropDown(List<String> items) {
-    return DropdownButton<String>(
-      value: sexOfPet,
-      icon: Icon(Icons.arrow_downward),
-      iconSize: 24,
-      elevation: 16,
-      style: TextStyle(color: Colors.deepPurple),
-      underline: Container(
-        height: 2,
-        color: Colors.deepPurpleAccent,
-      ),
-      onChanged: (String newValue) {
-        setState(() {
-          sexOfPet = newValue;
-        });
-      },
-      items: items.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
-  }
-
   Widget _buildSelectionPart() {
     return Column(children: [
       Row(children: [
         Text("Type of Pet "),
-        _buildTypeOfPetDropDown(listOfPets),
+
       ]),
+      Row(children: [_buildTypeOfPetDropDown(),],),
       Row(children: [
-        Text("Pet Breed   "),
-        if (typeOfPet == "Dog")
-          _buildBreedDropDown(dogBreed)
-        else
-          _buildBreedDropDown(catBreed)
+
+
+          _buildBreedDropDown(availableBreeds)
       ]),
       Row(children: [
         Text("Colour Coat "),
@@ -271,6 +387,7 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
             height: MediaQuery.of(context).size.height * 0.08,
             width: MediaQuery.of(context).size.width * 0.5,
             child: new TextField(
+              controller: controllerName,
               decoration: new InputDecoration(
                 hintText: "Pet's name",
               ),
