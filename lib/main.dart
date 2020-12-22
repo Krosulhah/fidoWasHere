@@ -1,7 +1,11 @@
 import 'package:dimaWork/Controllers/FBcontroller.dart';
+import 'package:dimaWork/graphicPatterns/TextPatterns.dart';
+import 'package:dimaWork/graphicPatterns/colorManagement.dart';
 import 'package:dimaWork/mailLogin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /*
 * pagina di accesso all'applicazione
@@ -11,118 +15,147 @@ import 'package:flutter/services.dart';
 *   -> accesso con mail -> porta alla pagina di login tramite mail
 *   -> accesso con facebook -> richiede login tramite credenziali FB
 * */
-//TODO login with FB
+
 //todo aggiungi widget con nome app
 
 void main() {
   runApp(MyHomePage());
 }
 
-
-
-
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
     return MaterialApp(
         title: 'FidoWasHere',
-
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    home: new HomePage());}}
+    home: new HomePage());}
+}
 
     class HomePage extends StatelessWidget{
       @override
       Widget build(BuildContext context) {
-  return new Scaffold(
-      appBar: AppBar(
-        title: Text( 'FIDO WAS HERE'),
-        leading: Builder(
-        builder: (BuildContext context) {
-      return IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          //Navigator.pop(context);
-          SystemNavigator.pop();
-          },
-      );},
-        ),
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-
-      ),
-
-        body:
-        Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: new AssetImage('assets/images/footprint.jpeg'), fit: BoxFit.cover)),
-          child:
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.
-            spaceEvenly,
-            children: <Widget>[
-              Text('FidoWasHere',),  //todo aggiungi widget con nome app
-
-
-              Row( //buttons row
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-
-                children: [mailButton(context),fbButton(context)],
-
-
+        return new Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: TextPatterns.setAppBarText(),
+              backgroundColor: ColorManagement.setButtonColor(),
+              leading: Builder(
+                builder: (BuildContext context) {
+                  return IconButton(
+                    color: ColorManagement.setTextColor(),
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      SystemNavigator.pop();
+                      },
+                  );
+                  },
+              ),
+            ),
+            backgroundColor: ColorManagement.setBackGroundColor(),
+            body:
+            Container(
+              child:
+              Column(
+                //todo immagine app
+                //  image: DecorationImage( image: new AssetImage('assets/images/footprint.jpeg'), fit: BoxFit.cover)
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                buildNiceText(),
+                  Row( //buttons row
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                          children: <Widget>[
+                            mailButton(context),
+                            fbButton(context)]),
+                    ]
               ),
             ],
           ),
         )
     );
-
   }
 }
 
+
+FittedBox buildNiceText(){
+  return FittedBox(
+      fit:BoxFit.fitWidth,
+      alignment: Alignment.center,
+      child: Text(
+        'Fido Was Here',
+        style: TextStyle(
+          fontFamily: 'DancingScript',
+          fontSize: 40,
+          foreground: Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2
+            ..color = Colors.black,
+        ),
+      )
+  );
+}
+
+
   RaisedButton mailButton (BuildContext context){
     return RaisedButton(
-      textColor: Colors.white,
-      color: Color(0xFF6200EE),
+      textColor: ColorManagement.setTextColor(),
+      color: ColorManagement.setButtonColor(),
         onPressed: () {
           Navigator.of(context).push(new MaterialPageRoute(builder:
               (BuildContext context) => new MailLogIn()));
+          },
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16.0))),
+      child:Container(
+          alignment: Alignment.center,
+          height: MediaQuery.of(context).size.height * 0.05,
+          width: MediaQuery.of(context).size.width * 0.5,
+          child:
+          Align(
+              alignment: Alignment.center,
+              child: Text('Access with mail' ,textAlign: TextAlign.center)
+          )
 
-        },
-      child: Text('Access with mail'),
-
-
-    );
+        )
+      );
   }
 
   RaisedButton fbButton (BuildContext context) {
     FBcontroller fbcontroller = new FBcontroller();
     return RaisedButton(
-      textColor: Colors.white,
-      color: Color(0xFF6200EE),
-      onPressed: () async {
-        String result = await fbcontroller.fbLogIn(context);
-        if(result!=null&&result.isNotEmpty)
-          {
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16.0))),
+        textColor: ColorManagement.setTextColor(),
+        color: Colors.blue,
+        onPressed: () async {
+          String result = await fbcontroller.fbLogIn(context);
+          if(result!=null&&result.isNotEmpty) {
             showDialog(
                 context: context,
                 child: new AlertDialog(
                   title: new Text(result),
-                ));
+                )
+            );
           }
       },
-      child: Text('Access with FB'),
+        child: Container(
+            height: MediaQuery.of(context).size.height * 0.05,
+            width: MediaQuery.of(context).size.width * 0.5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FaIcon(FontAwesomeIcons.facebook),
+                Text('Facebook login'),
+              ],
+            )
+        )
     );
 
 
-
   }
+
+
 

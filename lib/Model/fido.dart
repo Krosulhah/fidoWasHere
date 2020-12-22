@@ -1,13 +1,10 @@
-
-
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 
-class Fido{
-
+class Fido {
   int id;
   String sex;
   String breed;
@@ -19,119 +16,116 @@ class Fido{
   bool broughtHome;
   String broughtTo;
   String foundHere;
-  Uint8List photo; //? File image = await ImagePicker.pickImage(source: imageSource);
+  Uint8List
+      photo; //? File image = await ImagePicker.pickImage(source: imageSource);
   DateTime date;
 
   Fido();
 
-  void setId(int id){
-    this.id=id;
+  void setId(int id) {
+    this.id = id;
   }
 
-  int getId(){
+  int getId() {
     return this.id;
   }
 
-  void setName(String name){
-    this.name=name;
+  void setName(String name) {
+    this.name = name;
   }
 
-  String getName(){
+  String getName() {
     return this.name;
   }
 
-  void setReporter(String name){
-    this.reporter=name;
+  void setReporter(String name) {
+    this.reporter = name;
   }
 
-  String getReporter(){
+  String getReporter() {
     return this.reporter;
   }
 
-  void setSex(String sex){
-    this.sex=sex;
+  void setSex(String sex) {
+    this.sex = sex;
   }
 
-  String getSex(){
+  String getSex() {
     return this.sex;
   }
 
-  void setBreed(String breed){
-    this.breed=breed;
+  void setBreed(String breed) {
+    this.breed = breed;
   }
 
-  String getBreed(){
+  String getBreed() {
     return this.breed;
   }
 
-  void setColour(String colour){
-    this.colour=colour;
+  void setColour(String colour) {
+    this.colour = colour;
   }
 
-  String getColour(){
+  String getColour() {
     return this.colour;
   }
 
-  void setType(String type){
-    this.type=type;
+  void setType(String type) {
+    this.type = type;
   }
 
-  String getType(){
+  String getType() {
     return this.type;
   }
 
-  void setClosedStatus(bool isClosed){
-    this.isClosed=isClosed;
+  void setClosedStatus(bool isClosed) {
+    this.isClosed = isClosed;
   }
 
-  bool getClosedStatus(){
+  bool getClosedStatus() {
     return this.isClosed;
   }
 
-  void setBroughtHome(String broughtHome){
-    bool boolean=false;
-    if(broughtHome.contains("true"))
-      boolean=true;
+  void setBroughtHome(String broughtHome) {
+    bool boolean = false;
+    if (broughtHome.contains("true")) boolean = true;
 
-    this.broughtHome=boolean;
+    this.broughtHome = boolean;
   }
 
-  bool getBroughtHome(){
+  bool getBroughtHome() {
     return this.broughtHome;
   }
 
-  void setFoundHere(String foundHere){
-    this.foundHere=foundHere;
+  void setFoundHere(String foundHere) {
+    this.foundHere = foundHere;
   }
 
-  String getFoundHere(){
+  String getFoundHere() {
     return this.foundHere;
   }
 
-
-  void setBrouthto(String foundHere){
-    this.broughtTo=foundHere;
+  void setBrouthto(String foundHere) {
+    this.broughtTo = foundHere;
   }
 
-  String getBroughtTo(){
+  String getBroughtTo() {
     return this.broughtTo;
   }
 
-
-  void setPhoto(Uint8List photo){
-
-    this.photo=photo;
+  void setPhoto(String photo) {
+    this.photo = base64Decode(photo);
   }
 
-  Uint8List getPhoto(){
+  Uint8List getPhoto() {
     return this.photo;
   }
 
-  void setDate(DateTime date){
-    this.date=date;
+  void setDate(DateTime date) {
+    this.date = date;
   }
 
-  DateTime getDate(){
+  DateTime getDate() {
     return this.date;
   }
 }

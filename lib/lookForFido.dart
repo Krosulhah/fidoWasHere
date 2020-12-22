@@ -1,3 +1,4 @@
+import 'package:dimaWork/Controllers/DateController.dart';
 import 'package:dimaWork/reportInfo.dart';
 import 'package:dimaWork/reportSearch.dart';
 import 'package:flutter/material.dart';
@@ -9,14 +10,15 @@ import 'Controllers/ReportController.dart';
 import 'Model/fido.dart';
 import 'Statistics.dart';
 import 'checkers/loginValidityChecker.dart';
-import 'datepicker.dart';
+import 'Model/datepicker.dart';
 import 'reportInfo.dart';
+import 'Controllers/DateController.dart';
 
 class LookForFido extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    LoginValidityChecker loginValidityChecker=new LoginValidityChecker();
+    LoginValidityChecker loginValidityChecker = new LoginValidityChecker();
     loginValidityChecker.isLoggedIn(context);
     return MaterialApp(
       title: 'Look For Fido',
@@ -60,13 +62,19 @@ class LookForFidoPage extends StatefulWidget {
 }
 
 class _LookForFidoPageState extends State<LookForFidoPage> {
-
-  ReportController reportController=new ReportController();
-  List<String> availableBreeds=new List<String>();
-  List<String> coatColour=  ["White", "Black", "Orange", "Red", "Cream", "Mixed"];
+  ReportController reportController = new ReportController();
+  List<String> availableBreeds = new List<String>();
+  List<String> coatColour = [
+    "White",
+    "Black",
+    "Orange",
+    "Red",
+    "Cream",
+    "Mixed"
+  ];
   List<String> sexPet = ["f", "m"];
-  List<Color> _color ;
-  List<Color> _colorSex ;
+  List<Color> _color;
+  List<Color> _colorSex;
 
   String typeOfPet;
   String breedOfPet;
@@ -74,14 +82,13 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
   String sexOfPet;
   TextEditingController controllerName;
 
-
   String fileName;
   DateTime _date;
 
   @override
   void initState() {
     super.initState();
-    availableBreeds=["UNSELECETED"];
+    availableBreeds = ["UNSELECETED"];
     typeOfPet = " ";
     breedOfPet = "UNSELECETED";
     colorOfCoat = "Mixed";
@@ -90,16 +97,10 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
     controllerName = new TextEditingController();
     _date = new DateTime.now();
 
-
-    _color=[Colors.black, Colors.black];
-    _colorSex=[Colors.black, Colors.black,Colors.black];
+    _color = [Colors.black, Colors.black];
+    _colorSex = [Colors.black, Colors.black, Colors.black];
     print(availableBreeds);
-
-
   }
-
-
-
 
   void _updateBreedDropDown(String type, String firstBreed) {
     setState(() {
@@ -117,117 +118,104 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: SingleChildScrollView(child: new Container(
-        padding: EdgeInsets.all(16.0),
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _buildSelectionPart(),
-            _buildNameTextFields(),
-            _buildDate(),
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () async {
-                var res = await reportController.retrieveReports(controllerName.text,_date,sexOfPet,breedOfPet, typeOfPet, colorOfCoat);
-                if(res!=null&&res is List<Fido> &&res.isNotEmpty)
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                      builder: (_) => new ReportSearch(result:res  //replace by New Contact Screen
-                        ),
-                  ));}
-            )
-
-            // This trailing comma makes auto-formatting nicer for build methods.
-          ],
+        appBar: AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title),
         ),
-      ),
+        body: SingleChildScrollView(
+          child: new Container(
+            padding: EdgeInsets.all(16.0),
+            // Center is a layout widget. It takes a single child and positions it
+            // in the middle of the parent.
+            child: Column(
+              // Column is also a layout widget. It takes a list of children and
+              // arranges them vertically. By default, it sizes itself to fit its
+              // children horizontally, and tries to be as tall as its parent.
+              //
+              // Invoke "debug painting" (press "p" in the console, choose the
+              // "Toggle Debug Paint" action from the Flutter Inspector in Android
+              // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+              // to see the wireframe for each widget.
+              //
+              // Column has various properties to control how it sizes itself and
+              // how it positions its children. Here we use mainAxisAlignment to
+              // center the children vertically; the main axis here is the vertical
+              // axis because Columns are vertical (the cross axis would be
+              // horizontal).
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _buildSelectionPart(),
+                _buildNameTextFields(),
+                _buildDate(),
+                IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () async {
+                      var res = await reportController.retrieveReports(
+                          controllerName.text,
+                          _date,
+                          sexOfPet,
+                          breedOfPet,
+                          typeOfPet,
+                          colorOfCoat);
+                      if (res != null && res is List<Fido> && res.isNotEmpty)
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => new ReportSearch(
+                                  result: res //replace by New Contact Screen
+                                  ),
+                            ));
+                    })
 
-      /* floatingActionButton: FloatingActionButton(
+                // This trailing comma makes auto-formatting nicer for build methods.
+              ],
+            ),
+          ),
+
+          /* floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.*/
-    ));
+        ));
   }
 
-  Widget _buildTypeOfPetDropDown()  {
-
+  Widget _buildTypeOfPetDropDown() {
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-
-        _buildSelectType('assets/images/dogFace.png','dog',0),
-
-        _buildSelectType('assets/images/catFigure.png','cat',1)
-
+        _buildSelectType('assets/images/dogFace.png', 'dog', 0),
+        _buildSelectType('assets/images/catFigure.png', 'cat', 1)
       ],
-
-
     );
-
-
-
-
-
   }
 
-  updateBreedList(String type,int element)  async {
+  updateBreedList(String type, int element) async {
     reportController.updateBreeds(type).then((rows) {
-
       setState(() {
         availableBreeds = rows;
-        _color.setAll(0,[Colors.black,Colors.black]);
-        _color[element]=Colors.green;
-        typeOfPet=type;
+        _color.setAll(0, [Colors.black, Colors.black]);
+        _color[element] = Colors.green;
+        typeOfPet = type;
         _updateBreedDropDown(type, availableBreeds.elementAt(0));
-
-
       });
-    });}
+    });
+  }
 
-
-  Widget _buildSelectType(String img,String type,int element){
+  Widget _buildSelectType(String img, String type, int element) {
     return Material(
-
-
         child: InkWell(
-            onTap:  () {
-              setState(()  {
-                updateBreedList(type,element);
-
+            onTap: () {
+              setState(() {
+                updateBreedList(type, element);
               });
-
-
             },
-
-            child:Container(
+            child: Container(
               height: MediaQuery.of(context).size.height * 0.2,
               width: MediaQuery.of(context).size.width * 0.3,
               padding: EdgeInsets.all(20),
               margin: EdgeInsets.all(20),
-
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 border: Border.all(
@@ -235,13 +223,12 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
                   width: 10,
                 ),
               ),
-              child: FittedBox(child:Image(image:AssetImage(img),
+              child: FittedBox(
+                  child: Image(
+                image: AssetImage(img),
                 fit: BoxFit.fill,
               )),
-
-            ) )
-
-    );
+            )));
   }
 
   Widget _buildCoatDropDown(List<String> items) {
@@ -270,31 +257,21 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
     );
   }
 
-
-  Widget buildSex(String type, int element,String img){
+  Widget buildSex(String type, int element, String img) {
     return Material(
-
-
         child: InkWell(
-            onTap:  () {
-              setState(()  {
-
-                sexOfPet=type;
-                _colorSex.setAll(0,[Colors.black,Colors.black,Colors.black]);
-                _colorSex[element]=Colors.green;
-
+            onTap: () {
+              setState(() {
+                sexOfPet = type;
+                _colorSex.setAll(0, [Colors.black, Colors.black, Colors.black]);
+                _colorSex[element] = Colors.green;
               });
-
-
             },
-
-            child:Container(
+            child: Container(
               height: MediaQuery.of(context).size.height * 0.1,
               width: MediaQuery.of(context).size.width * 0.18,
               padding: EdgeInsets.all(20),
               margin: EdgeInsets.all(20),
-
-
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 border: Border.all(
@@ -302,33 +279,24 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
                   width: 5,
                 ),
               ),
-
-              child: FittedBox(child:Image(image:AssetImage(img),
+              child: FittedBox(
+                  child: Image(
+                image: AssetImage(img),
                 fit: BoxFit.fill,
               )),
-
-            ) )
-
-    );
+            )));
   }
-
-
-
-
 
   Widget _buildSexDropDown(List<String> items) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        buildSex(items[0],0,'assets/images/f.png'),
-        buildSex(items[1],1,'assets/images/m.png'),
+        buildSex(items[0], 0, 'assets/images/f.png'),
+        buildSex(items[1], 1, 'assets/images/m.png'),
       ],
-
     );
-
-
-
   }
+
   Widget _buildBreedDropDown(List<String> items) {
     print(availableBreeds);
     return DropdownButton<String>(
@@ -359,14 +327,13 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
     return Column(children: [
       Row(children: [
         Text("Type of Pet "),
-
       ]),
-      Row(children: [_buildTypeOfPetDropDown(),],),
-      Row(children: [
-
-
-          _buildBreedDropDown(availableBreeds)
-      ]),
+      Row(
+        children: [
+          _buildTypeOfPetDropDown(),
+        ],
+      ),
+      Row(children: [_buildBreedDropDown(availableBreeds)]),
       Row(children: [
         Text("Colour Coat "),
         _buildCoatDropDown(coatColour),
@@ -399,11 +366,13 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
   }
 
   Widget _buildDate() {
+    DateContoller dateController = new DateContoller();
     return Row(
       children: [
         Text("Lost On  "),
         DatePicker(
             selectedDate: _date,
+            dateContoller: dateController,
             onChanged: ((DateTime date) {
               setState(() {
                 _date = date;
