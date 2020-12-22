@@ -60,6 +60,7 @@ flutter:
     - assets/images/footprint.jpeg
     - assets/images/dogFace.png
     - assets/images/dogFace.svg
+    - assets/images/logo.svg
     - assets/images/Error.png
     - assets/images/catFigure.png
     - assets/images/catFace.svg

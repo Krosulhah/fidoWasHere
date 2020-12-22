@@ -5,6 +5,7 @@ import 'package:dimaWork/mailLogin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /*
@@ -56,12 +57,13 @@ class MyHomePage extends StatelessWidget {
             Container(
               child:
               Column(
-                //todo immagine app
+
                 //  image: DecorationImage( image: new AssetImage('assets/images/footprint.jpeg'), fit: BoxFit.cover)
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                 buildNiceText(),
+                  addImage(context),
                   Row( //buttons row
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -77,6 +79,22 @@ class MyHomePage extends StatelessWidget {
         )
     );
   }
+
+
+}
+
+Container addImage(BuildContext context){
+  return Container(
+      height: MediaQuery.of(context).size.height * 0.5,
+      width: MediaQuery.of(context).size.width * 0.90,
+      padding: EdgeInsets.all(5),
+      margin: EdgeInsets.all(0),
+      child: FittedBox(
+        child:  SvgPicture.asset('assets/images/logo.svg'),
+        fit: BoxFit.fill,
+      ));
+
+
 }
 
 
