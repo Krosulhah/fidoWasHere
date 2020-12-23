@@ -1,4 +1,5 @@
 import 'package:dimaWork/Controllers/FBcontroller.dart';
+import 'package:dimaWork/graphicPatterns/ImagePatterns.dart';
 import 'package:dimaWork/graphicPatterns/TextPatterns.dart';
 import 'package:dimaWork/graphicPatterns/colorManagement.dart';
 import 'package:dimaWork/mailLogin.dart';
@@ -63,7 +64,7 @@ class MyHomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                 buildNiceText(),
-                  addImage(context),
+                  ImagePatterns.addImage(context),
                   Row( //buttons row
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -81,18 +82,7 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-  Container addImage(BuildContext context){
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.5,
-      width: MediaQuery.of(context).size.width * 0.90,
-      padding: EdgeInsets.all(5),
-      margin: EdgeInsets.all(0),
-      child: FittedBox(
-        alignment: Alignment.center,
-        child:  SvgPicture.asset('assets/images/logo.svg'),
-        fit: BoxFit.fill,
-      ));
-}
+
 
 
   FittedBox buildNiceText(){
@@ -161,13 +151,18 @@ class MyHomePage extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.5,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                FaIcon(FontAwesomeIcons.facebook),
-                Text('Facebook login'),
+                Container(
+                    alignment:Alignment.centerLeft,
+                    child:FaIcon(FontAwesomeIcons.facebook)),
+                Container(
+                    alignment:Alignment.centerLeft,
+                    child:Text('Facebook login')
+                ),
               ],
-            )
         )
-    );
+    ));
 
 
   }

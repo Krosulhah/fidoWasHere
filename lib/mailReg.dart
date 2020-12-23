@@ -1,18 +1,19 @@
 import 'package:dimaWork/Controllers/MailRegLoginController.dart';
 import 'package:flutter/material.dart';
 
-/*
+import 'graphicPatterns/colorManagement.dart';
+
+// ignore: slash_for_doc_comments
+/**--------------------------------------------------------------------------------------------------------------//
 * pagina per la registrazione di un'account
 * azioni possibili:
-*
 *   -> indietro -> torna alla pagina di mail login
-*   -> register -> user inserisce mail + psw  + rpsw -> formato mail controllato daq checker +controllo psw e rpsw uguali+ aggiunta sul db
-*               -> aggiungi la mail alla sessione sotto il campo user e vai  a home page
-* * */
+*   -> register -> user inserisce mail + psw  + rpsw -> controllo -> aggiunta sul db
+*               -> vai  a home page
+*-------------------------------------------------------------------------------------------------------------**/
 
 class MailReg extends StatelessWidget {
   @override
-  /**guarda mailLogin**/
   Widget build(BuildContext context) {
     return   RegPage();
   }
@@ -23,8 +24,6 @@ class RegPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new _RegPageState();
 }
-
-// Used for controlling whether the user is loggin or creating an account
 
 
 class _RegPageState extends State<RegPage> {
@@ -69,15 +68,18 @@ class _RegPageState extends State<RegPage> {
   }
 
 
-  // Swap in between our two forms, registering and logging in
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: _buildBar(context),
       body: new Container(
+        alignment: Alignment.center,
+        color: ColorManagement.setBackGroundColor(),
         padding: EdgeInsets.all(16.0),
         child: new Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             _buildTextFields(),
             _buildButtons(),
@@ -89,12 +91,14 @@ class _RegPageState extends State<RegPage> {
 
   Widget _buildBar(BuildContext context) {
     return new AppBar(
-      title: new Text("REGISTRATION"),
+      backgroundColor: ColorManagement.setButtonColor(),
       centerTitle: true,
+      title: setTitle(),
       leading: Builder(
         builder: (BuildContext context) {
           return IconButton(
             icon: const Icon(Icons.arrow_back),
+            color: ColorManagement.setTextColor(),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -111,6 +115,7 @@ class _RegPageState extends State<RegPage> {
           new Container(
             child: new TextField(
               controller: _emailFilter,
+              cursorColor: ColorManagement.setTextColor(),
               decoration: new InputDecoration(
                   labelText: 'Email'
               ),
@@ -119,6 +124,7 @@ class _RegPageState extends State<RegPage> {
           new Container(
             child: new TextField(
               controller: _passwordFilter,
+              cursorColor: ColorManagement.setTextColor(),
               decoration: new InputDecoration(
                   labelText: 'Password'
               ),
@@ -128,6 +134,7 @@ class _RegPageState extends State<RegPage> {
           new Container(
             child: new TextField(
               controller: _repeatPasswordFilter,
+              cursorColor: ColorManagement.setTextColor(),
               decoration: new InputDecoration(
                   labelText: 'Repeat Password'
               ),
@@ -139,39 +146,49 @@ class _RegPageState extends State<RegPage> {
     );
   }
 
-  Widget _buildButtons() {
-
-      return new Container(
-        child: new Column(
-          children: <Widget>[
-            new RaisedButton(
-              child: new Text('Register'),
-              onPressed:
-                  () async {
-                String result=await regController.registerPressed(_email,_password,_repeatPassword,context); // runApp (MailReg());
-                if (result!=null&&result.isNotEmpty)
-                {
-                  showDialog(
-                      context: context,
-                      child: new AlertDialog(
-                        title: new Text(result),
-                      ));
-                }
-              },
-            ),
-
-          ],
-        ),
-      );
-    }
 
 
+
+  RaisedButton _buildButtons() {
+
+    return RaisedButton(
+        textColor: ColorManagement.setTextColor(),
+        color: ColorManagement.setButtonColor(),
+        onPressed:
+            () async {
+          String result=await regController.registerPressed(_email,_password,_repeatPassword,context); // runApp (MailReg());
+          if (result!=null&&result.isNotEmpty)
+          {
+            showDialog(
+                context: context,
+                child: new AlertDialog(
+                  title: new Text(result),
+                ));
+          }
+        },shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16.0))),
+        child: Container(
+            height: MediaQuery.of(context).size.height * 0.05,
+            width: MediaQuery.of(context).size.width * 0.5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('Sign Up'),
+              ],
+            ))
+    );
   }
+}
 
-  // These functions can self contain any user auth logic required, they all have access to _email and _password
-
-
-
-
-
-//https://pub.dev/packages/postgres per info connessione
+FittedBox setTitle(){
+  return FittedBox(
+      fit:BoxFit.fitWidth,
+      child:Text(
+        'REGISTRATION',
+        style:   TextStyle(
+          color:ColorManagement.setTextColor(),
+        ),
+      )
+  );
+}

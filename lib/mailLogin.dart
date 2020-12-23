@@ -64,6 +64,7 @@ class _MailLogInPageState extends State<MailLogInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: ColorManagement.setButtonColor(),
         centerTitle: true,
@@ -81,6 +82,7 @@ class _MailLogInPageState extends State<MailLogInPage> {
         ),
       ),
       body: new Container(
+        alignment: Alignment.center,
         color: ColorManagement.setBackGroundColor(),
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -102,12 +104,14 @@ class _MailLogInPageState extends State<MailLogInPage> {
         children: <Widget>[
           new Container(
             child: new TextField(
+              cursorColor: ColorManagement.setTextColor(),
               controller: _emailFilter,
               decoration: new InputDecoration(labelText: 'Email'),
             ),
           ),
           new Container(
             child: new TextField(
+              cursorColor: ColorManagement.setTextColor(),
               controller: _passwordFilter,
               decoration: new InputDecoration(labelText: 'Password'),
               obscureText: true,
@@ -170,6 +174,7 @@ class _MailLogInPageState extends State<MailLogInPage> {
             width: MediaQuery.of(context).size.width * 0.5,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text('Sign Up'),
               ],
@@ -182,7 +187,7 @@ FittedBox setTitle(){
   return FittedBox(
       fit:BoxFit.fitWidth,
       child:Text(
-        'Fido Was Here',
+        'LOGIN',
         style:   TextStyle(
           color:ColorManagement.setTextColor(),
         ),
