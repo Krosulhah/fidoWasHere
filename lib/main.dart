@@ -8,16 +8,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-/*
+// ignore: slash_for_doc_comments
+/**--------------------------------------------------------------------------------//
 * pagina di accesso all'applicazione
 * azioni possibili:
 *
 *   -> chiudere app -> press sulla freccia nell'appbar
 *   -> accesso con mail -> porta alla pagina di login tramite mail
 *   -> accesso con facebook -> richiede login tramite credenziali FB
-* */
+ * ------------------------------------------------------------------------------**/
 
-//todo aggiungi widget con nome app
+
 
 void main() {
   runApp(MyHomePage());
@@ -36,6 +37,7 @@ class MyHomePage extends StatelessWidget {
       @override
       Widget build(BuildContext context) {
         return new Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               centerTitle: true,
               title: TextPatterns.setAppBarText(),
@@ -57,8 +59,6 @@ class MyHomePage extends StatelessWidget {
             Container(
               child:
               Column(
-
-                //  image: DecorationImage( image: new AssetImage('assets/images/footprint.jpeg'), fit: BoxFit.cover)
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -79,27 +79,24 @@ class MyHomePage extends StatelessWidget {
         )
     );
   }
-
-
 }
 
-Container addImage(BuildContext context){
-  return Container(
+  Container addImage(BuildContext context){
+    return Container(
       height: MediaQuery.of(context).size.height * 0.5,
       width: MediaQuery.of(context).size.width * 0.90,
       padding: EdgeInsets.all(5),
       margin: EdgeInsets.all(0),
       child: FittedBox(
+        alignment: Alignment.center,
         child:  SvgPicture.asset('assets/images/logo.svg'),
         fit: BoxFit.fill,
       ));
-
-
 }
 
 
-FittedBox buildNiceText(){
-  return FittedBox(
+  FittedBox buildNiceText(){
+    return FittedBox(
       fit:BoxFit.fitWidth,
       alignment: Alignment.center,
       child: Text(
