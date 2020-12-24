@@ -128,6 +128,7 @@ class ReportData extends StatelessWidget {
     builder: (context,  snapshot) {
     if (snapshot.hasData&&snapshot.data)
     return closeButtonBuild(context, controller);
+    else
     return Text('');
     }
 
