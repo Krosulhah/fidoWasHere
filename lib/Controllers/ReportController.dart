@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:dimaWork/Model/breed.dart';
 import 'package:dimaWork/Model/colour.dart';
 import 'package:dimaWork/Model/fido.dart';
+import 'package:dimaWork/Model/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -183,6 +184,43 @@ class ReportController {
     connection.close();
     return true;
   }
+  retrieveMyReports() async {
+  var connection = connectionHandler.createConnection();
+
+  String user=await FlutterSession().get("user");
+  await connection.open();
+  List<List<dynamic>> results = await connection.query(
+  "SELECT * FROM public.\"Fido\" WHERE (reporter=@n) ORDER BY date DESC",
+  substitutionValues: {
+  "n": user,
+  });
+
+  List<Fido> availableReports = new List<Fido>();
+
+  connection.close();
+  if (results == null || results.isEmpty) return toast("no reported Fidos found");
+  var directory = await getApplicationDocumentsDirectory();
+
+  for (List<dynamic> d in results) {
+  Fido r = new Fido();
+  r.setId(d[0]);
+  r.setName(d[1]);
+  r.setSex(d[2]);
+  r.setBreed(d[3]);
+  r.setColour(d[4]);
+  r.setFoundHere(d[7]);
+  r.setBrouthto(d[8]);
+  r.setBroughtHome(d[9].toString());
+  r.setPhoto(d[12]);
+  r.setDate(d[10]);
+  r.setReporter(d[11]);
+  availableReports.add(r);
+  }
+
+  return availableReports;
+  }
+
+
 
   retrieveReports(String name, DateTime date, String sexOfPet,
       String breedOfPet, String typeOfPet, String colorOfCoat) async {
@@ -241,5 +279,16 @@ class ReportController {
     }
 
     return availableReports;
+  }
+
+  Future<bool> canClose(String reporter) async {
+      var session = FlutterSession();
+      String user = await session.get("user");
+      bool resp=false;
+      if(user==reporter)
+      {
+        return !resp;
+      }
+    return resp;
   }
 }

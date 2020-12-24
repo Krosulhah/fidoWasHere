@@ -1,10 +1,10 @@
-
+import 'package:dimaWork/Controllers/ReportController.dart';
 import 'package:dimaWork/checkers/loginValidityChecker.dart';
 import 'package:dimaWork/graphicPatterns/ImagePatterns.dart';
 import 'package:dimaWork/myReport.dart';
+import 'package:dimaWork/reportSearch.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_session/flutter_session.dart';
-
+import 'Model/fido.dart';
 import 'Statistics.dart';
 import 'package:flutter/material.dart';
 import 'graphicPatterns/colorManagement.dart';
@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
     /*** check if user has logged in*/
     LoginValidityChecker loginChecker=new LoginValidityChecker();
     loginChecker.isLoggedIn(context);
+    ReportController reportController=new ReportController();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -76,7 +77,7 @@ class _HomePageState extends State<HomePage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [ImagePatterns.addSmallerImage(context),reportButton(), lookForFidoButton(),myReportButton(),
+            children: [ImagePatterns.addSmallerImage(context),reportButton(), lookForFidoButton(),myReportButton(reportController),
               statisticsButton(),
              ],
           ),
@@ -158,15 +159,22 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  myReportButton(){
+
+  myReportButton(ReportController reportController){
     return RaisedButton(
         textColor: ColorManagement.setTextColor(),
         color: ColorManagement.setButtonColor(),
-        onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => new MyReport(),
-            )), shape: RoundedRectangleBorder(
+        onPressed: () async {
+          var res = await reportController.retrieveMyReports();
+          if (res != null && res is List<Fido> && res.isNotEmpty)
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => new ReportSearch(
+                      result: res //replace by New Contact Screen
+                  ),
+                ));
+        },shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(16.0))),
         child:Container(
             alignment: Alignment.center,

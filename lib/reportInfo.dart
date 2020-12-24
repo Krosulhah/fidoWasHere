@@ -1,7 +1,11 @@
+import 'package:dimaWork/Controllers/ReportController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
 
 import 'Model/fido.dart';
+import 'graphicPatterns/colorManagement.dart';
+import 'home.dart';
 
 class ReportInfo extends StatelessWidget {
   final Fido result;
@@ -31,6 +35,7 @@ class ReportInfo extends StatelessWidget {
 
 class Body extends StatelessWidget {
   final Fido result;
+
   Body({Key key, this.result}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -61,6 +66,7 @@ class Body extends StatelessWidget {
 
 class ReportData extends StatelessWidget {
   final Fido result;
+  ReportController controller=new ReportController();
   ReportData({Key key, this.result}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -116,10 +122,47 @@ class ReportData extends StatelessWidget {
             ),
           ],
         ),
-        actualAddress(result)
+        actualAddress(result),
+    FutureBuilder<bool>(
+    future: controller.canClose(result.getReporter()),
+    builder: (context,  snapshot) {
+    if (snapshot.hasData&&snapshot.data)
+    return closeButtonBuild(context, controller);
+    return Text('');
+    }
+
+    )
       ],
     ));
   }
+
+
+
+
+//todo add thank
+RaisedButton closeButtonBuild(context,controller) {
+      return RaisedButton(
+          textColor: ColorManagement.setTextColor(),
+          color: ColorManagement.setButtonColor(),
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => new Home(),
+              )), shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16.0))),
+          child:Container(
+              alignment: Alignment.center,
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.5,
+              child:
+              Align(
+                  alignment: Alignment.center,
+                  child: Text('Close Report' ,textAlign: TextAlign.center)
+              )
+          )
+      );
+  }
+
 
   actualAddress(Fido result) {
     if (result.broughtHome) {
