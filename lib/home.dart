@@ -141,9 +141,7 @@ class _HomePageState extends State<HomePage> {
       onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => new Statistics(
-              //replace by New Contact Screen
-            ),
+            builder: (_) => new Statistics(),
           )), shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(16.0))),
         child:Container(
@@ -170,9 +168,7 @@ class _HomePageState extends State<HomePage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => new ReportSearch(
-                      result: res //replace by New Contact Screen
-                  ),
+                  builder: (_) => new ReportSearch(result: res),
                 ));
         },shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(16.0))),

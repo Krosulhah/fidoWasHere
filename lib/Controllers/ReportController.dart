@@ -227,7 +227,7 @@ class ReportController {
     if (name == null || name.isEmpty) return toast("please insert Fido's name");
     if (sexOfPet == null || sexOfPet.isEmpty)
       return toast("please select a sex value");
-    if (breedOfPet == null || breedOfPet.isEmpty)
+    if (breedOfPet == null || breedOfPet.isEmpty||breedOfPet=="Select Fido's type")
       return toast("please select a breed value");
     if (typeOfPet == null || typeOfPet.isEmpty)
       return toast("please select Fido's type");

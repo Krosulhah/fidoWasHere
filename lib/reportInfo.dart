@@ -1,8 +1,6 @@
 import 'package:dimaWork/Controllers/ReportController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_session/flutter_session.dart';
-
 import 'Model/fido.dart';
 import 'graphicPatterns/colorManagement.dart';
 import 'home.dart';
@@ -13,7 +11,6 @@ class ReportInfo extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    //todo prendi i dati dal db
     return MaterialApp(
         title: 'FidoWasHere',
         home: Scaffold(
@@ -123,13 +120,13 @@ class ReportData extends StatelessWidget {
           ],
         ),
         actualAddress(result),
-    FutureBuilder<bool>(
-    future: controller.canClose(result.getReporter()),
-    builder: (context,  snapshot) {
-    if (snapshot.hasData&&snapshot.data)
-    return closeButtonBuild(context, controller);
-    else
-    return Text('');
+        FutureBuilder<bool>(
+            future: controller.canClose(result.getReporter()),
+            builder: (context,  snapshot) {
+              if (snapshot.hasData&&snapshot.data)
+                return closeButtonBuild(context, controller);
+              else
+                return Text('');
     }
 
     )
