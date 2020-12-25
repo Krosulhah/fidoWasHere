@@ -1,4 +1,5 @@
 import 'package:dimaWork/checkers/loginValidityChecker.dart';
+import 'package:dimaWork/graphicPatterns/infoBuilder.dart';
 import 'package:dimaWork/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -108,35 +109,35 @@ class _ReportPetPageState extends State<ReportPetPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  boldNiceText("Fido's type",context),
+                  InfoBuilder.boldNiceText("Fido's type",context),
                 ]),
-                addSpace(),
+                InfoBuilder.addSpace(),
                 _buildTypeOfPetDropDown(),
-                addSpace(),
+                InfoBuilder.addSpace(),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  boldNiceText("Fido's gender",context),
+                  InfoBuilder.boldNiceText("Fido's gender",context),
                 ]),
-                addSpace(),
+                InfoBuilder.addSpace(),
                 _buildSexDropDown(sexPet),
-                addSpace(),
+                InfoBuilder.addSpace(),
                 buildBreedCard(),
-                addSpace(),
+                InfoBuilder.addSpace(),
                 buildCoatCard(),
-                addSpace(),
+                InfoBuilder.addSpace(),
                 buildNameCard(),
-                addSpace(),
+                InfoBuilder.addSpace(),
                 buildFoundOnCard(),
-                addSpace(),
+                InfoBuilder.addSpace(),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  boldNiceText("Add Fido's picture",context),
+                  InfoBuilder.boldNiceText("Add Fido's picture",context),
                 ]),
-                addSpace(),
+                InfoBuilder.addSpace(),
                 _buildAddPhotoPet(),
-                addSpace(),
+                InfoBuilder.addSpace(),
                 _buildRadioBox(),
-                addSpace(),
+                InfoBuilder.addSpace(),
                 if (isBroughtTo == true) buildBroughtToCard(),
-                addSpace(),
+                InfoBuilder.addSpace(),
                 _buildSendButton(),
 
 
@@ -147,48 +148,25 @@ class _ReportPetPageState extends State<ReportPetPage> {
         ));
   }
 ///-------------------------------------------- <COSTRUZIONE CARD>--------------------------------------------------------------////
-
-  Card buildCard(String text, var build){
-    return Card(
-        elevation: 8.0,
-        color: ColorManagement.setButtonColor(),
-        margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-        child:Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            decoration: BoxDecoration(
-                borderRadius:BorderRadius.all(Radius.circular(16.0)),
-                color:ColorManagement.setSeparatorColor()),
-            child:Column(mainAxisAlignment: MainAxisAlignment.center, children:
-            [buildNiceText(text,context),
-              addSpace(),
-              build,
-              addSpace()
-            ]
-            )
-        )
-    );
-  }
-
   Card buildNameCard(){
-    return buildCard("Fido's name (optional):",_buildNameTextFields());
+    return InfoBuilder.buildCard("Fido's name (optional):",_buildNameTextFields(),context);
   }
 
   Card buildBreedCard(){
-    return buildCard("Fido's breed:",_buildBreedDropDown(availableBreeds));
+    return InfoBuilder.buildCard("Fido's breed:",_buildBreedDropDown(availableBreeds),context);
   }
 
   Card buildCoatCard(){
-    return buildCard("Coat color:",_buildCoatDropDown(coatColour));
+    return InfoBuilder.buildCard("Coat color:",_buildCoatDropDown(coatColour),context);
   }
 
   Card buildFoundOnCard(){
-    return buildCard("Found on:",_buildFoundOn());
+    return InfoBuilder.buildCard("Found on:",_buildFoundOn(),context);
   }
 
   Card buildBroughtToCard(){
-    return buildCard("Brought to:",_buildBroughtTo());
+    return InfoBuilder.buildCard("Brought to:",_buildBroughtTo(),context);
   }
-
 ///---------------------------------------------------------------------------------------------------------------------------///
 
   Widget _buildTypeOfPetDropDown() {
@@ -210,23 +188,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
                 updateBreedList(type, element);
               });
             },
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.2,
-              width: MediaQuery.of(context).size.width * 0.40,
-              padding: EdgeInsets.all(5),
-              margin: EdgeInsets.all(0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: ColorManagement.setBackGroundColor(),
-                border: Border.all(
-                  color: _color[element],
-                  width: 10,
-                ),
-              ),
-              child: FittedBox(
-                  child: SvgPicture.asset(img),
-                fit: BoxFit.fill,
-              )),
+            child: InfoBuilder.selectTypeInfo(context,_color,element,img),
             ));
   }
 
@@ -304,30 +266,12 @@ class _ReportPetPageState extends State<ReportPetPage> {
                 _colorSex[element] =ColorManagement.setMarkerColor();
               });
             },
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.1,
-              width: MediaQuery.of(context).size.width * 0.18,
-              padding: EdgeInsets.all(20),
-              margin: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: ColorManagement.setBackGroundColor(),
-                border: Border.all(
-                  color: _colorSex[element],
-                  width: 5,
-                ),
-              ),
-              child: FittedBox(
-                  child: Image(
-                image: AssetImage(img),
-                fit: BoxFit.fill,
-              )),
-            )));
+            child: InfoBuilder.selectSexInfo(context,_colorSex,element,img)));
   }
 
   Widget _buildSexDropDown(List<String> items) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         buildSex(items[0], 0, 'assets/images/f.png'),
         buildSex(items[1], 1, 'assets/images/m.png'),
@@ -335,8 +279,6 @@ class _ReportPetPageState extends State<ReportPetPage> {
       ],
     );
   }
-
-
 
 
   Widget _buildNameTextFields() {
@@ -367,8 +309,8 @@ class _ReportPetPageState extends State<ReportPetPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            boldNiceText('Have you or will you change the location of the Fido?',context),
-            addSpace(),
+            InfoBuilder.boldNiceText('Have you or will you change the location of the Fido?',context),
+            InfoBuilder.addSpace(),
           ],
         ),
         Row(
@@ -377,7 +319,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
               height: MediaQuery.of(context).size.height * 0.05,
               width: MediaQuery.of(context).size.width * 0.4,
               child: ListTile(
-                title: boldNiceText('Yes',context),
+                title: InfoBuilder.boldNiceText('Yes',context),
                 leading: Radio(
                   value: checkedValueYes,
                   groupValue: isBroughtTo,
@@ -393,7 +335,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
               height: MediaQuery.of(context).size.height * 0.05,
               width: MediaQuery.of(context).size.width * 0.4,
               child: ListTile(
-                title: boldNiceText('No',context),
+                title: InfoBuilder.boldNiceText('No',context),
                 leading: Radio(
                   value: checkedValueNo,
                   groupValue: isBroughtTo,
@@ -492,7 +434,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
 
   Widget _buildBroughtTo() {
     return Column(children: [
-      Column(
+      Row(
         children: [
           Container(
             height: MediaQuery.of(context).size.height * 0.06,
@@ -518,7 +460,6 @@ class _ReportPetPageState extends State<ReportPetPage> {
                   ));
               setState(() {
                 broughtTo.text = result;
-                //myData.setBroughtLocation(result);
               });
             },
           )
@@ -585,34 +526,8 @@ FittedBox setTitle(){
   );
 }
 
-Container buildNiceText(String text,BuildContext context){
-  return Container(
-    alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width*0.4,
-      child: Text(text,
-    style: TextStyle(
-      color:ColorManagement.setTextColor(),
-    ),
-  ));
-}
-
-Container boldNiceText(String text,BuildContext context){
-  return Container(
-    alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width*0.4,
-      child:Text(text,
-    style: TextStyle(
-      fontWeight: FontWeight.bold,
-      color:ColorManagement.setTextColor(),
-    ),
-  ));
-}
 
 
-Container addSpace(){
-  return Container(
-    height: 5.0,
-    width: 2.0,
-  );
-}
+
+
 

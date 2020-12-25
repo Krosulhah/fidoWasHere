@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context) {
             return IconButton(
               color: ColorManagement.setTextColor(),
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(Icons.exit_to_app),
               onPressed: () {
                 SystemNavigator.pop();
               },
