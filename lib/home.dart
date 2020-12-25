@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
             child:
             Align(
                 alignment: Alignment.center,
-                child: Text('Look For Fifo' ,textAlign: TextAlign.center)
+                child: Text('Look For Fido' ,textAlign: TextAlign.center)
             )
         )
     );
@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> {
             child:
             Align(
                 alignment: Alignment.center,
-                child: Text('Report Fifo' ,textAlign: TextAlign.center)
+                child: Text('Report Fido' ,textAlign: TextAlign.center)
             )
         )
     );

@@ -1,6 +1,7 @@
 import 'package:dimaWork/checkers/loginValidityChecker.dart';
 import 'package:dimaWork/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'dart:async';
 import 'package:image_picker/image_picker.dart';
@@ -107,58 +108,34 @@ class _ReportPetPageState extends State<ReportPetPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  buildNiceText("Select Fido's type"),
+                  boldNiceText("Fido's type",context),
                 ]),
                 addSpace(),
                 _buildTypeOfPetDropDown(),
                 addSpace(),
-                addSpace(),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  buildNiceText("Select Fido's breed"),
-                ]),
-                addSpace(),
-                _buildBreedDropDown(availableBreeds),
-                addSpace(),
-                addSpace(),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  buildNiceText("Select Fido's gender"),
+                  boldNiceText("Fido's gender",context),
                 ]),
                 addSpace(),
                 _buildSexDropDown(sexPet),
                 addSpace(),
+                buildBreedCard(),
+                addSpace(),
+                buildCoatCard(),
+                addSpace(),
+                buildNameCard(),
+                addSpace(),
+                buildFoundOnCard(),
                 addSpace(),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  buildNiceText("Select Fido's coat color"),
-                ]),
-                addSpace(),
-                _buildCoatDropDown(coatColour),
-                addSpace(),
-                addSpace(),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  buildNiceText("If you can write Fido's name"),
-                ]),
-                addSpace(),
-                _buildNameTextFields(),
-                addSpace(),
-                addSpace(),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  buildNiceText("Found On"),
-                ]),
-                addSpace(),
-                _buildFoundOn(),
-                addSpace(),
-                addSpace(),
-                _buildRadioBox(),
-                addSpace(),
-                if (isBroughtTo == true) _buildBroughtTo(),
-                addSpace(),
-                addSpace(),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text("Add Fido's picture"),
+                  boldNiceText("Add Fido's picture",context),
                 ]),
                 addSpace(),
                 _buildAddPhotoPet(),
                 addSpace(),
+                _buildRadioBox(),
+                addSpace(),
+                if (isBroughtTo == true) buildBroughtToCard(),
                 addSpace(),
                 _buildSendButton(),
 
@@ -169,6 +146,50 @@ class _ReportPetPageState extends State<ReportPetPage> {
 
         ));
   }
+///-------------------------------------------- <COSTRUZIONE CARD>--------------------------------------------------------------////
+
+  Card buildCard(String text, var build){
+    return Card(
+        elevation: 8.0,
+        color: ColorManagement.setButtonColor(),
+        margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+        child:Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            decoration: BoxDecoration(
+                borderRadius:BorderRadius.all(Radius.circular(16.0)),
+                color:ColorManagement.setSeparatorColor()),
+            child:Column(mainAxisAlignment: MainAxisAlignment.center, children:
+            [buildNiceText(text,context),
+              addSpace(),
+              build,
+              addSpace()
+            ]
+            )
+        )
+    );
+  }
+
+  Card buildNameCard(){
+    return buildCard("Fido's name (optional):",_buildNameTextFields());
+  }
+
+  Card buildBreedCard(){
+    return buildCard("Fido's breed:",_buildBreedDropDown(availableBreeds));
+  }
+
+  Card buildCoatCard(){
+    return buildCard("Coat color:",_buildCoatDropDown(coatColour));
+  }
+
+  Card buildFoundOnCard(){
+    return buildCard("Found on:",_buildFoundOn());
+  }
+
+  Card buildBroughtToCard(){
+    return buildCard("Brought to:",_buildBroughtTo());
+  }
+
+///---------------------------------------------------------------------------------------------------------------------------///
 
   Widget _buildTypeOfPetDropDown() {
     return new Row(
@@ -241,7 +262,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
       items: items.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
-          child: Text(value),
+          child: Text(value,textAlign: TextAlign.center),
         );
       }).toList(),
     );
@@ -266,7 +287,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
       items: items.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
-          child: Text(value),
+          child: Text(value,textAlign: TextAlign.center),
         );
       }).toList(),
     );
@@ -315,6 +336,9 @@ class _ReportPetPageState extends State<ReportPetPage> {
     );
   }
 
+
+
+
   Widget _buildNameTextFields() {
     return new Container(
       child: new Row(
@@ -324,6 +348,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
             height: MediaQuery.of(context).size.height * 0.06,
             width: MediaQuery.of(context).size.width * 0.5,
             child: new TextField(
+              textAlign: TextAlign.center,
               controller: controllerName,
               decoration: new InputDecoration(
                 hintText: "Fido's name",
@@ -340,9 +365,9 @@ class _ReportPetPageState extends State<ReportPetPage> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Have you or will you change the location of the Fido?'),
+            boldNiceText('Have you or will you change the location of the Fido?',context),
             addSpace(),
           ],
         ),
@@ -352,7 +377,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
               height: MediaQuery.of(context).size.height * 0.05,
               width: MediaQuery.of(context).size.width * 0.4,
               child: ListTile(
-                title: Text('Yes'),
+                title: boldNiceText('Yes',context),
                 leading: Radio(
                   value: checkedValueYes,
                   groupValue: isBroughtTo,
@@ -368,7 +393,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
               height: MediaQuery.of(context).size.height * 0.05,
               width: MediaQuery.of(context).size.width * 0.4,
               child: ListTile(
-                title: Text('No'),
+                title: boldNiceText('No',context),
                 leading: Radio(
                   value: checkedValueNo,
                   groupValue: isBroughtTo,
@@ -435,6 +460,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
             height: MediaQuery.of(context).size.height * 0.06,
             width: MediaQuery.of(context).size.width * 0.5,
             child: TextField(
+              textAlign: TextAlign.center,
               controller: foundOn,
               decoration: new InputDecoration(
                 hintText:
@@ -468,12 +494,11 @@ class _ReportPetPageState extends State<ReportPetPage> {
     return Column(children: [
       Column(
         children: [
-          Text("Brough to:"),
-          addSpace(),
           Container(
             height: MediaQuery.of(context).size.height * 0.06,
             width: MediaQuery.of(context).size.width * 0.5,
             child: TextField(
+              textAlign: TextAlign.center,
               controller: broughtTo,
               decoration: new InputDecoration(
                 hintText:
@@ -489,7 +514,6 @@ class _ReportPetPageState extends State<ReportPetPage> {
                   MaterialPageRoute(
                     builder: (context) => MapsUsage(
                       userAddress: broughtTo.text,
-                      //replace by New Contact Screen
                     ),
                   ));
               setState(() {
@@ -561,16 +585,34 @@ FittedBox setTitle(){
   );
 }
 
-Text buildNiceText(String text){
-  return Text(text,
+Container buildNiceText(String text,BuildContext context){
+  return Container(
+    alignment: Alignment.center,
+      width: MediaQuery.of(context).size.width*0.4,
+      child: Text(text,
     style: TextStyle(
       color:ColorManagement.setTextColor(),
     ),
-  );
+  ));
 }
+
+Container boldNiceText(String text,BuildContext context){
+  return Container(
+    alignment: Alignment.center,
+      width: MediaQuery.of(context).size.width*0.4,
+      child:Text(text,
+    style: TextStyle(
+      fontWeight: FontWeight.bold,
+      color:ColorManagement.setTextColor(),
+    ),
+  ));
+}
+
 
 Container addSpace(){
   return Container(
-    height: 3.0,
+    height: 5.0,
+    width: 2.0,
   );
 }
+

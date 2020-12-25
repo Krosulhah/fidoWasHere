@@ -1,10 +1,5 @@
-import 'dart:async';
-/** modifica : ho dovuto modificare la parte in cui ritorni il dato
- *
- * non devi fare push ma pop in quanto dobbiamo tornare indietro alla precedente schermata senza aggiungere al path
- * altrimenti facendo pop in report torniamo alla mappa e non alla home
- * **/
 
+import 'package:dimaWork/graphicPatterns/colorManagement.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,9 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapsUsage extends StatefulWidget {
   String userAddress;
-
   MapsUsage({this.userAddress});
-
   @override
   _MapsUsageState createState() => _MapsUsageState();
 }
@@ -26,7 +19,6 @@ class _MapsUsageState extends State<MapsUsage> {
   String address = "Milano";
   Position pos;
   MarkerId firstMarkerId;
-
   LatLng _center = new LatLng(0, 0);
 
   void _onMapCreated(GoogleMapController controller) {
@@ -44,9 +36,7 @@ class _MapsUsageState extends State<MapsUsage> {
 
   MarkerId _addPosition(var latitude, var longitude) {
     var markerIdVal = '#FIDOWASHERE';
-    final MarkerId markerId = MarkerId(
-        markerIdVal); //todo prendere coordinate da db + filtrare su tipo fido
-
+    final MarkerId markerId = MarkerId(markerIdVal);
     // creating a new MARKER
     final Marker marker = Marker(
       markerId: markerId,
@@ -69,12 +59,14 @@ class _MapsUsageState extends State<MapsUsage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('FidoWasHere'),
-        backgroundColor: Colors.green[700],
+        centerTitle: true,
+        title:setTitle(),
+        backgroundColor: ColorManagement.setButtonColor(),
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
               icon: const Icon(Icons.arrow_back),
+              color: ColorManagement.setTextColor(),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -254,28 +246,16 @@ class _MapsUsageState extends State<MapsUsage> {
       ],
     );
   }
-
-//List<Location> locations = await locationFromAddress("Gronausestraat 710, Enschede");
-
 }
 
-//https://pub.dev/documentation/map_view/latest/ guida flutter
-/*
-* void _onAddMarkerButtonPressed() {
-setState(() {
-_markers.add(Marker(
-// This marker id can be anything that uniquely identifies each marker.
-markerId: MarkerId(_lastMapPosition.toString()),
-position: _lastMapPosition,
-infoWindow: InfoWindow(
-title: ‘Really cool place’,
-snippet: ‘5 Star Rating’,
-),
-icon: BitmapDescriptor.defaultMarker,
-));
-});
+FittedBox setTitle(){
+  return FittedBox(
+      fit:BoxFit.fitWidth,
+      child:Text(
+        'FIDO WAS HERE',
+        style:   TextStyle(
+          color:ColorManagement.setTextColor(),
+        ),
+      )
+  );
 }
-*
-* https://medium.com/@rajesh.muthyala/flutter-with-google-maps-and-google-place-85ccee3f0371
-* https://github.com/rajayogan/flutter-googlemapaddresses/blob/master/lib/main.dart#L73
-*/
