@@ -115,7 +115,7 @@ class ReportController {
       toast("please select Fido's type");
       return false;
     }
-    if (breedOfPet == null || breedOfPet.isEmpty) {
+    if (breedOfPet == null || breedOfPet.isEmpty||breedOfPet=="Select Fido's type") {
       toast("please select a breed value");
       return false;
     }

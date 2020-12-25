@@ -14,14 +14,7 @@ class LookForFido extends StatelessWidget {
   Widget build(BuildContext context) {
     LoginValidityChecker loginValidityChecker = new LoginValidityChecker();
     loginValidityChecker.isLoggedIn(context);
-    return MaterialApp(
-      title: 'Look For Fido',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: LookForFidoPage(title: 'Look For Fido'),
-    );
+    return  LookForFidoPage(title: 'Look For Fido');
   }
 }
 
@@ -104,9 +97,14 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
                 buildNameCard(),
                 InfoBuilder.addSpace(),
                 buildLostOn(),
-                IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () async {
+                InfoBuilder.addSpace(),
+                ClipOval(
+                  child: Material(
+                  color: ColorManagement.setButtonColor(),
+                  child: InkWell(
+                  splashColor: ColorManagement.setMarkerColor(),
+                    child: SizedBox(width: MediaQuery.of(context).size.width * 0.1, height: MediaQuery.of(context).size.height * 0.05, child: Icon(Icons.search)),
+                    onTap: () async {
                       var res = await reportController.retrieveReports(controllerName.text, _date, sexOfPet, breedOfPet, typeOfPet, colorOfCoat);
                       if (res != null && res is List<Fido> && res.isNotEmpty)
                         Navigator.push(
@@ -117,10 +115,10 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
                                   ),
                             ));
                     })
-              ],
-            ),
+              ),
+            )],
           ),
-        ));
+        )));
   }
 
   Widget _buildTypeOfPetDropDown() {
@@ -256,7 +254,7 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
     ]);
   }
   Card buildNameCard(){
-    return InfoBuilder.buildCard("Fido's name (optional):",_buildNameTextFields(),context);
+    return InfoBuilder.buildCard("Fido's name:",_buildNameTextFields(),context);
   }
 
   Card buildBreedCard(){
@@ -283,6 +281,7 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
             child: new TextField(
               textAlign: TextAlign.center,
               controller: controllerName,
+              cursorColor: ColorManagement.setTextColor(),
               decoration: new InputDecoration(
                 hintText: "Fido's name",
               ),

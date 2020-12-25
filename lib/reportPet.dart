@@ -291,6 +291,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
             width: MediaQuery.of(context).size.width * 0.5,
             child: new TextField(
               textAlign: TextAlign.center,
+              cursorColor: ColorManagement.setTextColor(),
               controller: controllerName,
               decoration: new InputDecoration(
                 hintText: "Fido's name",
@@ -404,6 +405,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
             child: TextField(
               textAlign: TextAlign.center,
               controller: foundOn,
+              cursorColor: ColorManagement.setTextColor(),
               decoration: new InputDecoration(
                 hintText:
                     "Example: Via street name, number, city, province, state",
@@ -442,6 +444,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
             child: TextField(
               textAlign: TextAlign.center,
               controller: broughtTo,
+              cursorColor: ColorManagement.setTextColor(),
               decoration: new InputDecoration(
                 hintText:
                     "Example: Via street name, number, city, province, state",
