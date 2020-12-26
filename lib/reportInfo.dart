@@ -174,9 +174,9 @@ RaisedButton closeButtonBuild(context,controller,result) {
   }
 
 
-  Card actualAddress(Fido result,BuildContext context) {
+  Widget actualAddress(Fido result,BuildContext context) {
     if (result.getMoved()) {
-      return InfoBuilder.buildCard("The reporter has not move the Fido",InfoBuilder.addSpace(), context);
+      return InfoBuilder.boldNiceText("The reporter has not move the Fido",context);
     }
     return InfoBuilder.buildCard("Brought to: ",InfoBuilder.buildNiceText(result.broughtTo, context), context);
   }

@@ -38,11 +38,15 @@ static Card buildCard(String text, var build,BuildContext context){
       color: ColorManagement.setButtonColor(),
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child:Container(
+        alignment: Alignment.center,
           width: MediaQuery.of(context).size.width * 0.9,
           decoration: BoxDecoration(
               borderRadius:BorderRadius.all(Radius.circular(16.0)),
               color:ColorManagement.setSeparatorColor()),
-          child:Column(mainAxisAlignment: MainAxisAlignment.center, children:
+          child:Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children:
           [buildNiceText(text,context),
             addSpace(),
             build,
@@ -57,8 +61,9 @@ static Card buildCard(String text, var build,BuildContext context){
 static Container buildNiceText(String text,BuildContext context){
   return Container(
       alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width*0.4,
+      width: MediaQuery.of(context).size.width*0.65,
       child: Text(text,
+        textAlign: TextAlign.center,
         style: TextStyle(
           color:ColorManagement.setTextColor(),
         ),
@@ -100,7 +105,7 @@ static Container selectSexInfo(BuildContext context,List<Color>_colorSex,int ele
 static Container boldNiceText(String text,BuildContext context){
   return Container(
       alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width*0.4,
+      width: MediaQuery.of(context).size.width*0.65,
       child:Text(text,
         style: TextStyle(
           fontWeight: FontWeight.bold,
