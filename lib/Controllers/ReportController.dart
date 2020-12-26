@@ -172,7 +172,7 @@ class ReportController {
 
     await connection.query(
         "INSERT INTO public.\"Fido\" "
-        "(name,sex,breed,colour,type,isclosed,foundhere,broughthere,broughthome,photo,date,reporter) "
+        "(name,sex,breed,colour,type,isclosed,foundhere,broughthere,moved,photo,date,reporter) "
         "VALUES (@n,@s,@b,@c,@t,@closed,@fh,@bh,@bhm,@p,@d,@r)",
         substitutionValues: {
           "n": name,
@@ -218,7 +218,7 @@ class ReportController {
   r.setColour(d[4]);
   r.setFoundHere(d[7]);
   r.setBrouthto(d[8]);
-  r.setBroughtHome(d[9].toString());
+  r.setMoved(d[9].toString());
   r.setPhoto(d[12]);
   r.setDate(d[10]);
   r.setReporter(d[11]);
@@ -279,7 +279,7 @@ class ReportController {
       r.setColour(d[4]);
       r.setFoundHere(d[7]);
       r.setBrouthto(d[8]);
-      r.setBroughtHome(d[9].toString());
+      r.setMoved(d[9].toString());
       r.setPhoto(d[12]);
       r.setDate(d[10]);
       r.setReporter(d[11]);

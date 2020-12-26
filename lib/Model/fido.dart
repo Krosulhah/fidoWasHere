@@ -13,7 +13,7 @@ class Fido {
   String colour;
   String type;
   bool isClosed;
-  bool broughtHome;
+  bool moved;
   String broughtTo;
   String foundHere;
   Uint8List
@@ -86,15 +86,15 @@ class Fido {
     return this.isClosed;
   }
 
-  void setBroughtHome(String broughtHome) {
+  void setMoved(String b) {
     bool boolean = false;
-    if (broughtHome.contains("true")) boolean = true;
+    if (b.contains("true")) boolean = true;
 
-    this.broughtHome = boolean;
+    this.moved = boolean;
   }
 
-  bool getBroughtHome() {
-    return this.broughtHome;
+  bool getMoved() {
+    return this.moved;
   }
 
   void setFoundHere(String foundHere) {

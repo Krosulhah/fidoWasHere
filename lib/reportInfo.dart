@@ -175,7 +175,7 @@ RaisedButton closeButtonBuild(context,controller,result) {
 
 
   Card actualAddress(Fido result,BuildContext context) {
-    if (result.broughtHome) {
+    if (result.getMoved()) {
       return InfoBuilder.buildCard("The reporter has not move the Fido",InfoBuilder.addSpace(), context);
     }
     return InfoBuilder.buildCard("Brought to: ",InfoBuilder.buildNiceText(result.broughtTo, context), context);
