@@ -66,9 +66,8 @@ class ReportInfo extends StatelessWidget {
 
 }
 
-SingleChildScrollView buildPhoto(BuildContext context,Fido result) {
-    return SingleChildScrollView(
-      child: Column(
+Column buildPhoto(BuildContext context,Fido result) {
+   return Column(
         children: [InkWell(
             onTap: () => showDialog(
                 context: context,
@@ -80,6 +79,7 @@ SingleChildScrollView buildPhoto(BuildContext context,Fido result) {
                 width: MediaQuery.of(context).size.width * 0.4,
                 height: MediaQuery.of(context).size.height * 0.3,
               child:Container(
+                padding: EdgeInsets.zero,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: ColorManagement.setTextColor(),
@@ -94,7 +94,7 @@ SingleChildScrollView buildPhoto(BuildContext context,Fido result) {
             )
             )
         )
-    ]));
+    ]);
   }
 
 
@@ -103,7 +103,7 @@ SingleChildScrollView buildData(BuildContext context, Fido result){
     return  SingleChildScrollView(child:Column(
       children: [
         InfoBuilder.addSpace(),
-        if (result.getName() != null && result.getName().isNotEmpty)
+        if (result.getName() != null && result.getName()!=" ")
           buildNameCard(context,result),
         InfoBuilder.addSpace(),
         buildBreedCard(context,result),
@@ -121,7 +121,7 @@ SingleChildScrollView buildData(BuildContext context, Fido result){
             future: controller.canClose(result.getReporter()),
             builder: (context,  snapshot) {
               if (snapshot.hasData&&snapshot.data)
-                return closeButtonBuild(context, controller);
+                return closeButtonBuild(context, controller,result);
               else
                 return Text('');
     }
@@ -137,26 +137,28 @@ SingleChildScrollView buildData(BuildContext context, Fido result){
   Card buildNameCard(BuildContext context, Fido result){
     return InfoBuilder.buildCard("Name:",InfoBuilder.buildNiceText(result.getName(), context),context);}
   Card buildBreedCard(BuildContext context, Fido result){
-    return InfoBuilder.buildCard("Name:",InfoBuilder.buildNiceText(result.getBreed(), context),context);}
+    return InfoBuilder.buildCard("Breed:",InfoBuilder.buildNiceText(result.getBreed(), context),context);}
   Card buildCoatColorCard(BuildContext context, Fido result){
-    return InfoBuilder.buildCard("Name:",InfoBuilder.buildNiceText(result.getColour(), context),context);}
+    return InfoBuilder.buildCard("Coat color:",InfoBuilder.buildNiceText(result.getColour(), context),context);}
   Card buildGenderCard(BuildContext context, Fido result){
-    return InfoBuilder.buildCard("Name:",InfoBuilder.buildNiceText(result.getSex(), context),context);}
+    return InfoBuilder.buildCard("Gender:",InfoBuilder.buildNiceText(result.getSex(), context),context);}
   Card buildDateCard(BuildContext context, Fido result){
-    return InfoBuilder.buildCard("Name:",InfoBuilder.buildNiceText(result.getDate().toString(), context),context);}
+    return InfoBuilder.buildCard("Date:",InfoBuilder.buildNiceText(result.getDate().toString(), context),context);}
   Card buildFoundHereCard(BuildContext context, Fido result){
-    return InfoBuilder.buildCard("Name:",InfoBuilder.buildNiceText(result.getFoundHere(), context),context);}
+    return InfoBuilder.buildCard("Found here:",InfoBuilder.buildNiceText(result.getFoundHere(), context),context);}
 
 //todo add thank
-RaisedButton closeButtonBuild(context,controller) {
+RaisedButton closeButtonBuild(context,controller,result) {
       return RaisedButton(
           textColor: ColorManagement.setTextColor(),
           color: ColorManagement.setButtonColor(),
-          onPressed: () => Navigator.push(
+          onPressed: () async{
+            controller.closeReport(result);
+            Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) => new Home(),
-              )), shape: RoundedRectangleBorder(
+              ));}, shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16.0))),
           child:Container(
               alignment: Alignment.center,
@@ -176,7 +178,7 @@ RaisedButton closeButtonBuild(context,controller) {
     if (result.broughtHome) {
       return InfoBuilder.buildCard("The reporter has not move the Fido",InfoBuilder.addSpace(), context);
     }
-    return InfoBuilder.buildCard("Brought to: "+result.broughtTo,InfoBuilder.addSpace(), context);
+    return InfoBuilder.buildCard("Brought to: ",InfoBuilder.buildNiceText(result.broughtTo, context), context);
   }
 
 

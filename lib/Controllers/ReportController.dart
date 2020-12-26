@@ -21,6 +21,14 @@ import '../connectionHandler.dart';
 class ReportController {
   ConnectionHandler connectionHandler = new ConnectionHandler();
 
+  closeReport(Fido result) async {
+    var connection = connectionHandler.createConnection();
+    await connection.open();
+    List<List<dynamic>> results = await connection.query(
+        "UPDATE public.\"Fido\" SET isclosed=@c WHERE id=@i ",substitutionValues:{"c":true,"i":result.getId()});
+    connection.close();
+  }
+
   Future<List<Breed>> retrievePossibleBreed(String type) async {
     List<Breed> breeds = new List<Breed>();
     var connection = connectionHandler.createConnection();
@@ -110,7 +118,7 @@ class ReportController {
       String typeOfPet,
       String colorOfCoat) async {
     bool checkUserAddress;
-    if (name == null || name.isEmpty) name = " ";
+    if (name == null || name.isEmpty) name = null;
     if (typeOfPet == null || typeOfPet.isEmpty) {
       toast("please select Fido's type");
       return false;
@@ -190,9 +198,9 @@ class ReportController {
   String user=await FlutterSession().get("user");
   await connection.open();
   List<List<dynamic>> results = await connection.query(
-  "SELECT * FROM public.\"Fido\" WHERE (reporter=@n) ORDER BY date DESC",
+  "SELECT * FROM public.\"Fido\" WHERE (reporter=@n)AND isclosed=@f ORDER BY date DESC",
   substitutionValues: {
-  "n": user,
+  "n": user,"f":false
   });
 
   List<Fido> availableReports = new List<Fido>();
@@ -243,7 +251,7 @@ class ReportController {
         "SELECT * FROM public.\"Fido\" WHERE (name=@n OR name=@e) AND (sex= @s OR sex= @sex) AND (breed=@b or breed=@breed) AND colour=@c AND type=@t AND isclosed=@closed AND (date>=@d) ORDER BY date DESC",
         substitutionValues: {
           "n": name,
-          "e": " ",
+          "e": null,
           "s": sexOfPet.toUpperCase(),
           "sex": "U",
           "b": breedOfPet,
