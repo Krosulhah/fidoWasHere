@@ -251,7 +251,7 @@ class ReportController {
         "SELECT * FROM public.\"Fido\" WHERE (name=@n OR name=@e) AND (sex= @s OR sex= @sex) AND (breed=@b or breed=@breed) AND colour=@c AND type=@t AND isclosed=@closed AND (date>=@d) ORDER BY date DESC",
         substitutionValues: {
           "n": name,
-          "e": null,
+          "e": " ",
           "s": sexOfPet.toUpperCase(),
           "sex": "U",
           "b": breedOfPet,

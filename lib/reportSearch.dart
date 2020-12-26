@@ -61,7 +61,6 @@ class ReportSearch extends StatelessWidget {
                                 radius: min(MediaQuery.of(context).size.height * 0.07, MediaQuery.of(context).size.width * 0.07),
                                 backgroundImage:MemoryImage(this.result[index].getPhoto())),
                             Container(
-                                height: MediaQuery.of(context).size.height * 0.07,
                                 width: MediaQuery.of(context).size.width * 0.8,
                                 color: ColorManagement.setSeparatorColor(),
                                 child: new Column(
