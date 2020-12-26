@@ -38,10 +38,6 @@ class ReportInfo extends StatelessWidget {
                     padding: EdgeInsets.all(0),
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: ColorManagement.setMarkerColor(),
-                        width: 3,
-                      ),
                     ),
                     child:Column(
                         children:[
@@ -50,6 +46,13 @@ class ReportInfo extends StatelessWidget {
                           InfoBuilder.addSpace(),
                           addReporterCard(context)
                         ])),
+                InfoBuilder.addSpace(),
+                Container(
+                  padding: EdgeInsets.all(0),
+                  width: MediaQuery.of(context).size.width,
+                  height: 2,
+                  color: ColorManagement.setTextColor(),
+                ),
                 InfoBuilder.addSpace(),
                 Expanded(child:buildData(context, result),)
               ],
@@ -93,6 +96,7 @@ Column buildPhoto(BuildContext context,Fido result) {
               )
             )
             )
+
         )
     ]);
   }
