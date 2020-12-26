@@ -1,4 +1,5 @@
 import 'package:dimaWork/Controllers/ReportController.dart';
+import 'package:dimaWork/graphicPatterns/infoBuilder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'Model/fido.dart';
@@ -8,118 +9,114 @@ import 'home.dart';
 class ReportInfo extends StatelessWidget {
   final Fido result;
   ReportInfo({Key key, this.result}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'FidoWasHere',
-        home: Scaffold(
+    return Scaffold(
+      backgroundColor: ColorManagement.setBackGroundColor(),
+        resizeToAvoidBottomInset: false,
             appBar: AppBar(
-              title: Text(
-                'Report # ' + result.getId().toString(),
-                textAlign: TextAlign.center,
+              centerTitle: true,
+              title: setTitle('Report # ' + result.getId().toString()),
+              backgroundColor: ColorManagement.setButtonColor(),
+              leading: Builder(
+                  builder: (BuildContext context) {
+                    return IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      color: ColorManagement.setTextColor(),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
-            body: Column(
+            body:Column(
               children: <Widget>[
-                Container(child: Body(result: result)),
-                Text('REPORTER :' + result.getReporter()),
-                ReportData(result: result)
+                Container(
+                    padding: EdgeInsets.all(0),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: ColorManagement.setMarkerColor(),
+                        width: 3,
+                      ),
+                    ),
+                    child:Column(
+                        children:[
+                          InfoBuilder.addSpace(),
+                          buildPhoto(context, result),
+                          InfoBuilder.addSpace(),
+                          addReporterCard(context)
+                        ])),
+                InfoBuilder.addSpace(),
+                Expanded(child:buildData(context, result),)
               ],
-            )));
+            ));
+
+
   }
+
+  Card addReporterCard(BuildContext context){
+    return InfoBuilder.buildCard("Reporter:",InfoBuilder.buildNiceText(result.getReporter(), context),context);
+  }
+
+
+
 }
 
-class Body extends StatelessWidget {
-  final Fido result;
-
-  Body({Key key, this.result}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-        child: InkWell(
+SingleChildScrollView buildPhoto(BuildContext context,Fido result) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [InkWell(
             onTap: () => showDialog(
                 context: context,
                 child: Dialog(
                     child: InteractiveViewer(
                         panEnabled: false,
                         child: Image.memory(result.getPhoto())))),
-            child: Container(
-              padding: EdgeInsets.all(8),
-              margin: EdgeInsets.all(15),
-              width: 200.0,
-              height: 200.0,
+            child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.4,
+                height: MediaQuery.of(context).size.height * 0.3,
+              child:Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
                 border: Border.all(
-                  color: Colors.black,
-                  width: 10,
+                  color: ColorManagement.setTextColor(),
+                  width: 5,
                 ),
               ),
-              child: Image.memory(result.getPhoto()),
-            )));
-  }
-}
 
-class ReportData extends StatelessWidget {
-  final Fido result;
+              child: FittedBox(
+                fit: BoxFit.fill,
+                child:Image.memory(result.getPhoto())
+              )
+            )
+            )
+        )
+    ]));
+  }
+
+
+SingleChildScrollView buildData(BuildContext context, Fido result){
   ReportController controller=new ReportController();
-  ReportData({Key key, this.result}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Column(
+    return  SingleChildScrollView(child:Column(
       children: [
+        InfoBuilder.addSpace(),
         if (result.getName() != null && result.getName().isNotEmpty)
-          Row(
-            children: [
-              Text(
-                'Name:  ' + result.getName(),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        Row(
-          children: [
-            Text(
-              'Breed:  ' + result.getBreed(),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Text(
-              'Coat color:  ' + result.getColour(),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Text(
-              'Sex:  ' + result.getSex(),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Text(
-              'Found on:  ' + result.getDate().toString(),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Text(
-              'Found here:  ' + result.getFoundHere(),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        actualAddress(result),
+          buildNameCard(context,result),
+        InfoBuilder.addSpace(),
+        buildBreedCard(context,result),
+        InfoBuilder.addSpace(),
+        buildCoatColorCard(context,result),
+        InfoBuilder.addSpace(),
+        buildGenderCard(context,result),
+        InfoBuilder.addSpace(),
+        buildDateCard(context,result),
+        InfoBuilder.addSpace(),
+        buildFoundHereCard(context,result),
+        InfoBuilder.addSpace(),
+        actualAddress(result,context),
         FutureBuilder<bool>(
             future: controller.canClose(result.getReporter()),
             builder: (context,  snapshot) {
@@ -132,10 +129,23 @@ class ReportData extends StatelessWidget {
     )
       ],
     ));
+
+
+
   }
 
-
-
+  Card buildNameCard(BuildContext context, Fido result){
+    return InfoBuilder.buildCard("Name:",InfoBuilder.buildNiceText(result.getName(), context),context);}
+  Card buildBreedCard(BuildContext context, Fido result){
+    return InfoBuilder.buildCard("Name:",InfoBuilder.buildNiceText(result.getBreed(), context),context);}
+  Card buildCoatColorCard(BuildContext context, Fido result){
+    return InfoBuilder.buildCard("Name:",InfoBuilder.buildNiceText(result.getColour(), context),context);}
+  Card buildGenderCard(BuildContext context, Fido result){
+    return InfoBuilder.buildCard("Name:",InfoBuilder.buildNiceText(result.getSex(), context),context);}
+  Card buildDateCard(BuildContext context, Fido result){
+    return InfoBuilder.buildCard("Name:",InfoBuilder.buildNiceText(result.getDate().toString(), context),context);}
+  Card buildFoundHereCard(BuildContext context, Fido result){
+    return InfoBuilder.buildCard("Name:",InfoBuilder.buildNiceText(result.getFoundHere(), context),context);}
 
 //todo add thank
 RaisedButton closeButtonBuild(context,controller) {
@@ -162,24 +172,22 @@ RaisedButton closeButtonBuild(context,controller) {
   }
 
 
-  actualAddress(Fido result) {
+  Card actualAddress(Fido result,BuildContext context) {
     if (result.broughtHome) {
-      return Row(
-        children: [
-          Text(
-            'The reporter has brought the Fido\'s at their home',
-            textAlign: TextAlign.center,
-          ),
-        ],
-      );
+      return InfoBuilder.buildCard("The reporter has not move the Fido",InfoBuilder.addSpace(), context);
     }
-    return Row(
-      children: [
-        Text(
-          'Brought To:  ' + result.getBroughtTo(),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    );
+    return InfoBuilder.buildCard("Brought to: "+result.broughtTo,InfoBuilder.addSpace(), context);
   }
+
+
+FittedBox setTitle(String text){
+  return FittedBox(
+      fit:BoxFit.fitWidth,
+      child:Text(
+        text,
+        style:   TextStyle(
+          color:ColorManagement.setTextColor(),
+        ),
+      )
+  );
 }

@@ -38,10 +38,8 @@ class ReportSearch extends StatelessWidget {
               child: ListView.builder(
                 itemCount: this.result.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                    onTap: () => runApp(ReportInfo(result: result[index])),
-
-                    child: Container(
+                    return GestureDetector(
+                        child:Container(
                         width: MediaQuery.of(context).size.width * 0.95,
                         margin: EdgeInsets.symmetric(
                             horizontal: 5, vertical: 10.0),
@@ -81,13 +79,15 @@ class ReportSearch extends StatelessWidget {
                             )
                           ]
                         )
-                    )
-                  )
-                  ;
+
+                  ),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ReportInfo(result: result[index]))));
+
                 }
                 )
             )
     );
+
 
 
                 }

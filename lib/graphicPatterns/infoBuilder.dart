@@ -14,7 +14,7 @@ static Container selectTypeInfo(BuildContext context,List<Color>_color,int eleme
   return Container(
       height: MediaQuery.of(context).size.height * 0.2,
       width: MediaQuery.of(context).size.width * 0.40,
-      padding: EdgeInsets.all(5),
+      padding: EdgeInsets.all(0),
       margin: EdgeInsets.all(0),
       decoration: BoxDecoration(
         shape: BoxShape.circle,

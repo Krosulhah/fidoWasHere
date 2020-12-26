@@ -478,8 +478,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
           onPressed: () async {
             bool isReportValid = await reportController.checkAndSend(controllerName.text, broughtTo.text, foundOn.text, _image, isBroughtTo, sexOfPet, breedOfPet, typeOfPet, colorOfCoat);
             if (isReportValid) {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Home()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
             }
           },shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(16.0))),
