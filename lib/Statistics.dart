@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:dimaWork/Controllers/ReportController.dart';
 import 'package:dimaWork/Model/fido.dart';
+import 'package:dimaWork/graphicPatterns/TextPatterns.dart';
+import 'package:dimaWork/graphicPatterns/colorManagement.dart';
+import 'package:dimaWork/graphicPatterns/infoBuilder.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Statistics extends StatefulWidget {
@@ -22,14 +24,15 @@ class _MyAppState extends State<Statistics> {
   GoogleMapController _controller;
   String address = "Milano";
   Position pos;
-
   LatLng _center = new LatLng(0, 0);
   bool _dog = false;
   bool _cat = false;
-  String counterClosed = "0";
-  String counterOpen = "0";
+  int counterClosed = 0;
+  int counterOpen = 0;
   void _onMapCreated(GoogleMapController controller) {
     setState(() {
+      counterClosed = 0;
+      counterOpen = 0;
       reportController = new ReportController();
       _controller = (controller);
       BitmapDescriptor.fromAssetImage(ImageConfiguration(devicePixelRatio: 2.5),
@@ -55,17 +58,13 @@ class _MyAppState extends State<Statistics> {
 
   void _addDog(LatLng coordinates, int id, String breedOfPet, DateTime date) {
     var markerIdVal = id.toString();
-    final MarkerId markerId = MarkerId(
-        markerIdVal); //todo prendere coordinate da db + filtrare su tipo fido
+    final MarkerId markerId = MarkerId(markerIdVal);
     String newDateVersion = df.format(date).toString();
     // creating a new MARKER
     final Marker marker = Marker(
       markerId: markerId,
       position: coordinates,
       infoWindow: InfoWindow(title: breedOfPet, snippet: newDateVersion),
-      onTap: () {
-        print('schiacciato un pin');
-      },
       icon: dogLocationIcon,
     );
 
@@ -78,16 +77,13 @@ class _MyAppState extends State<Statistics> {
   void _addCat(LatLng coordinates, int id, String breedOfPet, DateTime date) {
     var markerIdVal = id.toString();
     final MarkerId markerId = MarkerId(
-        markerIdVal); //todo prendere coordinate da db + filtrare su tipo fido
+        markerIdVal);
     String newDateVersion = df.format(date).toString();
     // creating a new MARKER
     final Marker marker = Marker(
       markerId: markerId,
       position: coordinates,
       infoWindow: InfoWindow(title: breedOfPet, snippet: newDateVersion),
-      onTap: () {
-        print('schiacciato un pin');
-      },
       icon: catLocationIcon,
     );
 
@@ -97,52 +93,54 @@ class _MyAppState extends State<Statistics> {
     });
   }
 
-  void _addFoundFidos(
-      LatLng coordinates, int id, String breedOfPet, DateTime date) {
-    var markerIdVal = id.toString();
-    String newDateVersion = df.format(date).toString();
-    final MarkerId markerId = MarkerId(
-        markerIdVal); //todo prendere coordinate da db + filtrare su tipo fido
+Column buildText(){
+    String type;
+    if(_dog&&_cat||!_dog && !_cat)
+      type="Fidos";
+    else if(_dog)
+      type="Dogs";
+    else
+      type="Cats";
 
-    // creating a new MARKER
-    final Marker marker = Marker(
-      markerId: markerId,
-      position: coordinates,
-      infoWindow: InfoWindow(title: breedOfPet, snippet: newDateVersion),
-      onTap: () {
-        print('schiacciato un pin');
-      },
-    );
-
-    setState(() {
-      // adding a new marker to map
-      markers[markerId] = marker;
-    });
+  return Column( children:[InfoBuilder.addSpace(),
+  InfoBuilder.buildNiceText(type+" returned home:", context),
+  InfoBuilder.addSpace(),
+  InfoBuilder.buildNiceText(counterClosed.toString()+"/"+(counterClosed+counterOpen).toString(), context),
+  InfoBuilder.addSpace(),
+  InfoBuilder.buildNiceText("Reported "+type+" still looking for their home", context),
+  InfoBuilder.addSpace(),
+  InfoBuilder.buildNiceText(counterOpen.toString()+"/"+(counterClosed+counterOpen).toString(), context),]);
   }
+
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: ColorManagement.setBackGroundColor(),
         appBar: AppBar(
-          title: Text('FidoWasHere'),
-          backgroundColor: Colors.green[700],
-        ),
-        drawer: Drawer(
-            //qui mettiamo opzioni cane gatto + stat
-            child: ListView(children: <Widget>[
-          Text('What are you looking for?'),
-          checkbox("Lost dogs", _dog),
-          checkbox("Lost cats", _cat),
-          Text('STATISTICS PLACE HOLDER'),
-          Text("Number of all Fidos returned to their Family:"),
-          Text(counterClosed),
-          Text("Number of all Fidos lost and not found:"),
-          Text(counterOpen),
-          // statisticsOpenNumbers()
+          centerTitle: true,
+          title: setTitle(),
+          backgroundColor: ColorManagement.setButtonColor(),
 
-          //TODO calcola statistiche
+        ),
+
+        drawer: Drawer(
+            child: ListView(children: <Widget>[
+              InfoBuilder.addSpace(),
+              InfoBuilder.buildNiceText("What are you looking for?", context),
+              InfoBuilder.addSpace(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                checkbox("Lost dogs", _dog),
+                checkbox("Lost cats", _cat),
+              ],),
+              buildText(),
+
         ])),
+
         body: Stack(
           children: <Widget>[
             GoogleMap(
@@ -189,11 +187,9 @@ class _MyAppState extends State<Statistics> {
                   },
                 ),
               ),
-            )
-          ],
+            )],
         ),
-      ),
-    );
+      );
   }
 
   _fetchUserLocation() async {
@@ -201,6 +197,7 @@ class _MyAppState extends State<Statistics> {
         .then((Position position) {
       setState(() {
         pos = position;
+
       });
       _getAddressFromLatLng();
     }).catchError((e) {
@@ -243,7 +240,8 @@ class _MyAppState extends State<Statistics> {
                   _cat = value;
                   break;
               }
-
+              statisticsClosedNumbers();
+              statisticsOpenNumbers();
               statisticsFido();
             });
           },
@@ -255,7 +253,7 @@ class _MyAppState extends State<Statistics> {
   statisticsFido() async {
     if (_cat == true && _dog == false) {
       markers.clear();
-      List<Fido> results = await reportController.retrieveAllOpenCatsReports();
+      List<Fido> results = await reportController.retrieveAllOpenOfType("cat");
       print(results.length);
 
       for (Fido f in results) {
@@ -266,7 +264,7 @@ class _MyAppState extends State<Statistics> {
       }
     } else if (_dog == true && _cat == false) {
       markers.clear();
-      List<Fido> results = await reportController.retrieveAllOpenCatsReports();
+      List<Fido> results = await reportController.retrieveAllOpenOfType("dog");
       print(results.length);
 
       for (Fido f in results) {
@@ -275,36 +273,21 @@ class _MyAppState extends State<Statistics> {
         print(f.getFoundHere());
         _addDog(coordinates, f.getId(), f.getBreed(), f.getDate());
       }
-    } else if (_dog == true && _cat == true) {
+    } else if (_dog == true && _cat == true||_dog==false && _cat==false) {
       markers.clear();
-      List<Fido> results = await reportController.retrieveAllOpenCatsReports();
-      print(results.length);
-
-      for (Fido f in results) {
+      List<Fido> dogResults = await reportController.retrieveAllOpenOfType("dog");
+      List<Fido> catResults=await reportController.retrieveAllOpenOfType("cat");
+      for (Fido f in catResults) {
         print(f.getFoundHere());
         LatLng coordinates = await getUserCoordinates(f.getFoundHere());
         print(f.getFoundHere());
         _addCat(coordinates, f.getId(), f.getBreed(), f.getDate());
       }
-      results = await reportController.retrieveAllOpenDogsReports();
-      for (Fido f in results) {
+      for (Fido f in dogResults) {
         print(f.getFoundHere());
         LatLng coordinates = await getUserCoordinates(f.getFoundHere());
         print(f.getFoundHere());
         _addDog(coordinates, f.getId(), f.getBreed(), f.getDate());
-      }
-    }
-    //markers.clear();
-    else {
-      markers.clear();
-      List<Fido> results = await reportController.retrieveAllClosedReports();
-      print(results.length);
-
-      for (Fido f in results) {
-        print(f.getFoundHere());
-        LatLng coordinates = await getUserCoordinates(f.getFoundHere());
-        print(f.getFoundHere());
-        _addFoundFidos(coordinates, f.getId(), f.getBreed(), f.getDate());
       }
     }
   }
@@ -320,40 +303,43 @@ class _MyAppState extends State<Statistics> {
   }
 
   statisticsClosedNumbers() async {
-    String resultClosed = await reportController.countAllClosedReports();
+    int resultClosed;
+    if(_dog&&_cat||!_dog&&!_cat)
+      resultClosed = await reportController.countAllClosedReports("fidos");
+    else if(_dog)
+      resultClosed = await reportController.countAllClosedReports("dog");
+    else
+      resultClosed = await reportController.countAllClosedReports("cat");
     setState(() {
       counterClosed = resultClosed;
     });
   }
 
   statisticsOpenNumbers() async {
-    String resultClosed = await reportController.countAllOpenReports();
+    int resultOpen;
+    if(_dog&&_cat||!_dog&&!_cat)
+      resultOpen = await reportController.countAllOpenReports("fidos");
+    else if(_dog)
+      resultOpen = await reportController.countAllOpenReports("dog");
+    else
+      resultOpen = await reportController.countAllOpenReports("cat");
+    print("OPEN: "+resultOpen.toString()+" vs"+ resultOpen.toString());
     setState(() {
-      counterOpen = resultClosed;
+      counterOpen = resultOpen;
     });
   }
 
-//List<Location> locations = await locationFromAddress("Gronausestraat 710, Enschede");
 
 }
 
-//https://pub.dev/documentation/map_view/latest/ guida flutter
-/*
-* void _onAddMarkerButtonPressed() {
-setState(() {
-_markers.add(Marker(
-// This marker id can be anything that uniquely identifies each marker.
-markerId: MarkerId(_lastMapPosition.toString()),
-position: _lastMapPosition,
-infoWindow: InfoWindow(
-title: ‘Really cool place’,
-snippet: ‘5 Star Rating’,
-),
-icon: BitmapDescriptor.defaultMarker,
-));
-});
+FittedBox setTitle(){
+  return FittedBox(
+      fit:BoxFit.fitWidth,
+      child:Text(
+        'FIDO WAS HERE',
+        style:   TextStyle(
+          color:ColorManagement.setTextColor(),
+        ),
+      )
+  );
 }
-*
-* https://medium.com/@rajesh.muthyala/flutter-with-google-maps-and-google-place-85ccee3f0371
-* https://github.com/rajayogan/flutter-googlemapaddresses/blob/master/lib/main.dart#L73
-*/

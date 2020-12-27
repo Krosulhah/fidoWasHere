@@ -236,7 +236,7 @@ class ReportController {
     await connection.open();
     List<List<dynamic>> results = await connection.query(
         "SELECT * FROM public.\"Fido\" WHERE  isclosed=@f ",
-        substitutionValues: {"f": false});
+        substitutionValues: {"f": true});
 
     List<Fido> availableReports = new List<Fido>();
 
@@ -264,19 +264,22 @@ class ReportController {
     return availableReports;
   }
 
-  Future<List<Fido>> retrieveAllOpenCatsReports() async {
+
+
+
+
+  Future<List<Fido>> retrieveAllOpenOfType(String type) async {
     var connection = connectionHandler.createConnection();
     await connection.open();
     List<List<dynamic>> results = await connection.query(
         "SELECT * FROM public.\"Fido\" WHERE  (type=@n) AND isclosed=@t",
-        substitutionValues: {'n': "cat", "t": true});
+        substitutionValues: {'n': type, "t": false});
 
     List<Fido> availableReports = new List<Fido>();
 
     connection.close();
     if (results == null || results.isEmpty)
-      return toast("no reported Fidos found");
-    var directory = await getApplicationDocumentsDirectory();
+      return availableReports;
 
     for (List<dynamic> d in results) {
       Fido r = new Fido();
@@ -297,82 +300,43 @@ class ReportController {
     return availableReports;
   }
 
-  Future<String> countAllClosedReports() async {
+  Future<int> countAllClosedReports(String type) async {
     int numberClosedReports = 0;
     var connection = connectionHandler.createConnection();
     await connection.open();
-    List<List<dynamic>> results = await connection.query(
-        "SELECT COUNT(*) FROM public.\"Fido\" WHERE isclosed=@t",
-        substitutionValues: {"t": true});
-
-    List<Fido> availableReports = new List<Fido>();
-
+    List<List<dynamic>> results;
+    if(type=="fidos")
+      results = await connection.query("SELECT * FROM public.\"Fido\" WHERE  isclosed=@f ",
+        substitutionValues: {"f": true});
+    else
+      results = await connection.query(
+          "SELECT * FROM public.\"Fido\" WHERE  (type=@n) AND isclosed=@t",
+          substitutionValues: {'n': type, "t": true});
     connection.close();
     if (results == null || results.isEmpty)
-      return toast("no reported Fidos found");
-    var directory = await getApplicationDocumentsDirectory();
+      return 0;
+    numberClosedReports=results.length;
 
-    for (List<dynamic> d in results) {
-      numberClosedReports = d[0];
-    }
-
-    return numberClosedReports.toString();
+    return numberClosedReports;
   }
 
-  Future<String> countAllOpenReports() async {
-    int numberClosedReports = 0;
+  Future<int> countAllOpenReports(String type) async {
     var connection = connectionHandler.createConnection();
     await connection.open();
-    List<List<dynamic>> results = await connection.query(
-        "SELECT COUNT(*) FROM public.\"Fido\" WHERE isclosed=@f",
-        substitutionValues: {"f": false});
-
-    List<Fido> availableReports = new List<Fido>();
-
+    List<List<dynamic>> results;
+    if(type=="fidos")
+      results = await connection.query("SELECT * FROM public.\"Fido\" WHERE  isclosed=@f ",
+          substitutionValues: {"f": false});
+    else
+      results = await connection.query(
+          "SELECT * FROM public.\"Fido\" WHERE  (type=@n) AND isclosed=@t",
+          substitutionValues: {'n': type, "t": false});
     connection.close();
     if (results == null || results.isEmpty)
-      return toast("no reported Fidos found");
-    var directory = await getApplicationDocumentsDirectory();
-
-    for (List<dynamic> d in results) {
-      numberClosedReports = d[0];
-    }
-
-    return numberClosedReports.toString();
+      return 0;
+    return results.length;
   }
 
-  Future<List<Fido>> retrieveAllOpenDogsReports() async {
-    var connection = connectionHandler.createConnection();
-    await connection.open();
-    List<List<dynamic>> results = await connection.query(
-        "SELECT * FROM public.\"Fido\" WHERE  (type=@n) AND isclosed=@t",
-        substitutionValues: {'n': "dog", "t": true});
-
-    List<Fido> availableReports = new List<Fido>();
-
-    connection.close();
-    if (results == null || results.isEmpty)
-      return toast("no reported Fidos found");
-    var directory = await getApplicationDocumentsDirectory();
-
-    for (List<dynamic> d in results) {
-      Fido r = new Fido();
-      r.setId(d[0]);
-      r.setName(d[1]);
-      r.setSex(d[2]);
-      r.setBreed(d[3]);
-      r.setColour(d[4]);
-      r.setFoundHere(d[7]);
-      r.setBrouthto(d[8]);
-      r.setMoved(d[9].toString());
-      r.setPhoto(d[12]);
-      r.setDate(d[10]);
-      r.setReporter(d[11]);
-      availableReports.add(r);
-    }
-
-    return availableReports;
-  }
 
   retrieveReports(String name, DateTime date, String sexOfPet,
       String breedOfPet, String typeOfPet, String colorOfCoat) async {
