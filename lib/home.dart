@@ -28,6 +28,7 @@ class Home extends StatelessWidget {
     return MaterialApp(
       title: 'Home',
       theme: ThemeData(
+        canvasColor:ColorManagement.setBackGroundColor(),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: HomePage(title: 'Home'),

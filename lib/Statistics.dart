@@ -1,15 +1,17 @@
 import 'dart:async';
-
 import 'package:dimaWork/Controllers/ReportController.dart';
 import 'package:dimaWork/Model/fido.dart';
 import 'package:dimaWork/graphicPatterns/TextPatterns.dart';
 import 'package:dimaWork/graphicPatterns/colorManagement.dart';
 import 'package:dimaWork/graphicPatterns/infoBuilder.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'graphicPatterns/ImagePatterns.dart';
 
 class Statistics extends StatefulWidget {
   @override
@@ -103,13 +105,11 @@ Column buildText(){
       type="Cats";
 
   return Column( children:[InfoBuilder.addSpace(),
-  InfoBuilder.buildNiceText(type+" returned home:", context),
-  InfoBuilder.addSpace(),
-  InfoBuilder.buildNiceText(counterClosed.toString()+"/"+(counterClosed+counterOpen).toString(), context),
-  InfoBuilder.addSpace(),
-  InfoBuilder.buildNiceText("Reported "+type+" still looking for their home", context),
-  InfoBuilder.addSpace(),
-  InfoBuilder.buildNiceText(counterOpen.toString()+"/"+(counterClosed+counterOpen).toString(), context),]);
+    InfoBuilder.buildCard(type+" returned home:", InfoBuilder.buildNiceText(counterClosed.toString()+"/"+(counterClosed+counterOpen).toString(), context), context),
+    InfoBuilder.addSpace(),
+    InfoBuilder.buildCard("Reported "+type+" still looking for their home", InfoBuilder.buildNiceText(counterOpen.toString()+"/"+(counterClosed+counterOpen).toString(), context), context),
+    InfoBuilder.addSpace(),
+  ]);
   }
 
 
@@ -119,6 +119,7 @@ Column buildText(){
         resizeToAvoidBottomInset: false,
         backgroundColor: ColorManagement.setBackGroundColor(),
         appBar: AppBar(
+          iconTheme: IconThemeData(color: ColorManagement.setTextColor()),
           centerTitle: true,
           title: setTitle(),
           backgroundColor: ColorManagement.setButtonColor(),
@@ -127,11 +128,15 @@ Column buildText(){
 
         drawer: Drawer(
             child: ListView(children: <Widget>[
+              _createHeader(context),
+              InfoBuilder.boldNiceText("STATISTICS", context),
+              InfoBuilder.addSpace(),
               InfoBuilder.addSpace(),
               InfoBuilder.buildNiceText("What are you looking for?", context),
               InfoBuilder.addSpace(),
+              InfoBuilder.addSpace(),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                 checkbox("Lost dogs", _dog),
@@ -354,5 +359,26 @@ FittedBox setTitle(){
           color:ColorManagement.setTextColor(),
         ),
       )
+  );
+}
+
+Widget _createHeader(BuildContext context) {
+  return DrawerHeader(
+    decoration: BoxDecoration(
+      color: ColorManagement.setSeparatorColor(),
+      border: Border.all(
+        color: ColorManagement.setTextColor(),
+        width: 3,
+      ),
+    ),
+      child: FittedBox(
+        alignment: Alignment.center,
+        child:  Column(children:[
+          SvgPicture.asset('assets/images/logo.svg'),
+        ]
+        ),
+        fit: BoxFit.scaleDown,
+        ),
+
   );
 }
