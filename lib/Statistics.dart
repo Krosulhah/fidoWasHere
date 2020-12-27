@@ -157,6 +157,7 @@ Column buildText(){
               alignment: Alignment.centerRight,
               // add your floating action button
               child: FloatingActionButton(
+                heroTag: "b1",
                 onPressed: () => _fetchUserLocation(),
                 child: Icon(Icons.my_location),
               ),
@@ -187,7 +188,19 @@ Column buildText(){
                   },
                 ),
               ),
-            )],
+            ),
+      Align(
+        alignment: FractionalOffset.bottomCenter,
+        child: Padding(
+            padding: EdgeInsets.only(bottom: 10.0),
+            child:FloatingActionButton(
+           heroTag: "b2",
+              child: Icon(Icons.close),
+              onPressed: () {
+            Navigator.pop(context);
+    })))
+          
+          ],
         ),
       );
   }
