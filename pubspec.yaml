@@ -35,6 +35,8 @@ dependencies:
   flutter_facebook_login:
   fluttertoast:
   flutter_svg: 0.19.1
+  intl: 
+
 
 
 
@@ -67,6 +69,8 @@ flutter:
     - assets/images/u.png
     - assets/images/f.png
     - assets/images/m.png
+    - assets/images/catMarker.png
+    - assets/images/dogMarker.png
 
   fonts:
      - family: DancingScript

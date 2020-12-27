@@ -25,7 +25,8 @@ class ReportController {
     var connection = connectionHandler.createConnection();
     await connection.open();
     List<List<dynamic>> results = await connection.query(
-        "UPDATE public.\"Fido\" SET isclosed=@c WHERE id=@i ",substitutionValues:{"c":true,"i":result.getId()});
+        "UPDATE public.\"Fido\" SET isclosed=@c WHERE id=@i ",
+        substitutionValues: {"c": true, "i": result.getId()});
     connection.close();
   }
 
@@ -123,7 +124,9 @@ class ReportController {
       toast("please select Fido's type");
       return false;
     }
-    if (breedOfPet == null || breedOfPet.isEmpty||breedOfPet=="Select Fido's type") {
+    if (breedOfPet == null ||
+        breedOfPet.isEmpty ||
+        breedOfPet == "Select Fido's type") {
       toast("please select a breed value");
       return false;
     }
@@ -192,50 +195,193 @@ class ReportController {
     connection.close();
     return true;
   }
+
   retrieveMyReports() async {
-  var connection = connectionHandler.createConnection();
+    var connection = connectionHandler.createConnection();
 
-  String user=await FlutterSession().get("user");
-  await connection.open();
-  List<List<dynamic>> results = await connection.query(
-  "SELECT * FROM public.\"Fido\" WHERE (reporter=@n)AND isclosed=@f ORDER BY date DESC",
-  substitutionValues: {
-  "n": user,"f":false
-  });
+    String user = await FlutterSession().get("user");
+    await connection.open();
+    List<List<dynamic>> results = await connection.query(
+        "SELECT * FROM public.\"Fido\" WHERE (reporter=@n)AND isclosed=@f ORDER BY date DESC",
+        substitutionValues: {"n": user, "f": false});
 
-  List<Fido> availableReports = new List<Fido>();
+    List<Fido> availableReports = new List<Fido>();
 
-  connection.close();
-  if (results == null || results.isEmpty) return toast("no reported Fidos found");
-  var directory = await getApplicationDocumentsDirectory();
+    connection.close();
+    if (results == null || results.isEmpty)
+      return toast("no reported Fidos found");
+    var directory = await getApplicationDocumentsDirectory();
 
-  for (List<dynamic> d in results) {
-  Fido r = new Fido();
-  r.setId(d[0]);
-  r.setName(d[1]);
-  r.setSex(d[2]);
-  r.setBreed(d[3]);
-  r.setColour(d[4]);
-  r.setFoundHere(d[7]);
-  r.setBrouthto(d[8]);
-  r.setMoved(d[9].toString());
-  r.setPhoto(d[12]);
-  r.setDate(d[10]);
-  r.setReporter(d[11]);
-  availableReports.add(r);
+    for (List<dynamic> d in results) {
+      Fido r = new Fido();
+      r.setId(d[0]);
+      r.setName(d[1]);
+      r.setSex(d[2]);
+      r.setBreed(d[3]);
+      r.setColour(d[4]);
+      r.setFoundHere(d[7]);
+      r.setBrouthto(d[8]);
+      r.setMoved(d[9].toString());
+      r.setPhoto(d[12]);
+      r.setDate(d[10]);
+      r.setReporter(d[11]);
+      availableReports.add(r);
+    }
+
+    return availableReports;
   }
 
-  return availableReports;
+  Future<List<Fido>> retrieveAllClosedReports() async {
+    var connection = connectionHandler.createConnection();
+    await connection.open();
+    List<List<dynamic>> results = await connection.query(
+        "SELECT * FROM public.\"Fido\" WHERE  isclosed=@f ",
+        substitutionValues: {"f": false});
+
+    List<Fido> availableReports = new List<Fido>();
+
+    connection.close();
+    if (results == null || results.isEmpty)
+      return toast("no matched Fidos and Owners found");
+    var directory = await getApplicationDocumentsDirectory();
+
+    for (List<dynamic> d in results) {
+      Fido r = new Fido();
+      r.setId(d[0]);
+      r.setName(d[1]);
+      r.setSex(d[2]);
+      r.setBreed(d[3]);
+      r.setColour(d[4]);
+      r.setFoundHere(d[7]);
+      r.setBrouthto(d[8]);
+      r.setMoved(d[9].toString());
+      r.setPhoto(d[12]);
+      r.setDate(d[10]);
+      r.setReporter(d[11]);
+      availableReports.add(r);
+    }
+
+    return availableReports;
   }
 
+  Future<List<Fido>> retrieveAllOpenCatsReports() async {
+    var connection = connectionHandler.createConnection();
+    await connection.open();
+    List<List<dynamic>> results = await connection.query(
+        "SELECT * FROM public.\"Fido\" WHERE  (type=@n) AND isclosed=@t",
+        substitutionValues: {'n': "cat", "t": true});
 
+    List<Fido> availableReports = new List<Fido>();
+
+    connection.close();
+    if (results == null || results.isEmpty)
+      return toast("no reported Fidos found");
+    var directory = await getApplicationDocumentsDirectory();
+
+    for (List<dynamic> d in results) {
+      Fido r = new Fido();
+      r.setId(d[0]);
+      r.setName(d[1]);
+      r.setSex(d[2]);
+      r.setBreed(d[3]);
+      r.setColour(d[4]);
+      r.setFoundHere(d[7]);
+      r.setBrouthto(d[8]);
+      r.setMoved(d[9].toString());
+      r.setPhoto(d[12]);
+      r.setDate(d[10]);
+      r.setReporter(d[11]);
+      availableReports.add(r);
+    }
+
+    return availableReports;
+  }
+
+  Future<String> countAllClosedReports() async {
+    int numberClosedReports = 0;
+    var connection = connectionHandler.createConnection();
+    await connection.open();
+    List<List<dynamic>> results = await connection.query(
+        "SELECT COUNT(*) FROM public.\"Fido\" WHERE isclosed=@t",
+        substitutionValues: {"t": true});
+
+    List<Fido> availableReports = new List<Fido>();
+
+    connection.close();
+    if (results == null || results.isEmpty)
+      return toast("no reported Fidos found");
+    var directory = await getApplicationDocumentsDirectory();
+
+    for (List<dynamic> d in results) {
+      numberClosedReports = d[0];
+    }
+
+    return numberClosedReports.toString();
+  }
+
+  Future<String> countAllOpenReports() async {
+    int numberClosedReports = 0;
+    var connection = connectionHandler.createConnection();
+    await connection.open();
+    List<List<dynamic>> results = await connection.query(
+        "SELECT COUNT(*) FROM public.\"Fido\" WHERE isclosed=@f",
+        substitutionValues: {"f": false});
+
+    List<Fido> availableReports = new List<Fido>();
+
+    connection.close();
+    if (results == null || results.isEmpty)
+      return toast("no reported Fidos found");
+    var directory = await getApplicationDocumentsDirectory();
+
+    for (List<dynamic> d in results) {
+      numberClosedReports = d[0];
+    }
+
+    return numberClosedReports.toString();
+  }
+
+  Future<List<Fido>> retrieveAllOpenDogsReports() async {
+    var connection = connectionHandler.createConnection();
+    await connection.open();
+    List<List<dynamic>> results = await connection.query(
+        "SELECT * FROM public.\"Fido\" WHERE  (type=@n) AND isclosed=@t",
+        substitutionValues: {'n': "dog", "t": true});
+
+    List<Fido> availableReports = new List<Fido>();
+
+    connection.close();
+    if (results == null || results.isEmpty)
+      return toast("no reported Fidos found");
+    var directory = await getApplicationDocumentsDirectory();
+
+    for (List<dynamic> d in results) {
+      Fido r = new Fido();
+      r.setId(d[0]);
+      r.setName(d[1]);
+      r.setSex(d[2]);
+      r.setBreed(d[3]);
+      r.setColour(d[4]);
+      r.setFoundHere(d[7]);
+      r.setBrouthto(d[8]);
+      r.setMoved(d[9].toString());
+      r.setPhoto(d[12]);
+      r.setDate(d[10]);
+      r.setReporter(d[11]);
+      availableReports.add(r);
+    }
+
+    return availableReports;
+  }
 
   retrieveReports(String name, DateTime date, String sexOfPet,
       String breedOfPet, String typeOfPet, String colorOfCoat) async {
     if (name == null || name.isEmpty) return toast("please insert Fido's name");
     if (sexOfPet == null || sexOfPet.isEmpty)
       return toast("please select a sex value");
-    if (breedOfPet == null || breedOfPet.isEmpty||breedOfPet=="Select Fido's type")
+    if (breedOfPet == null ||
+        breedOfPet.isEmpty ||
+        breedOfPet == "Select Fido's type")
       return toast("please select a breed value");
     if (typeOfPet == null || typeOfPet.isEmpty)
       return toast("please select Fido's type");
@@ -290,13 +436,12 @@ class ReportController {
   }
 
   Future<bool> canClose(String reporter) async {
-      var session = FlutterSession();
-      String user = await session.get("user");
-      bool resp=false;
-      if(user==reporter)
-      {
-        return !resp;
-      }
+    var session = FlutterSession();
+    String user = await session.get("user");
+    bool resp = false;
+    if (user == reporter) {
+      return !resp;
+    }
     return resp;
   }
 }
