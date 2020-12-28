@@ -77,10 +77,7 @@ class MailLoginController {
         return ('mail is already used');
       }
       connection.close();
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Home()),
-      );
+      return "";
     }
   }
 }

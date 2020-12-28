@@ -1,7 +1,9 @@
 import 'package:dimaWork/Controllers/MailRegLoginController.dart';
 import 'package:flutter/material.dart';
 
+import 'Loading.dart';
 import 'graphicPatterns/colorManagement.dart';
+import 'home.dart';
 
 // ignore: slash_for_doc_comments
 /**--------------------------------------------------------------------------------------------------------------//
@@ -68,6 +70,7 @@ class _RegPageState extends State<RegPage> {
   }
 
 
+  final GlobalKey<State> key = new GlobalKey<State>();
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +92,7 @@ class _RegPageState extends State<RegPage> {
     );
   }
 
+
   Widget _buildBar(BuildContext context) {
     return new AppBar(
       backgroundColor: ColorManagement.setButtonColor(),
@@ -102,7 +106,8 @@ class _RegPageState extends State<RegPage> {
             onPressed: () {
               Navigator.pop(context);
             },
-          );},
+          );
+        },
       ),
 
     );
@@ -147,29 +152,26 @@ class _RegPageState extends State<RegPage> {
   }
 
 
-
-
   RaisedButton _buildButtons() {
-
     return RaisedButton(
         textColor: ColorManagement.setTextColor(),
         color: ColorManagement.setButtonColor(),
         onPressed:
-            () async {
-          String result=await regController.registerPressed(_email,_password,_repeatPassword,context); // runApp (MailReg());
-          if (result!=null&&result.isNotEmpty)
-          {
-            showDialog(
-                context: context,
-                child: new AlertDialog(
-                  title: new Text(result),
-                ));
-          }
-        },shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16.0))),
+            () {
+          _handleReg();
+        }
+        ,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16.0))),
         child: Container(
-            height: MediaQuery.of(context).size.height * 0.05,
-            width: MediaQuery.of(context).size.width * 0.5,
+            height: MediaQuery
+                .of(context)
+                .size
+                .height * 0.05,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width * 0.5,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -179,16 +181,39 @@ class _RegPageState extends State<RegPage> {
             ))
     );
   }
-}
 
-FittedBox setTitle(){
-  return FittedBox(
-      fit:BoxFit.fitWidth,
-      child:Text(
-        'REGISTRATION',
-        style:   TextStyle(
-          color:ColorManagement.setTextColor(),
-        ),
-      )
-  );
+  Future<void>  _handleReg() async {
+    try{
+    Dialogs.showLoadingDialog(context, key);
+    String result = await regController.registerPressed(
+        _email, _password, _repeatPassword, context); // runApp (MailReg());
+
+    Navigator.of(key.currentContext, rootNavigator: true)
+        .pop(); //close the dialoge
+    if (result != null && result.isNotEmpty) {
+      showDialog(
+          context: context,
+          child: new AlertDialog(
+            title: new Text(result),
+          ));}
+    else
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Home()),
+    );
+    }catch (error){print (error);}
+  }
+
+
+  FittedBox setTitle() {
+    return FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(
+          'REGISTRATION',
+          style: TextStyle(
+            color: ColorManagement.setTextColor(),
+          ),
+        )
+    );
+  }
 }

@@ -3,6 +3,7 @@ import 'package:dimaWork/reportSearch.dart';
 import 'package:flutter/material.dart';
 import 'Controllers/ReportController.dart';
 import 'Controllers/datepicker.dart';
+import 'Loading.dart';
 import 'Model/fido.dart';
 import 'checkers/loginValidityChecker.dart';
 import 'Controllers/DateController.dart';
@@ -65,6 +66,8 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
     });
   }
 
+  final GlobalKey<State> key= new GlobalKey<State>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,22 +107,28 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
                   child: InkWell(
                   splashColor: ColorManagement.setMarkerColor(),
                     child: SizedBox(width: MediaQuery.of(context).size.width * 0.1, height: MediaQuery.of(context).size.height * 0.05, child: Icon(Icons.search)),
-                    onTap: () async {
-                      var res = await reportController.retrieveReports(controllerName.text, _date, sexOfPet, breedOfPet, typeOfPet, colorOfCoat);
-                      if (res != null && res is List<Fido> && res.isNotEmpty)
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => new ReportSearch(
-                                  result: res //replace by New Contact Screen
-                                  ),
-                            ));
+                    onTap: () {_handleRetrieveReports();
+
                     })
               ),
             )],
           ),
         )));
   }
+
+  Future<void>  _handleRetrieveReports() async{
+    try{
+    Dialogs.showLoadingDialog(context, key);
+    var res = await reportController.retrieveReports(controllerName.text, _date, sexOfPet, breedOfPet, typeOfPet, colorOfCoat);
+    Navigator.of(key.currentContext,rootNavigator: true).pop();//close the dialoge
+    if (res != null && res is List<Fido> && res.isNotEmpty)
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+          builder: (_) => new ReportSearch(
+        result: res //replace by New Contact Screen
+    ),));
+  }catch (error){print (error);}}
 
   Widget _buildTypeOfPetDropDown() {
     return new Row(
