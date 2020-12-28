@@ -13,7 +13,9 @@ class ReportSearch extends StatelessWidget {
   ReportSearch({Key key, this.result}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new WillPopScope(
+        onWillPop: () async => Future(() => true),
+        child: new Scaffold(
         resizeToAvoidBottomInset: false,
             appBar: AppBar(
               backgroundColor: ColorManagement.setButtonColor(),
@@ -57,6 +59,7 @@ class ReportSearch extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
+
                             CircleAvatar(
                                 radius: min(MediaQuery.of(context).size.height * 0.07, MediaQuery.of(context).size.width * 0.07),
                                 backgroundImage:MemoryImage(this.result[index].getPhoto())),
@@ -85,7 +88,7 @@ class ReportSearch extends StatelessWidget {
                 }
                 )
             )
-    );
+    ));
 
 
 

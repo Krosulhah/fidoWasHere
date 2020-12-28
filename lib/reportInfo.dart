@@ -14,7 +14,9 @@ class ReportInfo extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new WillPopScope(
+        onWillPop: () async => Future(() => true),
+        child:new Scaffold(
       backgroundColor: ColorManagement.setBackGroundColor(),
         resizeToAvoidBottomInset: false,
             appBar: AppBar(
@@ -33,7 +35,7 @@ class ReportInfo extends StatelessWidget {
                   },
                 ),
               ),
-            body:Column(
+            body: Column(
               children: <Widget>[
                 Container(
                     padding: EdgeInsets.all(0),
@@ -57,7 +59,7 @@ class ReportInfo extends StatelessWidget {
                 InfoBuilder.addSpace(),
                 Expanded(child:buildData(context, result),)
               ],
-            ));
+            )));
 
 
   }
@@ -98,7 +100,8 @@ Column buildPhoto(BuildContext context,Fido result) {
             )
             )
 
-        )
+        ),
+
     ]);
 
   }
@@ -153,7 +156,6 @@ SingleChildScrollView buildData(BuildContext context, Fido result){
   Card buildFoundHereCard(BuildContext context, Fido result){
     return InfoBuilder.buildCard("Found here:",InfoBuilder.buildNiceText(result.getFoundHere(), context),context);}
 
-//todo add thank
 RaisedButton closeButtonBuild(context,controller,result) {
       return RaisedButton(
           textColor: ColorManagement.setTextColor(),
@@ -174,6 +176,9 @@ RaisedButton closeButtonBuild(context,controller,result) {
           )
       );
   }
+
+
+//todo add thank
 final GlobalKey<State> key= new GlobalKey<State>();
 Future<void> _handleClose(BuildContext context, ReportController controller,Fido result)async{
   try {

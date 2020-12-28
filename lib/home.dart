@@ -24,14 +24,8 @@ class Home extends StatelessWidget {
 *-----------------------------------------------------------------------------------------------------------**/
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Home',
-      theme: ThemeData(
-        canvasColor:ColorManagement.setBackGroundColor(),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: HomePage(title: 'Home'),
-    );
+    return HomePage(title: 'Home');
+
   }
 }
 
@@ -49,7 +43,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     ReportController reportController=new ReportController();
-    return Scaffold(
+    return new WillPopScope(
+        onWillPop: () async => Future(() => true),
+        child: new Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: ColorManagement.setButtonColor(),
@@ -66,19 +62,22 @@ class _HomePageState extends State<HomePage> {
             );},
         ),
       ),
-      body: Container(
+      body:   Container(
         color: ColorManagement.setBackGroundColor(),
         alignment: Alignment.center,
         child:
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [ImagePatterns.addSmallerImage(context),reportButton(), lookForFidoButton(),myReportButton(reportController),
+            children: [
+
+
+              ImagePatterns.addSmallerImage(context),reportButton(), lookForFidoButton(),myReportButton(reportController),
               statisticsButton(),
              ],
           ),
       ),
-    );
+    ));
   }
 
 

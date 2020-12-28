@@ -65,7 +65,9 @@ class _MailLogInPageState extends State<MailLogInPage> {
   final GlobalKey<State> key= new GlobalKey<State>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async => Future(() => true),
+        child:Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: ColorManagement.setButtonColor(),
@@ -83,7 +85,7 @@ class _MailLogInPageState extends State<MailLogInPage> {
           },
         ),
       ),
-      body: new Container(
+      body:   Container(
         alignment: Alignment.center,
         color: ColorManagement.setBackGroundColor(),
         padding: EdgeInsets.all(16.0),
@@ -93,11 +95,12 @@ class _MailLogInPageState extends State<MailLogInPage> {
             _buildTextFields(),
             _mailLogButton(context),
             registerButton(context),
+
           ],
         ),
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    ));
   }
 
   Widget _buildTextFields() {

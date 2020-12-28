@@ -74,10 +74,12 @@ class _RegPageState extends State<RegPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return new WillPopScope(
+        onWillPop: () async => Future(() => true),
+        child:new Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: _buildBar(context),
-      body: new Container(
+      body: Container(
         alignment: Alignment.center,
         color: ColorManagement.setBackGroundColor(),
         padding: EdgeInsets.all(16.0),
@@ -86,10 +88,11 @@ class _RegPageState extends State<RegPage> {
           children: <Widget>[
             _buildTextFields(),
             _buildButtons(),
+
           ],
         ),
       ),
-    );
+    ));
   }
 
 

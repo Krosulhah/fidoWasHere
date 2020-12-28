@@ -67,7 +67,9 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new WillPopScope(
+        onWillPop: () async => Future(() => true),
+        child: new Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           centerTitle: true,
@@ -85,13 +87,15 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
             },
           ),
         ),
-        body: SingleChildScrollView(
+        body:   SingleChildScrollView(
           child: new Container(
             color: ColorManagement.setBackGroundColor(),
             padding: EdgeInsets.all(16.0),
             child: Column(
+
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+
                 _buildSelectionPart(),
                 InfoBuilder.addSpace(),
                 buildNameCard(),
@@ -110,7 +114,7 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
               ),
             )],
           ),
-        )));
+        ))));
   }
 
   Future<void>  _handleRetrieveReports() async{

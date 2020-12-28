@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:dimaWork/Controllers/ReportController.dart';
 import 'package:dimaWork/Model/fido.dart';
-import 'package:dimaWork/graphicPatterns/TextPatterns.dart';
+
 import 'package:dimaWork/graphicPatterns/colorManagement.dart';
 import 'package:dimaWork/graphicPatterns/infoBuilder.dart';
 import 'package:flutter_svg/svg.dart';
@@ -115,7 +115,9 @@ Column buildText(){
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new WillPopScope(
+        onWillPop: () async => Future(() => true),
+        child:new Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: ColorManagement.setBackGroundColor(),
         appBar: AppBar(
@@ -146,8 +148,9 @@ Column buildText(){
 
         ])),
 
-        body: Stack(
+        body:  Stack(
           children: <Widget>[
+
             GoogleMap(
               onMapCreated: _onMapCreated,
               initialCameraPosition: CameraPosition(
@@ -207,7 +210,7 @@ Column buildText(){
           
           ],
         ),
-      );
+      ));
   }
 
   _fetchUserLocation() async {

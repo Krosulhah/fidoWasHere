@@ -57,6 +57,8 @@ class _MyAppState extends State<MyApp> {
           ),),
         backgroundColor: ColorManagement.setBackGroundColor(),
         loaderColor: ColorManagement.setSeparatorColor()
+      ,
+
     );
   }
 }
@@ -65,7 +67,9 @@ class _MyAppState extends State<MyApp> {
     class HomePage extends StatelessWidget{
       @override
       Widget build(BuildContext context) {
-        return new Scaffold(
+        return new WillPopScope(
+            onWillPop: () async => Future(() => true),
+            child: new Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
               centerTitle: true,
@@ -84,8 +88,7 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
             backgroundColor: ColorManagement.setBackGroundColor(),
-            body:
-            Container(
+            body:Container(
               child:
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -103,10 +106,12 @@ class _MyAppState extends State<MyApp> {
                             fbButton(context)]),
                     ]
               ),
+
             ],
+
           ),
         )
-    );
+    ));
   }
 }
 

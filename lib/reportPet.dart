@@ -78,10 +78,14 @@ class _ReportPetPageState extends State<ReportPetPage> {
     print(availableBreeds);
   }
   final GlobalKey<State> key= new GlobalKey<State>();
-
+  final GlobalKey<NavigatorState> navKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new WillPopScope(
+        onWillPop: () async => Future(() => true),
+
+        child:new Scaffold(
+
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor:ColorManagement.setButtonColor(),
@@ -101,13 +105,13 @@ class _ReportPetPageState extends State<ReportPetPage> {
         ),
 
         backgroundColor:ColorManagement.setBackGroundColor(),//0xff8f70ff
-        body:
-        SingleChildScrollView(
+        body: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.all(16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
+
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   InfoBuilder.boldNiceText("Fido's type",context),
                 ]),
@@ -143,10 +147,17 @@ class _ReportPetPageState extends State<ReportPetPage> {
 
               ],
             ),
+
           ),
 
-        ));
+        )
+    )
+    );
+
   }
+
+
+
 ///-------------------------------------------- <COSTRUZIONE CARD>--------------------------------------------------------------////
   Card buildNameCard(){
     return InfoBuilder.buildCard("Fido's name (optional):",_buildNameTextFields(),context);

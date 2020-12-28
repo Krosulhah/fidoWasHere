@@ -57,7 +57,9 @@ class _MapsUsageState extends State<MapsUsage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new WillPopScope(
+        onWillPop: () async => Future(() => true),
+        child:new Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title:setTitle(),
@@ -74,8 +76,9 @@ class _MapsUsageState extends State<MapsUsage> {
           },
         ),
       ),
-      body: Stack(
+      body:Stack(
         children: <Widget>[
+
           GoogleMap(
             onTap: (LatLng latLng) {
               // you have latitude and longitude here
@@ -137,7 +140,7 @@ class _MapsUsageState extends State<MapsUsage> {
                   color: Colors.blue))
         ],
       ),
-    );
+    ));
   }
 
   _retreiveLocation() async {
