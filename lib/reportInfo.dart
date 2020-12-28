@@ -2,6 +2,7 @@ import 'package:dimaWork/Controllers/ReportController.dart';
 import 'package:dimaWork/graphicPatterns/infoBuilder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'Loading.dart';
 import 'Model/fido.dart';
 import 'graphicPatterns/colorManagement.dart';
 import 'home.dart';
@@ -99,6 +100,7 @@ Column buildPhoto(BuildContext context,Fido result) {
 
         )
     ]);
+
   }
 
 
@@ -156,13 +158,9 @@ RaisedButton closeButtonBuild(context,controller,result) {
       return RaisedButton(
           textColor: ColorManagement.setTextColor(),
           color: ColorManagement.setButtonColor(),
-          onPressed: () async{
-            controller.closeReport(result);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => new Home(),
-              ));}, shape: RoundedRectangleBorder(
+          onPressed: () {
+            _handleClose(context,controller,result);
+          }, shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16.0))),
           child:Container(
               alignment: Alignment.center,
@@ -176,6 +174,21 @@ RaisedButton closeButtonBuild(context,controller,result) {
           )
       );
   }
+final GlobalKey<State> key= new GlobalKey<State>();
+Future<void> _handleClose(BuildContext context, ReportController controller,Fido result)async{
+  try {
+    Dialogs.showLoadingDialog(context, key);//invoking login
+    await controller.closeReport(result);
+    Navigator.of(key.currentContext,rootNavigator: true).pop();//close the dialoge
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => new Home(),
+        ));
+  } catch (error) {
+    print(error);
+  }
+}
 
 
   Widget actualAddress(Fido result,BuildContext context) {

@@ -108,8 +108,7 @@ class ReportController {
         backgroundColor: Colors.white);
   }
 
-  Future<bool> checkAndSend(
-      String name,
+  Future<String> checkFieldsReport(String name,
       String broughtTo,
       String foundOn,
       List<int> image,
@@ -121,49 +120,62 @@ class ReportController {
     bool checkUserAddress;
     if (name == null || name.isEmpty) name = null;
     if (typeOfPet == null || typeOfPet.isEmpty) {
-      toast("please select Fido's type");
-      return false;
+      return("please select Fido's type");
+
     }
     if (breedOfPet == null ||
         breedOfPet.isEmpty ||
         breedOfPet == "Select Fido's type") {
-      toast("please select a breed value");
-      return false;
+      return("please select a breed value");
+
     }
     if (sexOfPet == null || sexOfPet.isEmpty) {
-      toast("please select a sex value");
-      return false;
+      return("please select a sex value");
+
     }
     if (foundOn == null || foundOn.isEmpty) {
-      toast("Please add where you've found the Fido");
-      return false;
+      return ("Please add where you've found the Fido");
     }
     if (moved && (broughtTo == null || broughtTo.isEmpty)) {
-      toast("Please add the last know position of the Fido");
-      return false;
+      return("Please add the last know position of the Fido");
+
     }
     checkUserAddress = await _checkUserAddress(foundOn);
     if (checkUserAddress == false) {
-      toast("please add a valid location");
-      return false;
+      return("please add a valid location");
+
     }
     if (broughtTo != null && broughtTo.isNotEmpty) {
       checkUserAddress = await _checkUserAddress(broughtTo);
       if (checkUserAddress == false) {
-        toast("please add a valid location");
-        return false;
+        return("please add a valid location");
+
       }
     }
 
     if (image == null) {
-      toast("please add a Picture of the Fido");
-      return false;
+      return  ("please add a Picture of the Fido");
+
     }
 
     if (colorOfCoat == null || colorOfCoat.isEmpty) {
-      toast("please select Fido's coat color");
-      return false;
+      return("please select Fido's coat color");
+
     }
+    return "";
+  }
+
+  Future<bool> checkAndSend(
+      String name,
+      String broughtTo,
+      String foundOn,
+      List<int> image,
+      bool moved,
+      String sexOfPet,
+      String breedOfPet,
+      String typeOfPet,
+      String colorOfCoat) async {
+
 
     var session = FlutterSession();
 
@@ -337,22 +349,27 @@ class ReportController {
     return results.length;
   }
 
-
-  retrieveReports(String name, DateTime date, String sexOfPet,
-      String breedOfPet, String typeOfPet, String colorOfCoat) async {
-    if (name == null || name.isEmpty) return toast("please insert Fido's name");
+  checkField(String name, DateTime date, String sexOfPet,
+      String breedOfPet, String typeOfPet, String colorOfCoat){
+    if (name == null || name.isEmpty) return ("please insert Fido's name");
     if (sexOfPet == null || sexOfPet.isEmpty)
-      return toast("please select a sex value");
+      return ("please select a sex value");
     if (breedOfPet == null ||
         breedOfPet.isEmpty ||
         breedOfPet == "Select Fido's type")
-      return toast("please select a breed value");
+      return ("please select a breed value");
     if (typeOfPet == null || typeOfPet.isEmpty)
-      return toast("please select Fido's type");
+      return ("please select Fido's type");
     if (colorOfCoat == null || colorOfCoat.isEmpty)
-      return toast("please select Fido's coat color");
+      return ("please select Fido's coat color");
     if (date.isAfter(DateTime.now()))
-      return toast("please select a valid date");
+      return ("please select a valid date");
+    return null;
+  }
+
+  retrieveReports(String name, DateTime date, String sexOfPet,
+      String breedOfPet, String typeOfPet, String colorOfCoat) async {
+
 
     var connection = connectionHandler.createConnection();
 

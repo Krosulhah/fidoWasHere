@@ -189,7 +189,6 @@ class _MailLogInPageState extends State<MailLogInPage> {
               title: new Text(result),
             ));
       }
-      Navigator.of(key.currentContext,rootNavigator: true).pop();//close the dialoge
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Home()),

@@ -5,7 +5,6 @@ import 'Controllers/ReportController.dart';
 import 'Controllers/datepicker.dart';
 import 'Loading.dart';
 import 'Model/fido.dart';
-import 'checkers/loginValidityChecker.dart';
 import 'Controllers/DateController.dart';
 import 'graphicPatterns/colorManagement.dart';
 import 'graphicPatterns/infoBuilder.dart';
@@ -13,8 +12,6 @@ import 'graphicPatterns/infoBuilder.dart';
 class LookForFido extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    LoginValidityChecker loginValidityChecker = new LoginValidityChecker();
-    loginValidityChecker.isLoggedIn(context);
     return  LookForFidoPage(title: 'Look For Fido');
   }
 }
@@ -117,18 +114,36 @@ class _LookForFidoPageState extends State<LookForFidoPage> {
   }
 
   Future<void>  _handleRetrieveReports() async{
-    try{
-    Dialogs.showLoadingDialog(context, key);
-    var res = await reportController.retrieveReports(controllerName.text, _date, sexOfPet, breedOfPet, typeOfPet, colorOfCoat);
-    Navigator.of(key.currentContext,rootNavigator: true).pop();//close the dialoge
-    if (res != null && res is List<Fido> && res.isNotEmpty)
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-          builder: (_) => new ReportSearch(
-        result: res //replace by New Contact Screen
-    ),));
-  }catch (error){print (error);}}
+    var check = reportController.checkField(
+        controllerName.text, _date, sexOfPet, breedOfPet, typeOfPet,
+        colorOfCoat);
+    if (check == null) {
+      try {
+        Dialogs.showLoadingDialog(context, key);
+        var res = await reportController.retrieveReports(
+            controllerName.text, _date, sexOfPet, breedOfPet, typeOfPet,
+            colorOfCoat);
+        Navigator.of(key.currentContext, rootNavigator: true)
+            .pop(); //close the dialoge
+        if (res != null && res is List<Fido> && res.isNotEmpty)
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) =>
+                new ReportSearch(
+                    result: res //replace by New Contact Screen
+                ),));
+      } catch (error) {
+        print(error);
+      }
+    }else if (check is String ){
+      showDialog(
+          context: context,
+          child: new AlertDialog(
+            title: new Text(check),
+          ));}
+
+    }
 
   Widget _buildTypeOfPetDropDown() {
     return new Row(

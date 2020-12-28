@@ -1,4 +1,4 @@
-import 'package:dimaWork/checkers/loginValidityChecker.dart';
+
 import 'package:dimaWork/graphicPatterns/infoBuilder.dart';
 import 'package:dimaWork/main.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'dart:async';
 import 'package:image_picker/image_picker.dart';
 import 'Controllers/ReportController.dart';
+import 'Loading.dart';
 import 'graphicPatterns/colorManagement.dart';
 import 'home.dart';
 import 'mapsUsage.dart';
@@ -17,8 +18,6 @@ class ReportPet extends StatelessWidget {
   ReportPet({this.address});
   @override
   Widget build(BuildContext context) {
-    LoginValidityChecker loginValidityChecker = new LoginValidityChecker();
-    loginValidityChecker.isLoggedIn(context);
     return ReportPetPage();
   }
 }
@@ -78,6 +77,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
     _colorSex = [Colors.black, Colors.black, Colors.black];
     print(availableBreeds);
   }
+  final GlobalKey<State> key= new GlobalKey<State>();
 
   @override
   Widget build(BuildContext context) {
@@ -434,6 +434,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
     ]);
   }
 
+
   Widget _buildBroughtTo() {
     return Column(children: [
       Row(
@@ -475,11 +476,10 @@ class _ReportPetPageState extends State<ReportPetPage> {
     return RaisedButton(
     textColor: ColorManagement.setTextColor(),
     color: ColorManagement.setButtonColor(),
-          onPressed: () async {
-            bool isReportValid = await reportController.checkAndSend(controllerName.text, broughtTo.text, foundOn.text, _image, isBroughtTo, sexOfPet, breedOfPet, typeOfPet, colorOfCoat);
-            if (isReportValid) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
-            }
+          onPressed: ()  {
+
+              _handleReport();
+
           },shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(16.0))),
         child:Container(
@@ -494,6 +494,31 @@ class _ReportPetPageState extends State<ReportPetPage> {
         )
     );
   }
+  Future <void> _handleReport()async {
+    bool isReportValid=false;
+      try{
+        Dialogs.showLoadingDialog(context, key);
+        var check= await reportController.checkFieldsReport(controllerName.text, broughtTo.text, foundOn.text, _image, isBroughtTo, sexOfPet, breedOfPet, typeOfPet, colorOfCoat);
+       print("hey");
+        if(check.isEmpty){
+          isReportValid = await reportController.checkAndSend(controllerName.text, broughtTo.text, foundOn.text, _image, isBroughtTo, sexOfPet, breedOfPet, typeOfPet, colorOfCoat);
+        }
+        Navigator.of(context, rootNavigator: true)
+            .pop(); //close the dialoge
+
+        if (isReportValid) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+        }
+        else if(check is String){
+          showDialog(
+              context: context,
+              child: new AlertDialog(
+                title: new Text(check),
+              ));}
+      }catch (error){print (error);}
+    }
+
+  
 
   Future getImage(bool iscamera) async {
     ImagePicker petImage = new ImagePicker();

@@ -1,9 +1,8 @@
 import 'package:dimaWork/Controllers/ReportController.dart';
-import 'package:dimaWork/checkers/loginValidityChecker.dart';
 import 'package:dimaWork/graphicPatterns/ImagePatterns.dart';
-import 'package:dimaWork/myReport.dart';
 import 'package:dimaWork/reportSearch.dart';
 import 'package:flutter/services.dart';
+import 'Loading.dart';
 import 'Model/fido.dart';
 import 'Statistics.dart';
 import 'package:flutter/material.dart';
@@ -46,14 +45,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
+  final GlobalKey<State> key= new GlobalKey<State>();
   @override
   Widget build(BuildContext context) {
-    /*** check if user has logged in*/
-    LoginValidityChecker loginChecker=new LoginValidityChecker();
-    loginChecker.isLoggedIn(context);
     ReportController reportController=new ReportController();
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -64,7 +59,7 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context) {
             return IconButton(
               color: ColorManagement.setTextColor(),
-              icon: const Icon(Icons.exit_to_app),
+              icon: const Icon(Icons.close),
               onPressed: () {
                 SystemNavigator.pop();
               },
@@ -163,14 +158,7 @@ class _HomePageState extends State<HomePage> {
     return RaisedButton(
         textColor: ColorManagement.setTextColor(),
         color: ColorManagement.setButtonColor(),
-        onPressed: () async {
-          var res = await reportController.retrieveMyReports();
-          if (res != null && res is List<Fido> && res.isNotEmpty)
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => new ReportSearch(result: res),
-                ));
+        onPressed: ()  {_handleRetrieveMyReports(reportController);
         },shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(16.0))),
         child:Container(
@@ -184,6 +172,23 @@ class _HomePageState extends State<HomePage> {
             )
         )
     );
+  }
+
+  Future<void> _handleRetrieveMyReports(ReportController reportController) async {
+    try {
+
+      Dialogs.showLoadingDialog(context, key);//invoking login
+      var res = await reportController.retrieveMyReports();
+      Navigator.of(key.currentContext,rootNavigator: true).pop();//close the dialoge
+      if (res != null && res is List<Fido> && res.isNotEmpty)
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => new ReportSearch(result: res),
+            ));
+    } catch (error) {
+      print(error);
+    }
   }
 
 }
