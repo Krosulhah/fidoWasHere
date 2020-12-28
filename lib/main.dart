@@ -9,6 +9,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+
+import 'package:flutter/material.dart';
+import 'package:splashscreen/splashscreen.dart';
+
 // ignore: slash_for_doc_comments
 /**--------------------------------------------------------------------------------//
 * pagina di accesso all'applicazione
@@ -31,8 +35,32 @@ class MyHomePage extends StatelessWidget {
 
     return MaterialApp(
         title: 'FidoWasHere',
-    home: new HomePage());}
+    home: new MyApp());}
 }
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => new _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    return new SplashScreen(
+        seconds: 3,
+        navigateAfterSeconds: new HomePage(),
+        title:Text(
+          'Fido Was Here',
+          style:   TextStyle(
+            color:ColorManagement.setTextColor(),
+            fontFamily: 'DancingScript',
+            fontSize: MediaQuery.of(context).size.width*0.09
+          ),),
+        backgroundColor: ColorManagement.setBackGroundColor(),
+        loaderColor: ColorManagement.setSeparatorColor()
+    );
+  }
+}
+
 
     class HomePage extends StatelessWidget{
       @override

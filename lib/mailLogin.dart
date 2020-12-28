@@ -5,7 +5,9 @@ import 'Controllers/MailRegLoginController.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'Loading.dart';
 import 'graphicPatterns/colorManagement.dart';
+import 'home.dart';
 
 // ignore: slash_for_doc_comments
 /**--------------------------------------------------------------------------------------------------------//
@@ -60,7 +62,7 @@ class _MailLogInPageState extends State<MailLogInPage> {
       _password = _passwordFilter.text;
     }
   }
-
+  final GlobalKey<State> key= new GlobalKey<State>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,16 +128,7 @@ class _MailLogInPageState extends State<MailLogInPage> {
     return RaisedButton(
         textColor: ColorManagement.setTextColor(),
         color: Colors.redAccent,
-        onPressed: () async {
-          String result=await loginController.logInPressed(context,_email,_password);
-          if (result!=null&&result.isNotEmpty)
-            {
-              showDialog(
-                  context: context,
-                  child: new AlertDialog(
-                    title: new Text(result),
-                  ));
-            }
+        onPressed: () {_handleSubmit(context);
         },
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16.0))),
@@ -181,7 +174,35 @@ class _MailLogInPageState extends State<MailLogInPage> {
             ))
     );
   }
+
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+
+      Dialogs.showLoadingDialog(context, key);//invoking login
+      String result=await loginController.logInPressed(context,_email,_password);
+      Navigator.of(key.currentContext,rootNavigator: true).pop();//close the dialoge
+      if (result!=null&&result.isNotEmpty)
+      {
+        showDialog(
+            context: context,
+            child: new AlertDialog(
+              title: new Text(result),
+            ));
+      }
+      Navigator.of(key.currentContext,rootNavigator: true).pop();//close the dialoge
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
+      );
+    } catch (error) {
+      print(error);
+    }
+  }
 }
+
+
+
+
 
 FittedBox setTitle(){
   return FittedBox(
@@ -194,3 +215,4 @@ FittedBox setTitle(){
       )
   );
 }
+

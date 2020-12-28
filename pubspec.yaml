@@ -35,7 +35,8 @@ dependencies:
   flutter_facebook_login:
   fluttertoast:
   flutter_svg: 0.19.1
-  intl: 
+  intl:
+  splashscreen:
 
 
 

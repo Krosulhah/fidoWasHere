@@ -14,7 +14,6 @@ class MailLoginController{
 
 
   Future<String> logInPressed(BuildContext context,String _email, String _password) async {
-
     if (_email.isEmpty || _password.isEmpty) {
       return ('please fill all the required fields');
           }
