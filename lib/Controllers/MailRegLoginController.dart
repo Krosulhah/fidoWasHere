@@ -8,10 +8,11 @@ import 'package:flutter_session/flutter_session.dart';
 import '../connectionHandler.dart';
 import '../home.dart';
 
+
+
 class MailLoginController {
   Checker checker = new Checker();
   ConnectionHandler connectionHandler = new ConnectionHandler();
-
 
   Future<String> logInPressed(BuildContext context, String _email,
       String _password) async {
@@ -34,10 +35,7 @@ class MailLoginController {
       var session = FlutterSession();
       await session.set("user", _email);
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Home()),
-      );
+      return "";
     }
   }
 
@@ -80,4 +78,6 @@ class MailLoginController {
       return "";
     }
   }
+
+
 }

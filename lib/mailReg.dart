@@ -191,7 +191,7 @@ class _RegPageState extends State<RegPage> {
     String result = await regController.registerPressed(
         _email, _password, _repeatPassword, context); // runApp (MailReg());
 
-    Navigator.of(key.currentContext, rootNavigator: true)
+    Navigator.of(context, rootNavigator: true)
         .pop(); //close the dialoge
     if (result != null && result.isNotEmpty) {
       showDialog(

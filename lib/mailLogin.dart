@@ -183,7 +183,7 @@ class _MailLogInPageState extends State<MailLogInPage> {
 
       Dialogs.showLoadingDialog(context, key);//invoking login
       String result=await loginController.logInPressed(context,_email,_password);
-      Navigator.of(key.currentContext,rootNavigator: true).pop();//close the dialoge
+      Navigator.of(context,rootNavigator: true).pop();//close the dialoge
       if (result!=null&&result.isNotEmpty)
       {
         showDialog(
@@ -191,7 +191,7 @@ class _MailLogInPageState extends State<MailLogInPage> {
             child: new AlertDialog(
               title: new Text(result),
             ));
-      }
+      }else
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
