@@ -1,4 +1,6 @@
 
+import 'package:connectivity/connectivity.dart';
+import 'package:dimaWork/graphicPatterns/TextPatterns.dart';
 import 'package:dimaWork/mailReg.dart';
 import 'package:flutter/material.dart';
 import 'Controllers/MailRegLoginController.dart';
@@ -41,11 +43,42 @@ class _MailLogInPageState extends State<MailLogInPage> {
   final TextEditingController _passwordFilter = new TextEditingController();
   String _email = "";
   String _password = "";
+  var subscription;
+  bool conn;
 
   _MailLogInPageState() {
     _emailFilter.addListener(_emailListen);
     _passwordFilter.addListener(_passwordListen);
+    conn=false;
   }
+
+
+  @override
+  initState() {
+    super.initState();
+    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result == ConnectivityResult.mobile||result==ConnectivityResult.wifi) {
+        setState(() {
+          conn= true;
+        });
+      }
+      else
+        setState(() {
+          conn= false;
+        });
+    });
+  }
+
+// Be sure to cancel subscription after you are done
+  @override
+  dispose() {
+    super.dispose();
+
+    subscription.cancel();
+  }
+
+
+
 
   void _emailListen() {
     if (_emailFilter.text.isEmpty) {
@@ -179,6 +212,9 @@ class _MailLogInPageState extends State<MailLogInPage> {
   }
 
   Future<void> _handleSubmit(BuildContext context) async {
+
+
+    if(conn){
     try {
 
       Dialogs.showLoadingDialog(context, key);//invoking login
@@ -186,11 +222,7 @@ class _MailLogInPageState extends State<MailLogInPage> {
       Navigator.of(context,rootNavigator: true).pop();//close the dialoge
       if (result!=null&&result.isNotEmpty)
       {
-        showDialog(
-            context: context,
-            child: new AlertDialog(
-              title: new Text(result),
-            ));
+        TextPatterns.showAlert(result, context);
       }else
       Navigator.push(
         context,
@@ -199,6 +231,8 @@ class _MailLogInPageState extends State<MailLogInPage> {
     } catch (error) {
       print(error);
     }
+  }
+  else TextPatterns.showInternetAlert(context);
   }
 }
 

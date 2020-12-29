@@ -17,6 +17,16 @@ class TextPatterns{
 
   }
 
+  static showAlert(String result,BuildContext context){
+    showDialog(
+        context: context,
+        child: new AlertDialog(
+          title: new Text(result),
+        ));
+  }
 
+  static showInternetAlert(BuildContext context){
+    showAlert("ERROR: \n Please check your internet connection", context);
+  }
 
 }

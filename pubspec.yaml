@@ -37,7 +37,7 @@ dependencies:
   flutter_svg: 0.19.1
   intl:
   splashscreen:
-
+  connectivity: 2.0.2
 
 
 
