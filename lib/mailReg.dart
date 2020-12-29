@@ -1,6 +1,6 @@
 import 'package:dimaWork/Controllers/MailRegLoginController.dart';
 import 'package:flutter/material.dart';
-import 'package:connectivity/connectivity.dart';
+
 import 'Loading.dart';
 import 'package:dimaWork/connectionHandler.dart';
 import 'graphicPatterns/colorManagement.dart';
@@ -37,42 +37,17 @@ class _RegPageState extends State<RegPage> {
   String _email = "";
   String _password = "";
   String _repeatPassword = "";
-  bool conn;
-  var subscription;
 
   MailLoginController regController = new MailLoginController();
 
-  _RegPageState()  {
+  _RegPageState() {
     _emailFilter.addListener(_emailListen);
     _passwordFilter.addListener(_passwordListen);
     _repeatPasswordFilter.addListener(_repeatPasswordListen);
-    conn=check();
-  }
-  check(){
-    bool c= ConnectionHandler().isConnected(Connectivity().checkConnectivity());
-    return c;
 
   }
 
 
-  @override
-  initState() {
-    super.initState();
-    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      setState(()  {
-        conn= ConnectionHandler().isConnected(result);
-      });
-    }
-    );
-  }
-
-// Be sure to cancel subscription after you are done
-  @override
-  dispose() {
-    super.dispose();
-
-    subscription.cancel();
-  }
 
   void _emailListen() {
     if (_emailFilter.text.isEmpty) {
@@ -215,7 +190,7 @@ class _RegPageState extends State<RegPage> {
   }
 
   Future<void>  _handleReg() async {
-    if (conn) {
+
       try {
         Dialogs.showLoadingDialog(context, key);
         String result = await regController.registerPressed(
@@ -235,7 +210,7 @@ class _RegPageState extends State<RegPage> {
       } catch (error) {
         print(error);
       }
-    }else TextPatterns.showInternetAlert(context);
+
 
   }
 

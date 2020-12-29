@@ -37,7 +37,9 @@ dependencies:
   flutter_svg: 0.19.1
   intl:
   splashscreen:
-  connectivity: 2.0.2
+
+
+
 
 
 
@@ -48,6 +50,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -74,6 +77,8 @@ flutter:
     - assets/images/dogMarker.png
     - assets/images/catt.jpg
     - assets/images/dogt.jpg
+
+
 
   fonts:
      - family: DancingScript

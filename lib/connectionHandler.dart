@@ -1,5 +1,5 @@
 import 'package:postgres/postgres.dart';
-import 'package:connectivity/connectivity.dart';
+
 class ConnectionHandler{
 
 
@@ -15,14 +15,5 @@ class ConnectionHandler{
         queryTimeoutInSeconds: 30,
         timeZone: 'UTC',
         useSSL: true);
-  }
-
- bool isConnected(var result) {
-    if (result == ConnectivityResult.mobile||result==ConnectivityResult.wifi) {
-        return true;
-    }
-    else
-        return false;
-
   }
 }

@@ -1,5 +1,6 @@
 
-import 'package:connectivity/connectivity.dart';
+
+
 import 'package:dimaWork/graphicPatterns/TextPatterns.dart';
 import 'package:dimaWork/mailReg.dart';
 import 'package:flutter/material.dart';
@@ -43,41 +44,13 @@ class _MailLogInPageState extends State<MailLogInPage> {
   final TextEditingController _passwordFilter = new TextEditingController();
   String _email = "";
   String _password = "";
-  var subscription;
-  bool conn;
+
 
   _MailLogInPageState() {
     _emailFilter.addListener(_emailListen);
     _passwordFilter.addListener(_passwordListen);
-    conn=check();
+
   }
-check(){
-    bool c= ConnectionHandler().isConnected(Connectivity().checkConnectivity());
-  return c;
-
-}
-
-
-  @override
-  initState() {
-    super.initState();
-    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      setState(()  {
-        conn= ConnectionHandler().isConnected(result);
-      });
-    }
-    );
-  }
-
-// Be sure to cancel subscription after you are done
-  @override
-  dispose() {
-    super.dispose();
-
-    subscription.cancel();
-  }
-
-
 
 
   void _emailListen() {
@@ -214,7 +187,7 @@ check(){
   Future<void> _handleSubmit(BuildContext context) async {
 
 
-    if(conn){
+
     try {
 
       Dialogs.showLoadingDialog(context, key);//invoking login
@@ -232,8 +205,8 @@ check(){
       print(error);
     }
   }
-  else TextPatterns.showInternetAlert(context);
-  }
+
+
 }
 
 
