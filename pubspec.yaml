@@ -72,6 +72,8 @@ flutter:
     - assets/images/m.png
     - assets/images/catMarker.png
     - assets/images/dogMarker.png
+    - assets/images/catt.jpg
+    - assets/images/dogt.jpg
 
   fonts:
      - family: DancingScript

@@ -26,10 +26,10 @@ import 'package:splashscreen/splashscreen.dart';
 
 
 void main() {
-  runApp(MyHomePage());
+  runApp(MyHome());
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return new SplashScreen(
         seconds: 3,
-        navigateAfterSeconds: new HomePage(),
+        navigateAfterSeconds: new Home(),
         title:Text(
           'Fido Was Here',
           style:   TextStyle(
@@ -64,11 +64,12 @@ class _MyAppState extends State<MyApp> {
 }
 
 
-    class HomePage extends StatelessWidget{
+    class Home extends StatelessWidget{
       @override
       Widget build(BuildContext context) {
         return new WillPopScope(
-            onWillPop: () async => Future(() => true),
+            // ignore: missing_return
+            onWillPop: () {  SystemNavigator.pop();},
             child: new Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(

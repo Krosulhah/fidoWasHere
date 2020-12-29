@@ -26,7 +26,7 @@ class FBcontroller{
           await session.set("user",userProfile['email']);
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Home()),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
 
         }break;

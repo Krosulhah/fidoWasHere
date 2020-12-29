@@ -202,7 +202,7 @@ class _RegPageState extends State<RegPage> {
     else
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Home()),
+      MaterialPageRoute(builder: (context) => HomePage()),
     );
     }catch (error){print (error);}
   }

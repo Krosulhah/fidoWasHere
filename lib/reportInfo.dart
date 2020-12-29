@@ -1,4 +1,5 @@
 import 'package:dimaWork/Controllers/ReportController.dart';
+import 'package:dimaWork/ThankyouScreen.dart';
 import 'package:dimaWork/graphicPatterns/infoBuilder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -178,7 +179,7 @@ RaisedButton closeButtonBuild(context,controller,result) {
   }
 
 
-//todo add thank
+
 final GlobalKey<State> key= new GlobalKey<State>();
 Future<void> _handleClose(BuildContext context, ReportController controller,Fido result)async{
   try {
@@ -188,7 +189,7 @@ Future<void> _handleClose(BuildContext context, ReportController controller,Fido
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => new Home(),
+          builder: (context) =>  ThankYou(result.getType()),
         ));
   } catch (error) {
     print(error);

@@ -194,7 +194,7 @@ class _MailLogInPageState extends State<MailLogInPage> {
       }
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Home()),
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
     } catch (error) {
       print(error);

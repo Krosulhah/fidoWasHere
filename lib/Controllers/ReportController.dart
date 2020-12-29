@@ -231,6 +231,7 @@ class ReportController {
       r.setSex(d[2]);
       r.setBreed(d[3]);
       r.setColour(d[4]);
+      r.setType(d[5]);
       r.setFoundHere(d[7]);
       r.setBrouthto(d[8]);
       r.setMoved(d[9].toString());

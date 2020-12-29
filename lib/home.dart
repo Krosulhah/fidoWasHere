@@ -44,7 +44,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     ReportController reportController=new ReportController();
     return new WillPopScope(
-        onWillPop: () async => Future(() => true),
+        // ignore: missing_return
+        onWillPop: () {  SystemNavigator.pop();},
+        // onWillPop:(){SystemNavigator.pop();}, chiude l'app
+        //  onWillPop: () async => Future(() => false), disattiva back button
         child: new Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(

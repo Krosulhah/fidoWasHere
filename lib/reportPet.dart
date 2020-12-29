@@ -518,7 +518,7 @@ class _ReportPetPageState extends State<ReportPetPage> {
             .pop(); //close the dialoge
 
         if (isReportValid) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
         }
         else if(check is String){
           showDialog(
