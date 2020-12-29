@@ -11,6 +11,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'Loading.dart';
 import 'graphicPatterns/ImagePatterns.dart';
 
 class Statistics extends StatefulWidget {
@@ -112,7 +113,7 @@ Column buildText(){
   ]);
   }
 
-
+  final GlobalKey<State> key= new GlobalKey<State>();
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
@@ -129,7 +130,10 @@ Column buildText(){
         ),
 
         drawer: Drawer(
-            child: ListView(children: <Widget>[
+            child: Container(
+                color: ColorManagement.setBackGroundColor(),
+                child:ListView(
+                children: <Widget>[
               _createHeader(context),
               InfoBuilder.boldNiceText("STATISTICS", context),
               InfoBuilder.addSpace(),
@@ -146,7 +150,7 @@ Column buildText(){
               ],),
               buildText(),
 
-        ])),
+        ]))),
 
         body:  Stack(
           children: <Widget>[
@@ -263,12 +267,23 @@ Column buildText(){
               }
               statisticsClosedNumbers();
               statisticsOpenNumbers();
-              statisticsFido();
+              _loadFromDb();
+
             });
           },
         )
       ],
     );
+  }
+  Future<void>_loadFromDb()async{
+    try {
+      Dialogs.showLoadingDialog(context, key);
+       await  statisticsFido();
+      Navigator.of(key.currentContext, rootNavigator: true)
+          .pop(); //close the dialoge
+    } catch (error) {
+      print(error);
+    }
   }
 
   statisticsFido() async {
