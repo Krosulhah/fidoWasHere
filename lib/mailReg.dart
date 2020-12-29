@@ -1,10 +1,11 @@
 import 'package:dimaWork/Controllers/MailRegLoginController.dart';
 import 'package:flutter/material.dart';
-
+import 'package:connectivity/connectivity.dart';
 import 'Loading.dart';
+import 'package:dimaWork/connectionHandler.dart';
 import 'graphicPatterns/colorManagement.dart';
 import 'home.dart';
-
+import 'package:dimaWork/graphicPatterns/TextPatterns.dart';
 // ignore: slash_for_doc_comments
 /**--------------------------------------------------------------------------------------------------------------//
 * pagina per la registrazione di un'account
@@ -36,13 +37,41 @@ class _RegPageState extends State<RegPage> {
   String _email = "";
   String _password = "";
   String _repeatPassword = "";
+  bool conn;
+  var subscription;
 
   MailLoginController regController = new MailLoginController();
 
-  _RegPageState() {
+  _RegPageState()  {
     _emailFilter.addListener(_emailListen);
     _passwordFilter.addListener(_passwordListen);
     _repeatPasswordFilter.addListener(_repeatPasswordListen);
+    conn=check();
+  }
+  check(){
+    bool c= ConnectionHandler().isConnected(Connectivity().checkConnectivity());
+    return c;
+
+  }
+
+
+  @override
+  initState() {
+    super.initState();
+    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      setState(()  {
+        conn= ConnectionHandler().isConnected(result);
+      });
+    }
+    );
+  }
+
+// Be sure to cancel subscription after you are done
+  @override
+  dispose() {
+    super.dispose();
+
+    subscription.cancel();
   }
 
   void _emailListen() {
@@ -186,27 +215,29 @@ class _RegPageState extends State<RegPage> {
   }
 
   Future<void>  _handleReg() async {
-    try{
-    Dialogs.showLoadingDialog(context, key);
-    String result = await regController.registerPressed(
-        _email, _password, _repeatPassword, context); // runApp (MailReg());
+    if (conn) {
+      try {
+        Dialogs.showLoadingDialog(context, key);
+        String result = await regController.registerPressed(
+            _email, _password, _repeatPassword, context); // runApp (MailReg());
 
-    Navigator.of(context, rootNavigator: true)
-        .pop(); //close the dialoge
-    if (result != null && result.isNotEmpty) {
-      showDialog(
-          context: context,
-          child: new AlertDialog(
-            title: new Text(result),
-          ));}
-    else
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage()),
-    );
-    }catch (error){print (error);}
+        Navigator.of(context, rootNavigator: true)
+            .pop(); //close the dialoge
+        if (result != null && result.isNotEmpty) {
+
+         TextPatterns.showAlert(result, context);
+        }
+        else
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          );
+      } catch (error) {
+        print(error);
+      }
+    }else TextPatterns.showInternetAlert(context);
+
   }
-
 
   FittedBox setTitle() {
     return FittedBox(

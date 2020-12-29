@@ -4,7 +4,7 @@ import 'package:dimaWork/graphicPatterns/TextPatterns.dart';
 import 'package:dimaWork/mailReg.dart';
 import 'package:flutter/material.dart';
 import 'Controllers/MailRegLoginController.dart';
-
+import 'package:dimaWork/connectionHandler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'Loading.dart';
@@ -49,24 +49,24 @@ class _MailLogInPageState extends State<MailLogInPage> {
   _MailLogInPageState() {
     _emailFilter.addListener(_emailListen);
     _passwordFilter.addListener(_passwordListen);
-    conn=false;
+    conn=check();
   }
+check(){
+    bool c= ConnectionHandler().isConnected(Connectivity().checkConnectivity());
+  return c;
+
+}
 
 
   @override
   initState() {
     super.initState();
     subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.mobile||result==ConnectivityResult.wifi) {
-        setState(() {
-          conn= true;
-        });
-      }
-      else
-        setState(() {
-          conn= false;
-        });
-    });
+      setState(()  {
+        conn= ConnectionHandler().isConnected(result);
+      });
+    }
+    );
   }
 
 // Be sure to cancel subscription after you are done
