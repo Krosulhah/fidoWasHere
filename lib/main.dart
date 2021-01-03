@@ -1,3 +1,5 @@
+
+
 import 'package:dimaWork/Controllers/FBcontroller.dart';
 import 'package:dimaWork/graphicPatterns/ImagePatterns.dart';
 import 'package:dimaWork/graphicPatterns/TextPatterns.dart';
@@ -38,11 +40,13 @@ class MyHome extends StatelessWidget {
     home: new MyApp());}
 }
 class MyApp extends StatefulWidget {
+
   @override
   _MyAppState createState() => new _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   Widget build(BuildContext context) {
     return new SplashScreen(
@@ -61,7 +65,9 @@ class _MyAppState extends State<MyApp> {
 
     );
   }
+
 }
+
 
 
     class Home extends StatelessWidget{

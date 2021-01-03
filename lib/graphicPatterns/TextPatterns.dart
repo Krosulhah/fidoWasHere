@@ -25,8 +25,6 @@ class TextPatterns{
         ));
   }
 
-  static showInternetAlert(BuildContext context){
-    showAlert("ERROR: \n Please check your internet connection", context);
-  }
+
 
 }

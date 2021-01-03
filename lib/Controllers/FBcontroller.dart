@@ -34,10 +34,10 @@ class FBcontroller{
 
 
       case FacebookLoginStatus.cancelledByUser:
-        return 'azione cancellata';
+        return 'deleted action';
 
       case FacebookLoginStatus.error:
-        return 'impossibile effettuare il login tramite FB';
+        return 'cannot login through FB';
     }
   }
 

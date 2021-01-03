@@ -41,7 +41,7 @@ class _MapsUsageState extends State<MapsUsage> {
     final Marker marker = Marker(
       markerId: markerId,
       position: LatLng(latitude, longitude),
-      infoWindow: InfoWindow(title: markerIdVal, snippet: '*'),
+      infoWindow: InfoWindow(title: markerIdVal, snippet: ''),
       onTap: () {
         print('schiacciato un pin');
       },
