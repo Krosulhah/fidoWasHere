@@ -170,7 +170,7 @@ class _HomePageState extends State<HomePage> {
             child:
             Align(
                 alignment: Alignment.center,
-                child: Text('My Report' ,textAlign: TextAlign.center)
+                child: Text('My Reports' ,textAlign: TextAlign.center)
             )
         )
     );
