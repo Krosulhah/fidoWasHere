@@ -28,7 +28,12 @@ import 'package:splashscreen/splashscreen.dart';
 
 
 void main() {
-  runApp(MyHome());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_){
+
+    runApp(MyHome());
+  });
+
 }
 
 class MyHome extends StatelessWidget {
