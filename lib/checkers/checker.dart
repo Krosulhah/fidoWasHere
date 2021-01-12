@@ -8,7 +8,8 @@ class Checker {
 
     alphabet = alphabet + alphabetCaps;
     String numbers = "0123456789";
-
+    mail=mail.trimRight();
+    print(mail);
     List<Object> alphanumericalValue = new List();
     List<Object> allowedSymbols = new List();
 
