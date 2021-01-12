@@ -182,7 +182,7 @@ class ReportController {
     var connection = connectionHandler.createConnection();
     await connection.open();
     String user = await session.get("user");
-
+    DateTime d=DateTime.now();
     //image=FileImage(image(image.path));
 
     await connection.query(
@@ -200,7 +200,7 @@ class ReportController {
           "bh": broughtTo,
           "bhm": !moved,
           "p": base64Encode(image),
-          "d": DateTime.now().toString(),
+          "d": d.toString(),
           "r": user
         });
 
@@ -373,6 +373,8 @@ class ReportController {
 
 
     var connection = connectionHandler.createConnection();
+    DateTime d= new DateTime(date.year,date.month,date.day,0,0,0,0,0);
+
 
     await connection.open();
     List<List<dynamic>> results = await connection.query(
@@ -387,7 +389,7 @@ class ReportController {
           "c": colorOfCoat,
           "t": typeOfPet,
           "closed": false,
-          "d": date.toString()
+          "d": d.toString()
         });
 
     List<Fido> availableReports = new List<Fido>();
