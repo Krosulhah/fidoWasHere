@@ -153,7 +153,9 @@ SingleChildScrollView buildData(BuildContext context, Fido result){
   Card buildGenderCard(BuildContext context, Fido result){
     return InfoBuilder.buildCard("Gender:",InfoBuilder.buildNiceText(result.getSex(), context),context);}
   Card buildDateCard(BuildContext context, Fido result){
-    return InfoBuilder.buildCard("Date:",InfoBuilder.buildNiceText(result.getDate().toString(), context),context);}
+    DateTime d= result.getDate();
+    String date=d.year.toString()+"-"+d.month.toString()+"-"+d.day.toString();
+    return InfoBuilder.buildCard("Date:",InfoBuilder.buildNiceText(date, context),context);}
   Card buildFoundHereCard(BuildContext context, Fido result){
     return InfoBuilder.buildCard("Found here:",InfoBuilder.buildNiceText(result.getFoundHere(), context),context);}
 

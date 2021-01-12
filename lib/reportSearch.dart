@@ -70,7 +70,7 @@ class ReportSearch extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Row(
-                                      children: [buildNiceText(this.result[index].getDate().toString(), context)],
+                                      children: [buildNiceText(buildDateField(this.result[index].getDate()), context)],
                                     ),
                                     InfoBuilder.addSpace(),
                                     Row(
@@ -93,6 +93,10 @@ class ReportSearch extends StatelessWidget {
 
 
                 }
+}
+
+String buildDateField(DateTime d){
+  return (d.year.toString()+"-"+d.month.toString()+"-"+d.day.toString()+" "+d.hour.toString()+":"+d.minute.toString());
 }
 
 double min(double a, double b ){

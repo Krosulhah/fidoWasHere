@@ -191,6 +191,7 @@ class _MailLogInPageState extends State<MailLogInPage> {
     try {
 
       Dialogs.showLoadingDialog(context, key);//invoking login
+      _email=_email.trimRight();
       String result=await loginController.logInPressed(context,_email,_password);
       Navigator.of(context,rootNavigator: true).pop();//close the dialoge
       if (result!=null&&result.isNotEmpty)

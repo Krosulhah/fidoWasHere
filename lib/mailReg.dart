@@ -192,6 +192,7 @@ class _RegPageState extends State<RegPage> {
   Future<void>  _handleReg() async {
 
       try {
+        _email=_email.trimRight();
         Dialogs.showLoadingDialog(context, key);
         String result = await regController.registerPressed(
             _email, _password, _repeatPassword, context); // runApp (MailReg());
