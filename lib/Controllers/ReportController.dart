@@ -190,7 +190,7 @@ class ReportController {
         "(name,sex,breed,colour,type,isclosed,foundhere,broughthere,moved,photo,date,reporter) "
         "VALUES (@n,@s,@b,@c,@t,@closed,@fh,@bh,@bhm,@p,@d,@r)",
         substitutionValues: {
-          "n": name,
+          "n": name.toUpperCase(),
           "s": sexOfPet.toUpperCase(),
           "b": breedOfPet,
           "c": colorOfCoat,
@@ -378,7 +378,7 @@ class ReportController {
     List<List<dynamic>> results = await connection.query(
         "SELECT * FROM public.\"Fido\" WHERE (name=@n OR name=@e) AND (sex= @s OR sex= @sex) AND (breed=@b or breed=@breed) AND colour=@c AND type=@t AND isclosed=@closed AND (date>=@d) ORDER BY date DESC",
         substitutionValues: {
-          "n": name,
+          "n": name.toUpperCase(),
           "e": " ",
           "s": sexOfPet.toUpperCase(),
           "sex": "U",
